@@ -2,11 +2,9 @@ package irvinc.example.com.inicioprincipal
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
 
 import com.google.android.gms.maps.GoogleMap
@@ -14,15 +12,16 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import android.widget.ImageButton
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private var drawerLayout : DrawerLayout? = null
-    private var drawerOpen = false
+    private var drawerOpen = false// Bandera para saber el estado del drawer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+        supportActionBar?.hide()
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -57,27 +56,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, NavigationView.OnN
         mMap.uiSettings.isZoomControlsEnabled = true
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_camera -> {
-
-            }
-        }
-
-        drawerLayout?.closeDrawer(Gravity.START)
-        return true
+    fun back(view : View){
+        onBackPressed()
     }
 
     override fun onBackPressed() {
-        if (drawerOpen)
+        if (drawerOpen)     //// GUARDAR EL ESTADO DE LA BANDERA CUANDO ENTRA EN LANDSCAPE /////
         {
             drawerLayout?.closeDrawer(Gravity.START)
             drawerOpen = false
         }
-            else
-            {
-                super.onBackPressed()
-            }
+        else {
+            super.onBackPressed()
         }
+    }
 }
