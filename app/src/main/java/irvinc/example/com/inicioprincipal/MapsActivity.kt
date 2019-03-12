@@ -11,6 +11,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import android.widget.ImageButton
+import android.content.Intent
+import android.os.Handler
+import android.os.Looper
+import android.support.design.button.MaterialButton
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -28,9 +32,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         detectarSlide()
 
-        var btnMenu = findViewById<ImageButton>(R.id.btnMenu)
+        val btnMenu = findViewById<ImageButton>(R.id.btnMenu)
         btnMenu.setOnClickListener {
-            drawerLayout?.openDrawer(Gravity.LEFT)
+            drawerLayout?.openDrawer(Gravity.START)
             drawerOpen = true
         }
     }
@@ -56,18 +60,36 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.uiSettings.isZoomControlsEnabled = true
     }
 
-    fun back(view : View){
-        onBackPressed()
+    fun iniciarSesion(view : View){
+        val handler = Handler(Looper.getMainLooper())
+        handler.post {
+            val intent = Intent(this, IniciarSesion::class.java)
+            startActivity(intent)
+
+            cerrarDrawer()
+        }
+    }
+
+    fun buscarMaterial(view : View){
+        val intent = Intent(this, Login::class.java)
+        startActivity(intent)
+
+        cerrarDrawer()
+    }
+
+    private fun cerrarDrawer(){
+        drawerLayout?.closeDrawer(Gravity.START)
+        drawerOpen = false
     }
 
     override fun onBackPressed() {
-        if (drawerOpen)     //// GUARDAR EL ESTADO DE LA BANDERA CUANDO ENTRA EN LANDSCAPE /////
+        if (drawerOpen)
         {
-            drawerLayout?.closeDrawer(Gravity.START)
-            drawerOpen = false
+            cerrarDrawer()
         }
         else {
             super.onBackPressed()
         }
     }
 }
+//// GUARDAR EL ESTADO DE LA BANDERA CUANDO ENTRA EN LANDSCAPE /////

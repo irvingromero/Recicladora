@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".IniciarSesion"
+        android:background="@color/colorPrimary"
+        android:gravity="center">
+
+    <android.support.design.card.MaterialCardView
+            android:id="@+id/cv1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            app:cardCornerRadius="40dp"
+            app:strokeColor="#f000"
+            app:strokeWidth="2dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp">
+
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                        android:id="@+id/etUsuario_inicioSesion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:hint="@string/usuarioHint_str"
+                        android:inputType="text" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                        android:id="@+id/etContra_inicioSesion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:hint="@string/contraHint_str"
+                        android:inputType="textPassword"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp">
+
+                <CheckBox
+                        android:id="@+id/cbMantenerSesion_InicioSesion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/noCerrarSesion_str"
+                        android:layout_weight="1"
+                        android:layout_marginTop="10dp" />
+
+                <android.support.design.button.MaterialButton
+                        android:id="@+id/btnLogin_inicio"
+                        android:layout_width="55dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center"
+                        app:cornerRadius="60dp"
+                        android:layout_marginBottom="10dp"
+                        app:icon="@drawable/entrar_icono"
+                        app:iconTint="@color/colorNegro"/>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.design.card.MaterialCardView>
+
+    <android.support.design.card.MaterialCardView
+            android:id="@+id/cv2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            app:cardCornerRadius="25dp"
+            app:strokeColor="#f000"
+            app:strokeWidth="2dp"
+            android:layout_below="@id/cv1">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="¿Olvidaste tu contraseña?"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="10dp"/>
+
+            <Button
+                    android:id="@+id/btnRecuperarContra_inicioSesion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recuperarContra_str"
+                    android:layout_marginBottom="10dp"/>
+        </LinearLayout>
+    </android.support.design.card.MaterialCardView>
+
+    <android.support.design.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            app:cardCornerRadius="25dp"
+            app:strokeColor="#f000"
+            app:strokeWidth="2dp"
+            android:layout_below="@id/cv2">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="¿No tienes cuenta?"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="10dp"/>
+
+            <Button
+                    android:id="@+id/btnRegistrarse_inicioSesion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/registrarse_str"
+                    android:layout_marginBottom="10dp"
+                    android:onClick="registrarse"/>
+        </LinearLayout>
+    </android.support.design.card.MaterialCardView>
+
+</RelativeLayout>
