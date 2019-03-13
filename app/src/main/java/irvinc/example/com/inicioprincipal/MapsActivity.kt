@@ -14,7 +14,6 @@ import android.widget.ImageButton
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import android.support.design.button.MaterialButton
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 

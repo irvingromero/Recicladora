@@ -28,12 +28,13 @@
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_margin="10dp">
                 <android.support.design.widget.TextInputEditText
                         android:id="@+id/etUsuario_inicioSesion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:hint="@string/usuarioHint_str"
                         android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
@@ -41,12 +42,13 @@
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                 <android.support.design.widget.TextInputEditText
                         android:id="@+id/etContra_inicioSesion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:hint="@string/contraHint_str"
                         android:inputType="textPassword"/>
             </android.support.design.widget.TextInputLayout>
@@ -83,7 +85,7 @@
             android:id="@+id/cv2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="30dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             app:cardCornerRadius="25dp"
@@ -114,7 +116,7 @@
     <android.support.design.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="30dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             app:cardCornerRadius="25dp"
@@ -126,6 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -134,13 +137,12 @@
                     android:layout_marginTop="10dp"/>
 
             <Button
-                    android:id="@+id/btnRegistrarse_inicioSesion"
+                    android:id="@+id/btnRegistro_inicioSesion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/registrarse_str"
+                    android:text="@string/registar_str"
                     android:layout_marginBottom="10dp"
-                    android:onClick="registrarse"/>
+                    android:onClick="registroUsuario"/>
         </LinearLayout>
     </android.support.design.card.MaterialCardView>
-
 </RelativeLayout>

@@ -26,12 +26,13 @@
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_margin="10dp">
                 <android.support.design.widget.TextInputEditText
                         android:id="@+id/etUsuario_inicioSesion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:hint="@string/usuarioHint_str"
                         android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
@@ -39,12 +40,13 @@
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_margin="10dp">
                 <android.support.design.widget.TextInputEditText
                         android:id="@+id/etContra_inicioSesion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:hint="@string/contraHint_str"
                         android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
@@ -83,7 +85,6 @@
             app:cardCornerRadius="25dp"
             app:strokeColor="#f000"
             app:strokeWidth="2dp"
-            android:layout_marginTop="20dp"
             android:layout_toRightOf="@id/cv1land">
 
         <LinearLayout
@@ -120,20 +121,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="¿No tienes cuenta?"
                     android:gravity="center_horizontal"
-                    android:layout_marginTop="10dp"/>
-
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"/>
             <Button
-                    android:id="@+id/btnRegistrarse_inicioSesion"
+                    android:id="@+id/btnRegistro_inicioSesion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/registrarse_str"
-                    android:layout_marginBottom="10dp"/>
+                    android:text="@string/registar_str"
+                    android:layout_marginBottom="10dp"
+                    android:onClick="registroUsuario"/>
         </LinearLayout>
     </android.support.design.card.MaterialCardView>
-
 </RelativeLayout>

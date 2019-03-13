@@ -15,9 +15,15 @@
     <string name="contraHint_str">Contraseña</string>
     <string name="noCerrarSesion_str">Mantener la sesion</string>
     <string name="recuperarContra_str">Recuperar contraseña</string>
-    <string name="registrarse_str">Registrarse</string>
+    <string name="recicladora_str">Recicladora</string>
+    <string name="registar_str">Registrate</string>
 
-
+    <!-- Registro usuario -->
+    <string name="nombreUsuario_str">Nombre de usuario</string>
+    <string name="correo_str">Correo</string>
+    <string name="confirmaContra_str">Confirma contraseña</string>
+    <string name="cancelar_str">Cancelar</string>
+    <string name="aceptar_str">Aceptar</string>
 
 
     <string name="title_activity_login">Sign in</string>
