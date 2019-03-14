@@ -14,6 +14,7 @@ import android.widget.ImageButton
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.support.v7.app.AlertDialog
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -74,6 +75,34 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         startActivity(intent)
 
         cerrarDrawer()
+    }
+
+    fun mejorPrecio(view : View){
+        mensaje()
+    }
+
+    fun masCercana(view : View){
+        mensaje()
+    }
+
+    private fun mensaje(){
+        val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
+        ventana.setView(layoutInflater.inflate(R.layout.ventana_mensaje_mapa, null))
+
+        ventana.setPositiveButton(R.string.registrate_str){_, _ ->
+            val handler = Handler(Looper.getMainLooper())
+            handler.post {
+                val intent = Intent(this, IniciarSesion::class.java)
+                startActivity(intent)
+
+                cerrarDrawer()
+            }
+        }
+
+        ventana.setNeutralButton(R.string.aceptar_str){_,_ -> }
+
+        val dialog: AlertDialog = ventana.create()
+        dialog.show()
     }
 
     private fun cerrarDrawer(){

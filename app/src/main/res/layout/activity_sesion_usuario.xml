@@ -6,20 +6,20 @@
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MapsActivity">
+        tools:context=".UsuarioLogeado.SesionUsuario">
 
     <fragment
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:id="@+id/map"
-          tools:context=".MapsActivity"
-          android:name="com.google.android.gms.maps.SupportMapFragment"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mapaUsuario"
+            tools:context=".UsuarioLogeado.SesionUsuario"
+            android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
     <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         <ImageButton
-                android:id="@+id/btnMenu"
+                android:id="@+id/btnMenu_sesionUsuario"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_marginTop="5dp"
@@ -40,21 +40,21 @@
                 android:orientation="vertical">
 
             <android.support.design.button.MaterialButton
-                    android:id="@+id/btnIniciarSesion"
+                    android:id="@+id/btnModificarDatos_sesionUsuario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/iniciarSesion_str"
-                    app:icon="@drawable/iniciar_sesion_icono"
+                    android:text="@string/modificarDatos_str"
+                    app:icon="@drawable/modificar_datos_icono"
                     app:iconTint="@color/colorNegro"
                     app:cornerRadius="30dp"
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="25dp"
                     android:layout_marginTop="10dp"
-                    android:onClick="iniciarSesion"
+                    android:onClick="modificarDatos_sesionUsuario"
                     app:rippleColor="@color/colorNegro"/>
 
             <android.support.design.button.MaterialButton
-                    android:id="@+id/btnBuscarMaterial"
+                    android:id="@+id/btnBuscarMaterial_sesionUsuario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/buscarMaterial_str"
@@ -65,10 +65,10 @@
                     android:layout_marginRight="25dp"
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"
-                    android:onClick="buscarMaterial"/>
+                    android:onClick="buscarMaterial_sesionUsuario"/>
 
             <android.support.design.button.MaterialButton
-                    android:id="@+id/btnMejorPrecio"
+                    android:id="@+id/btnMejorPrecio_sesionUsuario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/mejorPrecio_str"
@@ -79,10 +79,10 @@
                     android:layout_marginRight="25dp"
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"
-                    android:onClick="mejorPrecio"/>
+                    android:onClick="mejorPrecio_sesionUsuario"/>
 
             <android.support.design.button.MaterialButton
-                    android:id="@+id/btnCercana"
+                    android:id="@+id/btnCercana_sesionUsuario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/cercana_str"
@@ -93,7 +93,21 @@
                     android:layout_marginRight="25dp"
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"
-                    android:onClick="masCercana"/>
+                    android:onClick="masCercana_sesionUsuario"/>
+
+            <android.support.design.button.MaterialButton
+                    android:id="@+id/btnCerrarSesion_sesionUsuario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cerrarSesion_str"
+                    app:icon="@drawable/salir_icono"
+                    app:iconTint="@color/colorNegro"
+                    app:cornerRadius="30dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="5dp"
+                    app:rippleColor="@color/colorNegro"
+                    android:onClick="cerrarSesion_sesionUsuario"/>
 
             <TextView
                     android:layout_width="match_parent"
@@ -104,7 +118,7 @@
                     android:background="@color/colorNegro"/>
 
             <android.support.design.button.MaterialButton
-                    android:id="@+id/btnGuiaReciclaje"
+                    android:id="@+id/btnGuiaReciclaje_sesionUsuario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/guiaReciclaje_str"
@@ -117,7 +131,7 @@
                     app:rippleColor="@color/colorNegro"/>
 
             <android.support.design.button.MaterialButton
-                    android:id="@+id/btnManualidades"
+                    android:id="@+id/btnManualidades_sesionUsuario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/manualidades_str"

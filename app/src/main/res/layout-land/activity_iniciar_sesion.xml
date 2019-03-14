@@ -9,6 +9,8 @@
         android:background="@color/colorPrimary"
         android:gravity="center">
 
+
+
     <android.support.design.card.MaterialCardView
             android:id="@+id/cv1land"
             android:layout_width="wrap_content"
@@ -78,6 +80,18 @@
         </LinearLayout>
     </android.support.design.card.MaterialCardView>
 
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/cv1land"
+            android:layout_marginBottom="5dp">
+        <ImageButton
+                android:id="@+id/btnBack_inicioSesion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/back"/>
+    </RelativeLayout>
+
     <android.support.design.card.MaterialCardView
             android:id="@+id/cv2land"
             android:layout_width="wrap_content"
@@ -134,7 +148,7 @@
                     android:id="@+id/btnRegistro_inicioSesion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/registar_str"
+                    android:text="@string/registrate_str"
                     android:layout_marginBottom="10dp"
                     android:onClick="registroUsuario"/>
         </LinearLayout>

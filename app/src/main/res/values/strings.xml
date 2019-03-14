@@ -9,6 +9,8 @@
     <string name="cercana_str">+ Cercana</string>
     <string name="guiaReciclaje_str">Guia de reciclaje</string>
     <string name="manualidades_str">Manualidades</string>
+    <string name="aceptar_str">Aceptar</string>
+    <string name="mensaje_str">Debes registrarte o iniciar sesion para usar esta funcion.</string>
 
     <!-- Iniciar Sesion -->
     <string name="usuarioHint_str">Usuario</string>
@@ -16,14 +18,19 @@
     <string name="noCerrarSesion_str">Mantener la sesion</string>
     <string name="recuperarContra_str">Recuperar contraseña</string>
     <string name="recicladora_str">Recicladora</string>
-    <string name="registar_str">Registrate</string>
+    <string name="registrate_str">Registrate</string>
 
     <!-- Registro usuario -->
     <string name="nombreUsuario_str">Nombre de usuario</string>
     <string name="correo_str">Correo</string>
     <string name="confirmaContra_str">Confirma contraseña</string>
     <string name="cancelar_str">Cancelar</string>
-    <string name="aceptar_str">Aceptar</string>
+    <string name="registrar_str">Registrar</string>
+
+    <!-- Sesion usuario -->
+    <string name="modificarDatos_str">Modificar datos</string>
+    <string name="cerrarSesion_str">Cerrar sesion</string>
+
 
 
     <string name="title_activity_login">Sign in</string>
@@ -37,5 +44,6 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="title_activity_sesion_usuario">Map</string>
 
 </resources>
