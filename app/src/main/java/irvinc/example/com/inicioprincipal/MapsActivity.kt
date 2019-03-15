@@ -1,5 +1,10 @@
 package irvinc.example.com.inicioprincipal
-
+/*
+GUARDAR EL ESTADO DE LA BANDERA CUANDO ENTRA EN LANDSCAPE POR EL DRAWER
+validar tener la ubicacion prendida
+ */
+import android.Manifest
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.widget.DrawerLayout
@@ -12,15 +17,27 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import android.widget.ImageButton
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.support.v4.app.ActivityCompat
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
+import android.location.Criteria
+import android.content.Context.LOCATION_SERVICE
+import android.location.Location
+import android.support.v4.content.ContextCompat.getSystemService
+import android.location.LocationManager
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private var drawerLayout : DrawerLayout? = null
     private var drawerOpen = false// Bandera para saber el estado del drawer
+    private var miUbicacion : Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +56,63 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        mMap.uiSettings.isZoomControlsEnabled = true
+        permiso()
+    }
+
+    private fun permiso() {
+        val permisoActivado: Boolean
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permisoActivado = estadoPermisoUbicacion()
+
+            if (permisoActivado == false) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION))
+                {
+                    //// MIUESTRA EL DIALOG PARA EL PERMISO ////
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 10)
+                }
+            } else { // PERMISO YA DADO
+                mMap.isMyLocationEnabled = true
+                camaraAubicacion()
+            }
+        } else {// VERSION MENOR A 6.0
+            mMap.isMyLocationEnabled = true
+            camaraAubicacion()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == 10) {
+            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mMap.isMyLocationEnabled = true
+            }
+        }
+    }
+
+    private fun estadoPermisoUbicacion(): Boolean {
+        val resultado = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        return resultado == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun camaraAubicacion(){
+        val locationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val criteria = Criteria()
+        miUbicacion = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false))
+        try {
+            val latitude = miUbicacion?.latitude
+            val longitud = miUbicacion?.longitude
+
+            val latlog = LatLng(latitude!!, longitud!!)
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latlog))
+            mMap.setMinZoomPreference(11.0f)
+        } catch (e: Exception) { }
+    }
+
     private fun detectarSlide(){
-        //// DETECTA CUANDO AL MENU SE LE HACE SLIDE
+        //// DETECTA CUANDO AL MENU SE LE HACE SLIDE ////
         drawerLayout = findViewById(R.id.drawer_layout)
         drawerLayout?.setDrawerListener(object : ActionBarDrawerToggle(this, drawerLayout,0,0)
         {
@@ -55,11 +127,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         })
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-        mMap.uiSettings.isZoomControlsEnabled = true
-    }
-
     fun iniciarSesion(view : View){
         val handler = Handler(Looper.getMainLooper())
         handler.post {
@@ -71,9 +138,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun buscarMaterial(view : View){
-        val intent = Intent(this, Login::class.java)
-        startActivity(intent)
-
         cerrarDrawer()
     }
 
@@ -120,4 +184,3 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 }
-//// GUARDAR EL ESTADO DE LA BANDERA CUANDO ENTRA EN LANDSCAPE /////
