@@ -155,7 +155,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/registrate_str"
                     android:layout_marginBottom="10dp"
-                    android:onClick="registroUsuario"/>
+                    android:onClick="ventanaRegistroUsuario"/>
         </LinearLayout>
     </android.support.design.card.MaterialCardView>
 </RelativeLayout>

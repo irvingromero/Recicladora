@@ -26,7 +26,8 @@
     <string name="confirmaContra_str">Confirma contraseña</string>
     <string name="cancelar_str">Cancelar</string>
     <string name="registrar_str">Registrar</string>
-    <string name="mensajeUsuario_str">Minimo 4 caracteres</string>
+    <string name="mensajeUsuario_str">3 caracteres de a-z y 0-9</string>
+    <string name="mensajeContras_str">Las contraseñas no coinciden</string>
 
     <!-- Sesion usuario -->
     <string name="modificarDatos_str">Modificar datos</string>

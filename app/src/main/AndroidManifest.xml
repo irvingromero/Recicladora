@@ -21,17 +21,23 @@
 
         <activity
                 android:name=".UsuarioLogeado.SesionUsuario"
+                android:resizeableActivity="false"
+                android:supportsPictureInPicture="false"
                 android:label="@string/title_activity_sesion_usuario">
         </activity>
 
         <activity
-                android:name=".IniciarSesion">
+                android:name=".IniciarSesion"
+                android:resizeableActivity="false"
+                android:supportsPictureInPicture="false">
         </activity>
 
-        <activity android:name=".MapsActivity">
+        <activity
+                android:name=".MapsActivity"
+                android:resizeableActivity="false"
+                android:supportsPictureInPicture="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
