@@ -1,9 +1,9 @@
 package irvinc.example.com.inicioprincipal
 
 import android.content.ContentValues
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.button.MaterialButton
@@ -12,48 +12,111 @@ import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.ImageButton
+import android.widget.*
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
 
 class IniciarSesion : AppCompatActivity() {
 
-    private var usuario_registro : String? = null
-    private var correo_registro : String? = null
-    private var contra_registro : String? = null
+    private val bd =  BaseDeDatos(this, "Usuarios", null , 1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_iniciar_sesion)
         supportActionBar?.hide()
 
-
-        val mantenerSesion = findViewById<CheckBox>(R.id.cbMantenerSesion_InicioSesion)
-
+        val etUsuario_iniciarSesion = findViewById<TextInputEditText>(R.id.etUsuario_inicioSesion)
+        val etContra_inicioSesion = findViewById<TextInputEditText>(R.id.etContra_inicioSesion)
         val btnIniciarSesion = findViewById<MaterialButton>(R.id.btnLogin_inicio)
 
-        btnIniciarSesion.setOnClickListener {
-            val intent = Intent(this, SesionUsuario::class.java)
-            finishAffinity()    //// CIERRA LAS DEMAS ACTIVITYS EN SEGUNDO PLANO////
-            startActivity(intent)
-        }
+        var usuarioOk_inicio = false
+        var contraOk_inicio = false
+        etUsuario_iniciarSesion.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if(etUsuario_iniciarSesion.text!!.isNotEmpty())
+                {
+                    usuarioOk_inicio = true
+                    if(usuarioOk_inicio && contraOk_inicio){
+                        btnIniciarSesion.isEnabled = true
+                    }
+                } else {
+                    usuarioOk_inicio = false
+                    btnIniciarSesion.isEnabled = false
+                }
+            }
+        })
 
+        etContra_inicioSesion.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if(etContra_inicioSesion.text!!.isNotEmpty())
+                {
+                    contraOk_inicio = true
+                    if(usuarioOk_inicio && contraOk_inicio){
+                        btnIniciarSesion.isEnabled = true
+                    }
+                } else {
+                    contraOk_inicio = false
+                    btnIniciarSesion.isEnabled = false
+                }
+            }
+        })
+
+        btnIniciarSesion.isEnabled = false
+        btnIniciarSesion.setOnClickListener {
+            iniciarSesion(etUsuario_iniciarSesion.text.toString(), etContra_inicioSesion.text.toString())
+        }
         val botonBack = findViewById<ImageButton>(R.id.btnBack_inicioSesion)
         botonBack.setOnClickListener {
             onBackPressed()
         }
     }
 
+    private fun iniciarSesion(usuario : String, contra : String){
+        var usuarioExiste = false
+        var contraExiste = false
+        val basededatos = bd.readableDatabase
+
+        val consultaUsuario = basededatos.rawQuery("select usuario from Usuarios where usuario ='$usuario'",null)
+         usuarioExiste = consultaUsuario.moveToFirst()
+
+        val consultaContra = basededatos.rawQuery("select contra from Usuarios where contra = '$contra'", null)
+        contraExiste = consultaContra.moveToFirst()
+        bd.close()
+
+        if(usuarioExiste && contraExiste){
+            val mantenerSesion = findViewById<CheckBox>(R.id.cbMantenerSesion_InicioSesion)
+
+            if (mantenerSesion.isChecked) {
+                val preferences = this.getSharedPreferences("user", Context.MODE_PRIVATE)
+                /// GUARDAR SOLO USUARIO ///
+                val editor = preferences.edit()
+                editor.putString("usuario", usuario)
+                editor.commit()
+            }
+
+            val intent = Intent(this, SesionUsuario::class.java)
+            finishAffinity()    //// CIERRA LAS DEMAS ACTIVITYS EN SEGUNDO PLANO////
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, R.string.incorrectos_str, Toast.LENGTH_LONG).show()
+        }
+    }
+
+
     fun ventanaRegistroUsuario(view : View){
         val botonRegistro = findViewById<Button>(R.id.btnRegistro_inicioSesion)
         var usuarioOk = false
         var contraOk = usuarioOk
         var confirmContra = false
+        var usuarioValido = false
 
         val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
         ventana.setCancelable(false) // EVITA QUE SE CIERRE EL DIALOG CON UN CLICK AFUERA DE EL //
@@ -73,7 +136,7 @@ class IniciarSesion : AppCompatActivity() {
         etConfirmContra.isEnabled = false
 
         ventana.setPositiveButton(R.string.registrar_str){_, _ ->
-            registrarUsuario()
+            registrarUsuario(etUsuario.text.toString(), etCorreo.text.toString(), etContra.text.toString())
             botonRegistro.isEnabled = true
         }
         ventana.setNeutralButton(R.string.cancelar_str){_,_ ->
@@ -108,13 +171,17 @@ class IniciarSesion : AppCompatActivity() {
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
                 } else {
                     usuarioOk = true
-                    usuario_registro = etUsuario.text.toString()
-                    if(contraOk && confirmContra){
+
+                    usuarioValido = validaUsuario(etUsuario.text.toString())
+                    if(!usuarioValido){
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                        etUsuario.error = getString(R.string.yaexiste_str)
+                        requestFocus(etContra)
+                    } else { usuarioValido = true }
+
+                    if(contraOk && confirmContra && usuarioValido)
+                    {
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
-                        correo_registro = etCorreo.text.toString()
-
-
-                        //// VALIDAR SI EL USUARIO YA EXISTE ////
                     }
                 }
             }
@@ -134,10 +201,8 @@ class IniciarSesion : AppCompatActivity() {
                 } else {
                     etConfirmContra.isEnabled = true
                     contraOk = true
-                    contra_registro = etContra.text.toString()
-                    if(usuarioOk && confirmContra){
+                    if(usuarioOk && confirmContra && usuarioValido){
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
-                        correo_registro = etCorreo.text.toString()
                     }
                 }
             }
@@ -149,9 +214,8 @@ class IniciarSesion : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(etConfirmContra.text.toString().equals(etContra.text.toString())){
                     confirmContra = true
-                    if(usuarioOk && contraOk){
+                    if(usuarioOk && contraOk && usuarioValido){
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
-                        correo_registro = etCorreo.text.toString()
                     }
                 } else {
                     etConfirmContra.error = getString(R.string.mensajeContras_str)
@@ -163,21 +227,36 @@ class IniciarSesion : AppCompatActivity() {
         })
     }
 
-    private fun registrarUsuario(){
+    private fun registrarUsuario(usuario : String, correo : String, contra : String){
         val datosUsuario = ContentValues()
-        datosUsuario.put("usuario", usuario_registro)
-        datosUsuario.put("correo", correo_registro)
-        datosUsuario.put("contra", contra_registro)
+        datosUsuario.put("usuario", usuario)
+        datosUsuario.put("correo", correo)
+        datosUsuario.put("contra", contra)
 
-        val bd =  BaseDeDatos(this, "Usuarios", null , 1)
         val basededatos = bd.writableDatabase
         basededatos.insert("Usuarios", null, datosUsuario)
         basededatos.close()
+
+        val toast = Toast(applicationContext)
+        //// CARGA EL LAYOUT A UNA VISTA ////
+        val view = layoutInflater.inflate(R.layout.usuario_registrado, null)
+        toast.view = view
+        toast.duration = Toast.LENGTH_LONG
+        toast.setGravity(Gravity.TOP,0, 0)
+        toast.show()
     }
 
-    private fun usuarioExistente() : Boolean {
+    private fun validaUsuario(nombre : String) : Boolean {
+        val basededatos = bd.writableDatabase
 
-        return false
+        val consultaUsuario = basededatos.rawQuery("select usuario from Usuarios where usuario ='$nombre'",null)
+        if(consultaUsuario.moveToFirst())
+        {
+            bd.close()
+            return false
+        }
+        bd.close()
+        return true
     }
 
     private fun requestFocus(view: View) {

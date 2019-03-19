@@ -31,6 +31,8 @@ import android.content.Context.LOCATION_SERVICE
 import android.location.Location
 import android.support.v4.content.ContextCompat.getSystemService
 import android.location.LocationManager
+import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
+import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -44,6 +46,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_maps)
         supportActionBar?.hide()
 
+        sesionGuardada()
+
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -53,6 +57,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         btnMenu.setOnClickListener {
             drawerLayout?.openDrawer(Gravity.START)
             drawerOpen = true
+        }
+    }
+
+    private fun sesionGuardada(){
+        val preferences = getSharedPreferences("user", Context.MODE_PRIVATE)
+        val usuario = preferences.getString("usuario", "nada")
+        if(!usuario.equals("nada"))
+        {
+            /// Busqueda en la bd, para saber si el usuario existe aun ////
+            val bd =  BaseDeDatos(this, "Usuarios", null , 1)
+            val basededatos = bd.readableDatabase
+            val consultaUsuario = basededatos.rawQuery("select usuario from Usuarios where usuario ='$usuario'",null)
+
+            if(consultaUsuario.moveToFirst()){
+                val intent = Intent(this, SesionUsuario::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
     }
 
