@@ -36,6 +36,8 @@
     <!-- Sesion usuario -->
     <string name="modificarDatos_str">Modificar datos</string>
     <string name="cerrarSesion_str">Cerrar sesion</string>
+    <string name="modificar_str">Modificar</string>
+    <string name="datosModificados_str">Datos modificados</string>
 
 
     <string name="title_activity_sesion_usuario">Map</string>

@@ -1,9 +1,9 @@
 package irvinc.example.com.inicioprincipal
 /*
-GUARDAR EL ESTADO DE LA BANDERA CUANDO ENTRA EN LANDSCAPE POR EL DRAWER
 validar tener la ubicacion prendida
  */
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -27,9 +27,7 @@ import android.support.v4.app.ActivityCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import android.location.Criteria
-import android.content.Context.LOCATION_SERVICE
 import android.location.Location
-import android.support.v4.content.ContextCompat.getSystemService
 import android.location.LocationManager
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
@@ -52,9 +50,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         detectarSlide()
-
-        val btnMenu = findViewById<ImageButton>(R.id.btnMenu)
-        btnMenu.setOnClickListener {
+        findViewById<ImageButton>(R.id.btnMenu).setOnClickListener {
             drawerLayout?.openDrawer(Gravity.START)
             drawerOpen = true
         }
@@ -71,10 +67,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val consultaUsuario = basededatos.rawQuery("select usuario from Usuarios where usuario ='$usuario'",null)
 
             if(consultaUsuario.moveToFirst()){
+                basededatos.close()
                 val intent = Intent(this, SesionUsuario::class.java)
+                intent.putExtra("usuario", usuario)
                 startActivity(intent)
                 finish()
             }
+            basededatos.close()
         }
     }
 
@@ -84,6 +83,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         permiso()
     }
 
+    @SuppressLint("MissingPermission")
     private fun permiso() {
         val permisoActivado: Boolean
 
@@ -106,6 +106,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == 10) {
             if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -119,6 +120,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         return resultado == PackageManager.PERMISSION_GRANTED
     }
 
+    @SuppressLint("MissingPermission")
     private fun camaraAubicacion(){
         val locationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val criteria = Criteria()

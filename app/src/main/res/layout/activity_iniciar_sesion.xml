@@ -56,13 +56,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:passwordToggleEnabled = "true"
+                    app:passwordToggleDrawable="@drawable/ojo_icono">
                 <android.support.design.widget.TextInputEditText
-                        android:id="@+id/etContra_inicioSesion"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/contraHint_str"
-                        android:inputType="textPassword"/>
+                    android:id="@+id/etContra_inicioSesion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/contraHint_str"
+                    android:inputType="textPassword"/>
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout

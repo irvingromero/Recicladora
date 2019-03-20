@@ -16,7 +16,10 @@ import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.ImageButton
+import android.widget.Toast
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
 
@@ -103,6 +106,7 @@ class IniciarSesion : AppCompatActivity() {
             }
 
             val intent = Intent(this, SesionUsuario::class.java)
+            intent.putExtra("usuario", usuario)
             finishAffinity()    //// CIERRA LAS DEMAS ACTIVITYS EN SEGUNDO PLANO////
             startActivity(intent)
         } else {
