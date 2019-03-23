@@ -1,9 +1,6 @@
 package irvinc.example.com.inicioprincipal.UsuarioLogeado
 
-import android.content.ContentValues
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
+import android.content.*
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -11,14 +8,12 @@ import android.support.design.widget.TextInputEditText
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
-import android.view.Gravity
-import android.view.KeyEvent
-import android.view.View
-import android.view.WindowManager
-import android.widget.ImageButton
+import android.view.*
+import android.widget.*
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -37,6 +32,9 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
     private var drawerOpen = false// Bandera para saber el estado del drawer
 
     private var usuarioLogeado : String? = null
+
+    var listaDatos : ArrayList<String>? = null
+    var lista : RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -177,14 +175,30 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
         Snackbar.make(view, R.string.datosModificados_str, Snackbar.LENGTH_LONG).show()
     }
 
-    private fun requestFocus(view: View) {
-        if (view.requestFocus()) {
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
-        }
-    }
-
     fun buscarMaterial_sesionUsuario(view : View){
+        cerrarDrawer()
 
+        val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
+        // CARGA EL LAYOUT PERSONALIZADO//
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.ventana_buscar_material, null)
+        ventana.setView(dialogView)
+        ventana.setTitle("Materiales disponibles")
+
+        val dialog: AlertDialog = ventana.create()
+
+        val listaview = dialogView.findViewById<ListView>(R.id.lvBuscar_material)
+        listaview.isClickable = true
+        listaview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            dialog.dismiss()
+        }
+
+
+        val values = arrayOf("irv", "awfaf","egeg","asfef","klanfkwla","alksef","anck","ekjfn","xdxd")
+        val a = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, values)
+        listaview.adapter = a
+
+        dialog.show()
     }
 
     fun mejorPrecio_sesionUsuario(view : View){
@@ -207,6 +221,12 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
     private fun cerrarDrawer(){
         drawerLayout?.closeDrawer(Gravity.START)
         drawerOpen = false
+    }
+
+    private fun requestFocus(view: View) {
+        if (view.requestFocus()) {
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+        }
     }
 
     override fun onBackPressed() {
