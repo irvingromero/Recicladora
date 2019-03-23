@@ -1,4 +1,4 @@
-package irvinc.example.com.inicioprincipal
+package irvinc.example.com.inicioprincipal.InicioSinSesion
 
 import android.content.ContentValues
 import android.content.Context
@@ -21,6 +21,7 @@ import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.Toast
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
+import irvinc.example.com.inicioprincipal.R
 import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
 
 class IniciarSesion : AppCompatActivity() {
@@ -139,11 +140,11 @@ class IniciarSesion : AppCompatActivity() {
 
         etConfirmContra.isEnabled = false
 
-        ventana.setPositiveButton(R.string.registrar_str){_, _ ->
+        ventana.setPositiveButton(R.string.registrar_str){ _, _ ->
             registrarUsuario(etUsuario.text.toString(), etCorreo.text.toString(), etContra.text.toString())
             botonRegistro.isEnabled = true
         }
-        ventana.setNeutralButton(R.string.cancelar_str){_,_ ->
+        ventana.setNeutralButton(R.string.cancelar_str){ _, _ ->
             botonRegistro.isEnabled = true
         }
 

@@ -1,4 +1,4 @@
-package irvinc.example.com.inicioprincipal
+package irvinc.example.com.inicioprincipal.InicioSinSesion
 /*
 validar tener la ubicacion prendida
  */
@@ -30,6 +30,7 @@ import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
+import irvinc.example.com.inicioprincipal.R
 import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -177,7 +178,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
         ventana.setView(layoutInflater.inflate(R.layout.ventana_mensaje_mapa, null))
 
-        ventana.setPositiveButton(R.string.registrate_str){_, _ ->
+        ventana.setPositiveButton(R.string.registrate_str){ _, _ ->
             val handler = Handler(Looper.getMainLooper())
             handler.post {
                 val intent = Intent(this, IniciarSesion::class.java)
@@ -187,7 +188,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        ventana.setNeutralButton(R.string.aceptar_str){_,_ -> }
+        ventana.setNeutralButton(R.string.aceptar_str){ _, _ -> }
 
         val dialog: AlertDialog = ventana.create()
         dialog.show()

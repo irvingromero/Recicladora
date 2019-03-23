@@ -3,12 +3,12 @@ package irvinc.example.com.inicioprincipal.UsuarioLogeado
 import android.content.*
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.chip.Chip
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputEditText
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
@@ -22,7 +22,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
-import irvinc.example.com.inicioprincipal.MapsActivity
+import irvinc.example.com.inicioprincipal.InicioSinSesion.MapsActivity
 import irvinc.example.com.inicioprincipal.R
 
 class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
@@ -32,9 +32,6 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
     private var drawerOpen = false// Bandera para saber el estado del drawer
 
     private var usuarioLogeado : String? = null
-
-    var listaDatos : ArrayList<String>? = null
-    var lista : RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -190,15 +187,26 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
         val listaview = dialogView.findViewById<ListView>(R.id.lvBuscar_material)
         listaview.isClickable = true
         listaview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            val dato = parent.getItemAtPosition(position)
             dialog.dismiss()
+            chipMaterial(dato.toString())
         }
 
-
-        val values = arrayOf("irv", "awfaf","egeg","asfef","klanfkwla","alksef","anck","ekjfn","xdxd")
+        val values = arrayOf("Latas", "Chatarra","Vidrio","Carton","Alumino")
         val a = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, values)
         listaview.adapter = a
 
         dialog.show()
+    }
+
+    private fun chipMaterial(material : String){
+        val i = LayoutInflater.from(this@SesionUsuario)
+        val chipItem = i.inflate(R.layout.chip, null , false) as Chip
+        chipItem.text = material
+
+        chipItem.setOnCloseIconClickListener {
+
+        }
     }
 
     fun mejorPrecio_sesionUsuario(view : View){

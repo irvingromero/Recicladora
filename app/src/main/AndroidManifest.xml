@@ -27,13 +27,13 @@
         </activity>
 
         <activity
-                android:name=".IniciarSesion"
+                android:name=".InicioSinSesion.IniciarSesion"
                 android:resizeableActivity="false"
                 android:supportsPictureInPicture="false">
         </activity>
 
         <activity
-                android:name=".MapsActivity"
+                android:name=".InicioSinSesion.MapsActivity"
                 android:resizeableActivity="false"
                 android:supportsPictureInPicture="false">
             <intent-filter>
