@@ -1,11 +1,21 @@
 package irvinc.example.com.inicioprincipal.UsuarioLogeado
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.*
+import android.content.pm.PackageManager
+import android.location.Criteria
+import android.location.Location
+import android.location.LocationManager
+import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.chip.Chip
+import android.support.design.chip.ChipGroup
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputEditText
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
@@ -28,10 +38,14 @@ import irvinc.example.com.inicioprincipal.R
 class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
+    private var miUbicacion : Location? = null
     private var drawerLayout : DrawerLayout? = null
     private var drawerOpen = false// Bandera para saber el estado del drawer
 
     private var usuarioLogeado : String? = null
+
+    private var chipgroup : ChipGroup? = null
+    private var contador = 0 //// Contador para los chips ////
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +62,8 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
             drawerLayout?.openDrawer(Gravity.START)
             drawerOpen = true
         }
+
+        chipgroup = findViewById(R.id.cg_sesionUsuario)
     }
 
     private fun detectarSlide(){
@@ -68,10 +84,62 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.uiSettings.isZoomControlsEnabled = true
+        mMap.uiSettings.isCompassEnabled = false
 
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        permiso()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun permiso() {
+        val permisoActivado: Boolean
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permisoActivado = estadoPermisoUbicacion()
+
+            if (permisoActivado == false) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION))
+                {
+                    //// MIUESTRA EL DIALOG PARA EL PERMISO ////
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 10)
+                }
+            } else { // PERMISO YA DADO
+                mMap.isMyLocationEnabled = true
+                camaraAubicacion()
+            }
+        } else {// VERSION MENOR A 6.0
+            mMap.isMyLocationEnabled = true
+            camaraAubicacion()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == 10) {
+            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mMap.isMyLocationEnabled = true
+            }
+        }
+    }
+
+    private fun estadoPermisoUbicacion(): Boolean {
+        val resultado = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        return resultado == PackageManager.PERMISSION_GRANTED
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun camaraAubicacion(){
+        val locationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val criteria = Criteria()
+        miUbicacion = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false))
+        try {
+            val latitude = miUbicacion?.latitude
+            val longitud = miUbicacion?.longitude
+
+            val latlog = LatLng(latitude!!, longitud!!)
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latlog))
+            mMap.setMinZoomPreference(11.0f)
+        } catch (e: Exception) { }
     }
 
     fun modificarDatos_sesionUsuario(view : View){
@@ -172,7 +240,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
         Snackbar.make(view, R.string.datosModificados_str, Snackbar.LENGTH_LONG).show()
     }
 
-    fun buscarMaterial_sesionUsuario(view : View){
+    fun buscarMaterial_sesionUsuario(vista : View){
         cerrarDrawer()
 
         val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
@@ -180,7 +248,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
         val inflater = this.layoutInflater
         val dialogView = inflater.inflate(R.layout.ventana_buscar_material, null)
         ventana.setView(dialogView)
-        ventana.setTitle("Materiales disponibles")
+        ventana.setTitle(R.string.materialesDisponibles_str)
 
         val dialog: AlertDialog = ventana.create()
 
@@ -189,7 +257,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
         listaview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val dato = parent.getItemAtPosition(position)
             dialog.dismiss()
-            chipMaterial(dato.toString())
+            chipMaterial(vista, dato.toString())
         }
 
         val values = arrayOf("Latas", "Chatarra","Vidrio","Carton","Alumino")
@@ -199,13 +267,30 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
         dialog.show()
     }
 
-    private fun chipMaterial(material : String){
+    private fun chipMaterial(vista : View ,material : String){
         val i = LayoutInflater.from(this@SesionUsuario)
         val chipItem = i.inflate(R.layout.chip, null , false) as Chip
-        chipItem.text = material
+
+        if(contador < 3){
+            chipItem.text = material
+            chipgroup?.addView(chipItem)
+            chipgroup?.visibility = View.VISIBLE
+            contador ++
+        } else {
+            Snackbar.make(vista, R.string.maximoMateriales_str, Snackbar.LENGTH_LONG).show()
+        }
+
+        chipItem.setOnClickListener {
+            if(contador < 3) {
+                buscarMaterial_sesionUsuario(vista)
+            } else {
+                Snackbar.make(vista, R.string.maximoMateriales_str, Snackbar.LENGTH_LONG).show()
+            }
+        }
 
         chipItem.setOnCloseIconClickListener {
-
+            chipgroup?.removeView(chipItem)
+            contador --
         }
     }
 

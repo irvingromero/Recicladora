@@ -1,6 +1,7 @@
 package irvinc.example.com.inicioprincipal.InicioSinSesion
 /*
 validar tener la ubicacion prendida
+VALIDAR QUE NO SE SELECCIONE EL MISMO MATERIAL////
  */
 import android.Manifest
 import android.annotation.SuppressLint
@@ -29,6 +30,13 @@ import com.google.android.gms.maps.model.LatLng
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
+import android.support.design.chip.Chip
+import android.support.design.chip.ChipGroup
+import android.support.design.widget.Snackbar
+import android.view.LayoutInflater
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.R
 import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
@@ -39,6 +47,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var drawerLayout : DrawerLayout? = null
     private var drawerOpen = false// Bandera para saber el estado del drawer
     private var miUbicacion : Location? = null
+
+    private var chipgroup : ChipGroup? = null
+    private var contador = 0 //// Contador para los chips ////
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +66,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             drawerLayout?.openDrawer(Gravity.START)
             drawerOpen = true
         }
+
+        chipgroup = findViewById(R.id.cg_MapsActivity)
     }
 
     private fun sesionGuardada(){
@@ -81,6 +94,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = true
+        mMap.uiSettings.isCompassEnabled = false
+
         permiso()
     }
 
@@ -162,8 +177,58 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    fun buscarMaterial(view : View){
+    fun buscarMaterial(v : View){
         cerrarDrawer()
+
+        val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
+        // CARGA EL LAYOUT PERSONALIZADO//
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.ventana_buscar_material, null)
+        ventana.setView(dialogView)
+        ventana.setTitle(R.string.materialesDisponibles_str)
+
+        val dialog: AlertDialog = ventana.create()
+
+        val listaview = dialogView.findViewById<ListView>(R.id.lvBuscar_material)
+        listaview.isClickable = true
+        listaview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            val dato = parent.getItemAtPosition(position)
+            dialog.dismiss()
+            chipMaterial(v, dato.toString())
+        }
+
+        val values = arrayOf("Latas", "Chatarra","Vidrio","Carton","Alumino")
+        val a = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, values)
+        listaview.adapter = a
+
+        dialog.show()
+    }
+
+    private fun chipMaterial(vista : View ,material : String){
+        val i = LayoutInflater.from(this@MapsActivity)
+        val chipItem = i.inflate(R.layout.chip, null , false) as Chip
+
+        if(contador < 3){
+            chipItem.text = material
+            chipgroup?.addView(chipItem)
+            chipgroup?.visibility = View.VISIBLE
+            contador ++
+        } else {
+            Snackbar.make(vista, R.string.maximoMateriales_str, Snackbar.LENGTH_LONG).show()
+        }
+
+        chipItem.setOnClickListener {
+            if(contador < 3) {
+                buscarMaterial(vista)
+            } else {
+                Snackbar.make(vista, R.string.maximoMateriales_str, Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        chipItem.setOnCloseIconClickListener {
+            chipgroup?.removeView(chipItem)
+            contador --
+        }
     }
 
     fun mejorPrecio(view : View){
