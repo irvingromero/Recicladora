@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class BaseDeDatos(context: Context, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int) :
-    SQLiteOpenHelper(context, "BD", factory, 1) {
+    SQLiteOpenHelper(context, name, factory, version) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("create table Usuarios(usuario text, correo double, contra text)")

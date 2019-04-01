@@ -36,6 +36,12 @@
         </android.support.design.chip.ChipGroup>
     </FrameLayout>
 
+    <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <include layout="@layout/datos_recicladora"/>
+    </android.support.design.widget.CoordinatorLayout>
+
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

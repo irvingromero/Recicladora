@@ -12,8 +12,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.chip.Chip
 import android.support.design.chip.ChipGroup
-import android.support.design.widget.Snackbar
-import android.support.design.widget.TextInputEditText
+import android.support.design.widget.*
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.DrawerLayout
@@ -30,12 +29,14 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.InicioSinSesion.MapsActivity
 import irvinc.example.com.inicioprincipal.R
+import kotlinx.android.synthetic.main.datos_recicladora.*
 
-class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
+class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var mMap: GoogleMap
     private var miUbicacion : Location? = null
@@ -47,10 +48,15 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
     private var chipgroup : ChipGroup? = null
     private var contador = 0 //// Contador para los chips ////
 
+    private var bottomSheetBehavior : BottomSheetBehavior<LinearLayout>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sesion_usuario)
         supportActionBar?.hide()
+
+        bottomSheetBehavior  = BottomSheetBehavior.from<LinearLayout>(bottomSheet)
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
         usuarioLogeado = intent.extras?.getString("usuario")
 
@@ -86,6 +92,9 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.uiSettings.isCompassEnabled = false
+        mMap.setOnMarkerClickListener(this)
+
+        mMap.addMarker(MarkerOptions().position(LatLng(32.6578,-115.584)).title("Recicladora 1111"))
 
         permiso()
     }
@@ -311,6 +320,15 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
         finish()
     }
 
+    @SuppressLint("ResourceType")
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        findViewById<TextView>(R.id.tvNombre_datosRecicladora).text = p0?.title
+        return true
+    }
+
+
     private fun cerrarDrawer(){
         drawerLayout?.closeDrawer(Gravity.START)
         drawerOpen = false
@@ -328,7 +346,15 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback {
             cerrarDrawer()
         }
         else {
-            super.onBackPressed()
+            if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_COLLAPSED){
+                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+            } else {
+                if(bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED){
+                    bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                } else {
+                    super.onBackPressed()
+                }
+            }
         }
     }
 }
