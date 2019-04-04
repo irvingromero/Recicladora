@@ -20,6 +20,8 @@
     <string name="recicladora_str">Recicladora</string>
     <string name="registrate_str">Registrate</string>
     <string name="incorrectos_str">El usuario o contraseña son incorrectos</string>
+    <string name="IngreseCorreo_str">Ingrese Correo</string>
+    <string name="enviar_str">Enviar</string>
 
 
     <!-- Registro usuario -->

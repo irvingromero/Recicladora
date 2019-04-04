@@ -70,6 +70,15 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         }
 
         chipgroup = findViewById(R.id.cg_sesionUsuario)
+            //// LISTENER PARA ABRIR EL BOTTOM SHEET CON UN TOUCH /////
+        findViewById<LinearLayout>(R.id.ly_datosRecicladora).setOnClickListener {
+            if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_COLLAPSED){
+                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+            if(bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
     }
 
     private fun detectarSlide(){
@@ -94,9 +103,46 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         mMap.uiSettings.isCompassEnabled = false
         mMap.setOnMarkerClickListener(this)
 
-        mMap.addMarker(MarkerOptions().position(LatLng(32.6578,-115.584)).title("Recicladora 1111"))
+        mMap.addMarker(MarkerOptions().position(LatLng(32.6578,-115.584)).title("Recicladora 11"))
+        mMap.addMarker(MarkerOptions().position(LatLng(32.6578,-115.484)).title("Recicladora asFnk"))
+        mMap.addMarker(MarkerOptions().position(LatLng(32.6278,-115.584)).title("Reci:v:v"))
 
         permiso()
+
+        mMap.setOnMapClickListener {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+            drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            mMap.setPadding(0,0,0,0)
+        }
+
+        mMap.setOnInfoWindowClickListener {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        mMap.setPadding(0,0,0,140)
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        //// BLOQUEA Y DESBLOQUEA EL MENU LATERAL CUANDO EL BOTTOMSHEET ESTA EXPANDIDO /////
+        bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN ->{
+                        mMap.setPadding(0,0,0,0)
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED ->{
+                        drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED ->{
+                        drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                    }
+                }
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+        findViewById<TextView>(R.id.tvNombre_datosRecicladora).text = p0?.title
+        return false
     }
 
     @SuppressLint("MissingPermission")
@@ -320,15 +366,6 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         finish()
     }
 
-    @SuppressLint("ResourceType")
-    override fun onMarkerClick(p0: Marker?): Boolean {
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-
-        findViewById<TextView>(R.id.tvNombre_datosRecicladora).text = p0?.title
-        return true
-    }
-
-
     private fun cerrarDrawer(){
         drawerLayout?.closeDrawer(Gravity.START)
         drawerOpen = false
@@ -348,6 +385,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         else {
             if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_COLLAPSED){
                 bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                mMap.setPadding(0,0,0,0)
             } else {
                 if(bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED){
                     bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED

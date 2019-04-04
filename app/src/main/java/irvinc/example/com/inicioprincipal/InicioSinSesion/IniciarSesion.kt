@@ -115,6 +115,54 @@ class IniciarSesion : AppCompatActivity() {
         }
     }
 
+    fun ventanaRecuperarContra(vista : View){
+        val btn = findViewById<Button>(R.id.btnRecuperarContra_inicioSesion)
+        btn.isEnabled = false
+
+        val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
+        ventana.setCancelable(false)
+        // CARGA EL LAYOUT PERSONALIZADO//
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.ventana_recuperar_contra, null)
+        ventana.setView(dialogView)
+
+        val etCorreo = dialogView.findViewById<TextInputEditText>(R.id.etCorreo_IniciarSesion)
+
+        ventana.setPositiveButton(R.string.enviar_str){ _, _ ->
+            btn.isEnabled = true
+        }
+        ventana.setNeutralButton(R.string.cancelar_str){ _, _ ->
+            btn.isEnabled = true
+        }
+
+        val dialog: AlertDialog = ventana.create()
+        //// CIERRA EL DIALOG CON EL BOTON HACIA ATRAS ////
+        dialog.setOnKeyListener(object : DialogInterface.OnKeyListener {
+            override fun onKey(
+                arg0: DialogInterface, keyCode: Int, event: KeyEvent): Boolean {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    btn.isEnabled = true
+                    dialog.dismiss()
+                }
+                return true
+            }
+        })
+        dialog.show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+
+        etCorreo.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if(etCorreo.length() < 1)
+                {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                } else {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                }
+            }
+        })
+    }
 
     fun ventanaRegistroUsuario(view : View){
         val botonRegistro = findViewById<Button>(R.id.btnRegistro_inicioSesion)

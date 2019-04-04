@@ -16,7 +16,6 @@ import android.view.View
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import android.widget.ImageButton
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -32,16 +31,18 @@ import android.location.Location
 import android.location.LocationManager
 import android.support.design.chip.Chip
 import android.support.design.chip.ChipGroup
+import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
+import android.widget.*
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.R
 import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
+import kotlinx.android.synthetic.main.datos_recicladora.*
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var mMap: GoogleMap
     private var drawerLayout : DrawerLayout? = null
@@ -51,10 +52,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var chipgroup : ChipGroup? = null
     private var contador = 0 //// Contador para los chips ////
 
+    private var bottomSheetBehavior : BottomSheetBehavior<LinearLayout>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
         supportActionBar?.hide()
+
+        bottomSheetBehavior  = BottomSheetBehavior.from<LinearLayout>(bottomSheet)
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
         sesionGuardada()
 
@@ -68,6 +74,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         chipgroup = findViewById(R.id.cg_MapsActivity)
+
+            //// LISTENER PARA ABRIR EL BOTTOM SHEET CON UN TOUCH /////
+        findViewById<LinearLayout>(R.id.ly_datosRecicladora).setOnClickListener {
+            if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_COLLAPSED){
+                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+            if(bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
     }
 
     private fun sesionGuardada(){
@@ -95,8 +111,49 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.uiSettings.isCompassEnabled = false
+        mMap.setOnMarkerClickListener(this)
+
+        mMap.addMarker(MarkerOptions().position(LatLng(32.6578,-115.584)).title("Recicladora 11"))
+        mMap.addMarker(MarkerOptions().position(LatLng(32.6578,-115.484)).title("Recicladora asFnk"))
+        mMap.addMarker(MarkerOptions().position(LatLng(32.6278,-115.584)).title("Reci:v:v"))
 
         permiso()
+
+        mMap.setOnMapClickListener {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+            drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            mMap.setPadding(0,0,0,0)
+        }
+
+        mMap.setOnInfoWindowClickListener {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
+    override fun onMarkerClick(p0: Marker?): Boolean {
+            mMap.setPadding(0,0,0,140)
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+            //// BLOQUEA Y DESBLOQUEA EL MENU LATERAL CUANDO EL BOTTOMSHEET ESTA EXPANDIDO /////
+            bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    when (newState) {
+                        BottomSheetBehavior.STATE_HIDDEN ->{
+                            mMap.setPadding(0,0,0,0)
+                        }
+                        BottomSheetBehavior.STATE_EXPANDED ->{
+                            drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                        }
+                        BottomSheetBehavior.STATE_COLLAPSED ->{
+                            drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                        }
+                    }
+                }
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            })
+
+            findViewById<TextView>(R.id.tvNombre_datosRecicladora).text = p0?.title
+
+        return false
     }
 
     @SuppressLint("MissingPermission")
@@ -270,7 +327,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             cerrarDrawer()
         }
         else {
-            super.onBackPressed()
+            if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_COLLAPSED){
+                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                mMap.setPadding(0,0,0,0)
+            } else {
+                if(bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED){
+                    bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                } else {
+                    super.onBackPressed()
+                }
+            }
         }
     }
 }

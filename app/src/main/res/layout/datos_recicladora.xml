@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
     <LinearLayout
+            android:id="@+id/ly_datosRecicladora"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:foreground="?android:attr/selectableItemBackground"
@@ -33,7 +34,6 @@
                 android:textSize="18sp"/>
     </LinearLayout>
 
-
     <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -43,28 +43,9 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorGris"
                 android:orientation="vertical">
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="arhrh"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
             <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
             <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
 
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="egfnekwgkanjn"/>
         </LinearLayout>
-
     </android.support.v4.widget.NestedScrollView>
-
 </LinearLayout>
