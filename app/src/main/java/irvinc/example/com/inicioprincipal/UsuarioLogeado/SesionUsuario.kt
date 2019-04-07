@@ -371,7 +371,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         drawerOpen = false
     }
 
-    private fun requestFocus(view: View) {
+    private fun requestFocus(view: View) { ////  MUESTRA EL ICONO EN EL EDITTEXT /////
         if (view.requestFocus()) {
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
         }

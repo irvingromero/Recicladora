@@ -32,6 +32,7 @@ import android.location.LocationManager
 import android.support.design.chip.Chip
 import android.support.design.chip.ChipGroup
 import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.widget.*
@@ -264,6 +265,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun chipMaterial(vista : View ,material : String){
         val i = LayoutInflater.from(this@MapsActivity)
         val chipItem = i.inflate(R.layout.chip, null , false) as Chip
+        val fab = findViewById<FloatingActionButton>(R.id.fabMejorPrecio_maps)
+        val tv = findViewById<TextView>(R.id.tvMejorPrecio_maps)
 
         if(contador < 3){
             chipItem.text = material
@@ -285,11 +288,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         chipItem.setOnCloseIconClickListener {
             chipgroup?.removeView(chipItem)
             contador --
-        }
-    }
 
-    fun mejorPrecio(view : View){
-        mensaje()
+            if(contador == 0){
+                fab.hide()
+                tv.text = ""
+            }
+        }
+
+        fab.show()
+        tv.text = "Mayor ganancia"
+        fab.setOnClickListener {
+            mensaje()
+        }
     }
 
     fun masCercana(view : View){
