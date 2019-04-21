@@ -95,9 +95,10 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="Correo"
-                                android:text="correoejemplo@gmail.com"
+                                android:text="correo"
                                 android:textColor="@color/colorNegro"
-                                android:enabled="false"/>
+                                android:enabled="false"
+                                android:focusable="false"/>
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -114,7 +115,7 @@
                                 android:text="616816154984"
                                 android:textColor="@color/colorNegro"
                                 android:enabled="false"
-                        />
+                                android:focusable="false"/>
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
@@ -141,7 +142,7 @@
                                 android:text="Av. calleejempllo"
                                 android:textColor="@color/colorNegro"
                                 android:enabled="false"
-                        />
+                                android:focusable="false"/>
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -155,13 +156,12 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="Entre calle"
-                                android:text="ioafmeoismfioenasmimefsoifmsklsmfklsem"
+                                android:text="iosemk"
                                 android:textColor="@color/colorNegro"
                                 android:enabled="false"
-                        />
+                                android:focusable="false"/>
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
-
 
                 <LinearLayout
                         android:layout_below="@id/lyCalles_datosRecicla"
@@ -185,7 +185,7 @@
                                 android:text="coloniacualquiera"
                                 android:textColor="@color/colorNegro"
                                 android:enabled="false"
-                        />
+                                android:focusable="false"/>
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -202,7 +202,7 @@
                                 android:text="31113"
                                 android:textColor="@color/colorNegro"
                                 android:enabled="false"
-                        />
+                                android:focusable="false"/>
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 

@@ -41,7 +41,7 @@
     <string name="modificar_str">Modificar</string>
     <string name="datosModificados_str">Datos modificados</string>
     <string name="materialesDisponibles_str">Materiales disponibles</string>
-    <string name="maximoMateriales_str">Maximo 3 materiales</string>
+    <string name="maximoMateriales_str">Maximo 1 material</string>
 
     <string name="title_activity_sesion_usuario">Map</string>
 

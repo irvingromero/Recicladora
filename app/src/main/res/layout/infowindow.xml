@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="15dp"
+    app:strokeColor="#f000"
+    app:strokeWidth="2dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvNombreReci_infowindow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorNegro"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:gravity="center"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+            <RatingBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="1"
+                    android:rating="1"
+                    android:layout_marginTop="1dp"
+                    android:progressTint="@color/colorAmarillo"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:clickable="false"
+                    android:layout_marginLeft="5dp"/>
+
+            <TextView
+                    android:id="@+id/tvCalificacion_infowindow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorNegro"
+                    android:layout_marginLeft="2dp"
+                    android:text="4.5"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textColor="@color/colorNegro"
+                    android:text="-"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Abierto"
+                    android:textColor="@color/colorNegro"
+                    android:layout_marginRight="5dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</android.support.design.card.MaterialCardView>

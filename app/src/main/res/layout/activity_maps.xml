@@ -119,7 +119,7 @@
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"
                     android:onClick="mejorPrecio"/>
--->
+
             <android.support.design.button.MaterialButton
                     android:id="@+id/btnCercana"
                     android:layout_width="match_parent"
@@ -133,7 +133,7 @@
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"
                     android:onClick="masCercana"/>
-
+-->
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"

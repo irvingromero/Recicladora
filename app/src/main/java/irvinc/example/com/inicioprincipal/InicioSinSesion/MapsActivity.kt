@@ -132,27 +132,42 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
-            mMap.setPadding(0,0,0,140)
-            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-            //// BLOQUEA Y DESBLOQUEA EL MENU LATERAL CUANDO EL BOTTOMSHEET ESTA EXPANDIDO /////
-            bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    when (newState) {
-                        BottomSheetBehavior.STATE_HIDDEN ->{
-                            mMap.setPadding(0,0,0,0)
-                        }
-                        BottomSheetBehavior.STATE_EXPANDED ->{
-                            drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                        }
-                        BottomSheetBehavior.STATE_COLLAPSED ->{
-                            drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                        }
+        findViewById<TextView>(R.id.tvNombre_datosRecicladora).text = p0?.title
+
+        val bottomSize = bottomSheetBehavior?.peekHeight
+        mMap.setPadding(0,0,0, bottomSize!!)
+
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        //// BLOQUEA Y DESBLOQUEA EL MENU LATERAL CUANDO EL BOTTOMSHEET ESTA EXPANDIDO /////
+        bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN ->{
+                        mMap.setPadding(0,0,0,0)
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED ->{
+                        mMap.setPadding(0,0,0, bottomSize)
+                        drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED ->{
+                        drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                     }
                 }
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-            })
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
 
-            findViewById<TextView>(R.id.tvNombre_datosRecicladora).text = p0?.title
+        mMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter{
+            override fun getInfoContents(p0: Marker?): View {
+                val vista = layoutInflater.inflate(R.layout.infowindow, null)
+                return vista
+            }
+            override fun getInfoWindow(p0: Marker?): View? {
+                val vista = layoutInflater.inflate(R.layout.infowindow, null)
+                vista.findViewById<TextView>(R.id.tvNombreReci_infowindow).text = p0?.title.toString()
+                return vista
+            }
+        })
 
         return false
     }
@@ -268,7 +283,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val fab = findViewById<FloatingActionButton>(R.id.fabMejorPrecio_maps)
         val tv = findViewById<TextView>(R.id.tvMejorPrecio_maps)
 
-        if(contador < 3){
+        if(contador < 1){
             chipItem.text = material
             chipgroup?.addView(chipItem)
             chipgroup?.visibility = View.VISIBLE
@@ -278,7 +293,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         chipItem.setOnClickListener {
-            if(contador < 3) {
+            if(contador < 1) {
                 buscarMaterial(vista)
             } else {
                 Snackbar.make(vista, R.string.maximoMateriales_str, Snackbar.LENGTH_LONG).show()
@@ -296,7 +311,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         fab.show()
-        tv.text = "Mayor ganancia"
+        tv.text = "Mejor precio"
         fab.setOnClickListener {
             mensaje()
         }

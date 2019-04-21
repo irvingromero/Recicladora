@@ -23,6 +23,7 @@
                 android:name=".UsuarioLogeado.SesionUsuario"
                 android:resizeableActivity="false"
                 android:supportsPictureInPicture="false"
+                android:windowSoftInputMode="stateHidden"
                 android:label="@string/title_activity_sesion_usuario">
         </activity>
 
@@ -35,7 +36,8 @@
         <activity
                 android:name=".InicioSinSesion.MapsActivity"
                 android:resizeableActivity="false"
-                android:supportsPictureInPicture="false">
+                android:supportsPictureInPicture="false"
+                android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

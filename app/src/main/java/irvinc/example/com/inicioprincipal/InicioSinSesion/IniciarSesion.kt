@@ -16,6 +16,7 @@ import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageButton
@@ -103,8 +104,11 @@ class IniciarSesion : AppCompatActivity() {
                 /// GUARDAR SOLO USUARIO ///
                 val editor = preferences.edit()
                 editor.putString("usuario", usuario)
-                editor.commit()
+                editor.apply()
             }
+                //// ESCONDE EL TECLADO /////
+            val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
 
             val intent = Intent(this, SesionUsuario::class.java)
             intent.putExtra("usuario", usuario)
