@@ -43,6 +43,11 @@
     <string name="materialesDisponibles_str">Materiales disponibles</string>
     <string name="maximoMateriales_str">Maximo 1 material</string>
 
-    <string name="title_activity_sesion_usuario">Map</string>
+    <!-- Sesion recicladora -->
+    <string name="usuario_str">Usuario: </string>
+    <string name="agregarImagen_str">Imagenes</string>
+    <string name="misDatos_str">Mis datos</string>
+    <string name="horario_str">Horario</string>
+    <string name="ubicacion_str">Ubicacion</string>
 
 </resources>

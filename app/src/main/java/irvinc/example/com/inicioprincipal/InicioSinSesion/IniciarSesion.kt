@@ -23,6 +23,7 @@ import android.widget.ImageButton
 import android.widget.Toast
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.R
+import irvinc.example.com.inicioprincipal.Recicladora.SesionRecicladora
 import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
 
 class IniciarSesion : AppCompatActivity() {
@@ -81,6 +82,8 @@ class IniciarSesion : AppCompatActivity() {
         val botonBack = findViewById<ImageButton>(R.id.btnBack_inicioSesion)
         botonBack.setOnClickListener {
             onBackPressed()
+                    //// ESCONDE EL TECLADO /////
+            cerrarTeclado()
         }
     }
 
@@ -107,8 +110,7 @@ class IniciarSesion : AppCompatActivity() {
                 editor.apply()
             }
                 //// ESCONDE EL TECLADO /////
-            val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            cerrarTeclado()
 
             val intent = Intent(this, SesionUsuario::class.java)
             intent.putExtra("usuario", usuario)
@@ -120,6 +122,16 @@ class IniciarSesion : AppCompatActivity() {
     }
 
     fun ventanaRecuperarContra(vista : View){
+        //////////////////////////////////////////////////////////////////////////////
+        // SE AGREGA ESTE USUARIO PARA PRUEBAS DE RECICLADORA ///
+        val datosReci = ContentValues()
+        datosReci.put("usuario", "reci")
+        datosReci.put("contra", "111")
+        val basededatos = bd.writableDatabase
+        basededatos.insert("Recicladoras", null, datosReci)
+        basededatos.close()
+        //////////////////////////////////////////////////////////////////////////////
+
         val btn = findViewById<Button>(R.id.btnRecuperarContra_inicioSesion)
         btn.isEnabled = false
 
@@ -195,9 +207,11 @@ class IniciarSesion : AppCompatActivity() {
         ventana.setPositiveButton(R.string.registrar_str){ _, _ ->
             registrarUsuario(etUsuario.text.toString(), etCorreo.text.toString(), etContra.text.toString())
             botonRegistro.isEnabled = true
+            cerrarTeclado()
         }
         ventana.setNeutralButton(R.string.cancelar_str){ _, _ ->
             botonRegistro.isEnabled = true
+            cerrarTeclado()
         }
 
         val dialog: AlertDialog = ventana.create()
@@ -314,6 +328,11 @@ class IniciarSesion : AppCompatActivity() {
         }
         bd.close()
         return true
+    }
+
+    private fun cerrarTeclado(){
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
     private fun requestFocus(view: View) {

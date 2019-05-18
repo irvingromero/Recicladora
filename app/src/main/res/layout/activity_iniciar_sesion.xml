@@ -48,7 +48,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/usuarioHint_str"
-                        android:inputType="text" />
+                        android:inputType="text"/>
             </android.support.design.widget.TextInputLayout>
 
 

@@ -133,7 +133,7 @@
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"
                     android:onClick="masCercana"/>
--->
+
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -167,6 +167,7 @@
                     android:layout_marginRight="25dp"
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"/>
+-->
         </LinearLayout>
     </ScrollView>
 </android.support.v4.widget.DrawerLayout>
