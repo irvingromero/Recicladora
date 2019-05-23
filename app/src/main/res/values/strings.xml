@@ -45,9 +45,18 @@
 
     <!-- Sesion recicladora -->
     <string name="usuario_str">Usuario: </string>
-    <string name="agregarImagen_str">Imagenes</string>
+    <string name="agregarImagen_str">Fotos</string>
     <string name="misDatos_str">Mis datos</string>
     <string name="horario_str">Horario</string>
     <string name="ubicacion_str">Ubicacion</string>
+    <string name="materiales_str">Materiales</string>
+    <string name="material_str">Material</string>
+    <string name="precio_str">Precio</string>
+    <string name="unidad_str">Unidad</string>
+    <string name="agregar_str">Agregar</string>
+    <string name="letras30_str">Maximo 25 caracteres</string>
+    <string name="caracteres7_str">Maximo 7 caracteres</string>
+    <string name="caracteres15_str">Maximo 15 caracteres</string>
+    <string name="agregarMaterial_str">Agregar material</string>
 
 </resources>

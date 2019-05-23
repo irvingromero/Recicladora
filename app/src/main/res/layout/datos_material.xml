@@ -11,7 +11,8 @@
             android:backgroundTint="@color/colorGris"
             app:cardCornerRadius="15dp"
             app:strokeColor="#f000"
-            app:strokeWidth="1dp">
+            app:strokeWidth="1dp"
+            android:layout_margin="3dp">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -28,9 +29,10 @@
                     android:layout_marginLeft="5dp">
 
                 <TextView
+                        android:id="@+id/tvDatos_datosMaterialXML"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="modificar"/>
+                        android:text="..."/>
             </LinearLayout>
 
 

@@ -69,7 +69,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mapFragment.getMapAsync(this)
 
         detectarSlide()
-        findViewById<ImageButton>(R.id.btnMenu).setOnClickListener {
+        findViewById<ImageButton>(R.id.btnMenu_maps).setOnClickListener {
             drawerLayout?.openDrawer(Gravity.START)
             drawerOpen = true
         }

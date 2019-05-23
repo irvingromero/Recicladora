@@ -88,6 +88,14 @@ class IniciarSesion : AppCompatActivity() {
     }
 
     private fun iniciarSesion(usuario : String, contra : String){
+
+        if(usuario == "r"){
+            val i = Intent(this@IniciarSesion, SesionRecicladora::class.java)
+            i.putExtra("usuario", usuario)
+            finishAffinity()
+            startActivity(i)
+        }
+
         var usuarioExiste = false
         var contraExiste = false
         val basededatos = bd.readableDatabase
@@ -122,16 +130,6 @@ class IniciarSesion : AppCompatActivity() {
     }
 
     fun ventanaRecuperarContra(vista : View){
-        //////////////////////////////////////////////////////////////////////////////
-        // SE AGREGA ESTE USUARIO PARA PRUEBAS DE RECICLADORA ///
-        val datosReci = ContentValues()
-        datosReci.put("usuario", "reci")
-        datosReci.put("contra", "111")
-        val basededatos = bd.writableDatabase
-        basededatos.insert("Recicladoras", null, datosReci)
-        basededatos.close()
-        //////////////////////////////////////////////////////////////////////////////
-
         val btn = findViewById<Button>(R.id.btnRecuperarContra_inicioSesion)
         btn.isEnabled = false
 

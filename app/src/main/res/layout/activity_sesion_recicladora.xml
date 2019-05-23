@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout_sesionRecicladora"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/drawer_layout_recicladora"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".Recicladora.SesionRecicladora">
@@ -13,12 +13,35 @@
             android:layout_height="wrap_content">
 
         <ImageButton
-                android:id="@+id/btnMenu"
+                android:id="@+id/btnMenu_sesionRecicladora"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="8dp"
                 android:background="@drawable/menu_icono"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/btnMenu_sesionRecicladora"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_toLeftOf="@id/btnAgregarMaterial_sesionReci"
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorNegro"
+                android:text="@string/materiales_str"
+                android:textSize="19sp"/>
+
+        <ImageButton
+                android:id="@+id/btnAgregarMaterial_sesionReci"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/agregar_icono"
+                android:backgroundTint="@color/colorAzul"
+                android:layout_marginTop="6dp"
+                android:layout_marginRight="5dp"
+                android:layout_alignParentEnd="true"
+                android:onClick="agregarMaterial"/>
 
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/rcMateriales_sesionRecicladora"
@@ -27,7 +50,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_below="@id/btnMenu">
+                android:layout_below="@id/btnMenu_sesionRecicladora">
         </android.support.v7.widget.RecyclerView>
     </RelativeLayout>
 
@@ -53,6 +76,8 @@
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="7dp"
                         android:text="@string/usuario_str"
                         android:textColor="@android:color/white"/>
 
@@ -61,6 +86,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/white"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="7dp"
                         android:text="usuario xd"/>
             </LinearLayout>
 
@@ -75,7 +102,8 @@
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="25dp"
                     android:layout_marginTop="5dp"
-                    app:rippleColor="@color/colorNegro"/>
+                    app:rippleColor="@color/colorNegro"
+                    android:onClick="misDatos"/>
 
             <android.support.design.button.MaterialButton
                     android:id="@+id/btnImagen_sesionRecicladora"
@@ -87,8 +115,9 @@
                     app:cornerRadius="30dp"
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="25dp"
-                    android:layout_marginTop="10dp"
-                    app:rippleColor="@color/colorNegro"/>
+                    android:layout_marginTop="5dp"
+                    app:rippleColor="@color/colorNegro"
+                    android:onClick="fotos"/>
 
             <android.support.design.button.MaterialButton
                     android:id="@+id/btnUbicacion_sesionRecicladora"
@@ -101,7 +130,8 @@
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="25dp"
                     android:layout_marginTop="5dp"
-                    app:rippleColor="@color/colorNegro"/>
+                    app:rippleColor="@color/colorNegro"
+                    android:onClick="ubicacion"/>
 
             <android.support.design.button.MaterialButton
                     android:id="@+id/btnHorario_sesionRecicladora"
@@ -114,7 +144,8 @@
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="25dp"
                     android:layout_marginTop="5dp"
-                    app:rippleColor="@color/colorNegro"/>
+                    app:rippleColor="@color/colorNegro"
+                    android:onClick="horario"/>
 
             <android.support.design.button.MaterialButton
                     android:id="@+id/btnSalir_sesionRecicladora"
@@ -127,7 +158,8 @@
                     android:layout_marginLeft="25dp"
                     android:layout_marginRight="25dp"
                     android:layout_marginTop="5dp"
-                    app:rippleColor="@color/colorNegro"/>
+                    app:rippleColor="@color/colorNegro"
+                    android:onClick="cerrarSesion"/>
         </LinearLayout>
     </ScrollView>
 </android.support.v4.widget.DrawerLayout>

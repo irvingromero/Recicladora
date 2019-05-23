@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/agregarMaterial_str"
+                android:textColor="@color/colorNegro"
+                android:textSize="17sp"/>
+
+        <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <android.support.design.widget.TextInputEditText
+                    android:id="@+id/tietMaterial_agregarMaterialXML"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/material_str"
+                    android:inputType="text"
+                    android:imeOptions="actionNext"
+                    android:maxLength="26"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <android.support.design.widget.TextInputEditText
+                    android:id="@+id/tietPrecio_agregarMaterialXML"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/precio_str"
+                    android:maxLength="8"
+                    android:inputType="numberDecimal" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <android.support.design.widget.TextInputEditText
+                    android:id="@+id/tietUnidad_agregarMaterialXML"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/unidad_str"
+                    android:inputType="text"
+                    android:imeOptions="actionNext"
+                    android:maxLength="16"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 "/>
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+</ScrollView>
