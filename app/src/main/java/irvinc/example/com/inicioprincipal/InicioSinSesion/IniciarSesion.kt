@@ -17,10 +17,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.ImageButton
-import android.widget.Toast
+import android.widget.*
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.R
 import irvinc.example.com.inicioprincipal.Recicladora.SesionRecicladora
@@ -297,6 +294,8 @@ class IniciarSesion : AppCompatActivity() {
     }
 
     private fun registrarUsuario(usuario : String, correo : String, contra : String){
+        cerrarTeclado()
+
         val datosUsuario = ContentValues()
         datosUsuario.put("usuario", usuario)
         datosUsuario.put("correo", correo)
@@ -312,6 +311,7 @@ class IniciarSesion : AppCompatActivity() {
         toast.view = view
         toast.duration = Toast.LENGTH_LONG
         toast.setGravity(Gravity.TOP,0, 0)
+        view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text = getString(R.string.registrado_str)
         toast.show()
     }
 

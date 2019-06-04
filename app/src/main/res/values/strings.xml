@@ -44,7 +44,7 @@
     <string name="maximoMateriales_str">Maximo 1 material</string>
 
     <!-- Sesion recicladora -->
-    <string name="usuario_str">Usuario: </string>
+    <string name="usuario_str">Usuario:</string>
     <string name="agregarImagen_str">Fotos</string>
     <string name="misDatos_str">Mis datos</string>
     <string name="horario_str">Horario</string>
@@ -58,5 +58,7 @@
     <string name="caracteres7_str">Maximo 7 caracteres</string>
     <string name="caracteres15_str">Maximo 15 caracteres</string>
     <string name="agregarMaterial_str">Agregar material</string>
+    <string name="materialAgregado_str">Material agregado</string>
+    <string name="eliminar_str">Eliminar</string>
 
 </resources>

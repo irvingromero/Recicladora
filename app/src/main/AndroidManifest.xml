@@ -16,6 +16,10 @@
             android:theme="@style/AppTheme">
 
         <activity
+                android:name=".Recicladora.DatosRecicladora">
+        </activity>
+
+        <activity
                 android:name=".Recicladora.SesionRecicladora">
         </activity>
 
@@ -29,13 +33,11 @@
                 android:supportsPictureInPicture="false"
                 android:windowSoftInputMode="stateHidden">
         </activity>
-
         <activity
                 android:name=".InicioSinSesion.IniciarSesion"
                 android:resizeableActivity="false"
                 android:supportsPictureInPicture="false">
         </activity>
-
         <activity
                 android:name=".InicioSinSesion.MapsActivity"
                 android:resizeableActivity="false"

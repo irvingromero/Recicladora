@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
     <android.support.design.card.MaterialCardView
             android:layout_width="match_parent"
@@ -12,7 +13,7 @@
             app:cardCornerRadius="15dp"
             app:strokeColor="#f000"
             app:strokeWidth="1dp"
-            android:layout_margin="3dp">
+            android:layout_margin="5dp">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -29,34 +30,57 @@
                     android:layout_marginLeft="5dp">
 
                 <TextView
-                        android:id="@+id/tvDatos_datosMaterialXML"
+                        android:id="@+id/tvDatos_datosMaterial"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="..."/>
+                        android:textColor="@color/colorNegro"/>
             </LinearLayout>
 
 
             <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
 
-                <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:backgroundTint="@color/colorAmarillo"
-                        android:src="@drawable/modificar_icono"/>
-
-                <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                <android.support.design.button.MaterialButton
+                        android:id="@+id/mbModificar_datosmaterial"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
                         android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        app:icon="@drawable/modificar_icono"
+                        app:iconTint="@color/colorNegro"
+                        android:text="@string/modificar_str"
+                        android:textColor="@color/colorNegro"
+                        android:textAllCaps="false"
+                        android:backgroundTint="@color/colorAmarillo"
+                        app:cornerRadius="70dp"
+                        app:rippleColor="@color/colorNegro"/>
+
+                <android.support.design.button.MaterialButton
+                        android:id="@+id/mbEliminar_datosmaterial"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        app:icon="@drawable/eliminar_icono"
+                        app:iconTint="@color/colorNegro"
+                        android:text="@string/eliminar_str"
+                        android:textColor="@color/colorNegro"
+                        android:textAllCaps="false"
                         android:backgroundTint="@color/colorRojo"
-                        android:src="@drawable/eliminar_icono"/>
+                        app:cornerRadius="90dp"
+                        app:rippleColor="@color/colorNegro"/>
             </LinearLayout>
         </LinearLayout>
     </android.support.design.card.MaterialCardView>
-</FrameLayout>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/colorNegro"/>
+</LinearLayout>
