@@ -2,6 +2,8 @@ package irvinc.example.com.inicioprincipal.InicioSinSesion
 /*
 validar tener la ubicacion prendida
 VALIDAR QUE NO SE SELECCIONE EL MISMO MATERIAL////
+
+Al eliminar un material queda desfasado el conntador del array
  */
 import android.Manifest
 import android.annotation.SuppressLint

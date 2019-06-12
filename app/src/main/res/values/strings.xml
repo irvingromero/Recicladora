@@ -60,5 +60,6 @@
     <string name="agregarMaterial_str">Agregar material</string>
     <string name="materialAgregado_str">Material agregado</string>
     <string name="eliminar_str">Eliminar</string>
+    <string name="material_eliminado_str">Material Eliminado</string>
 
 </resources>
