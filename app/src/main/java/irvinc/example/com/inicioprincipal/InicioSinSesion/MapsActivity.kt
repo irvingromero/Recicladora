@@ -7,6 +7,7 @@ Al eliminar un material queda desfasado el conntador del array
  */
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -36,7 +37,10 @@ import android.support.design.chip.ChipGroup
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.*
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -44,6 +48,7 @@ import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.R
 import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
 import kotlinx.android.synthetic.main.datos_recicladora.*
+import java.util.ArrayList
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -56,6 +61,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var contador = 0 //// Contador para los chips ////
 
     private var bottomSheetBehavior : BottomSheetBehavior<LinearLayout>? = null
+
+    private var rv : RecyclerView? = null
+    private var listaMateriales : ArrayList<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +85,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         chipgroup = findViewById(R.id.cg_MapsActivity)
+
+        rv = findViewById(R.id.rvMateriales_datosRecicla)
 
             //// LISTENER PARA ABRIR EL BOTTOM SHEET CON UN TOUCH /////
         findViewById<LinearLayout>(R.id.ly_datosRecicladora).setOnClickListener {
@@ -118,7 +128,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         mMap.addMarker(MarkerOptions().position(LatLng(32.6578,-115.584)).title("Recicladora 11"))
         mMap.addMarker(MarkerOptions().position(LatLng(32.6578,-115.484)).title("Recicladora asFnk"))
-        mMap.addMarker(MarkerOptions().position(LatLng(32.6278,-115.584)).title("Reci:v:v"))
+        mMap.addMarker(MarkerOptions().position(LatLng(32.6278,-115.584)).title("r"))
 
         permiso()
 
@@ -146,11 +156,73 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN ->{
                         mMap.setPadding(0,0,0,0)
+
+                        listaMateriales?.clear()
                     }
+
                     BottomSheetBehavior.STATE_EXPANDED ->{
                         mMap.setPadding(0,0,0, bottomSize)
                         drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
+                        rv?.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false)
+                        listaMateriales = ArrayList()
+
+                        val nombre = p0?.title
+                                ////////////////// PARA EJEMPLO ///////////////////////
+                        val addMaterial = ContentValues()
+                        addMaterial.put("usuario", nombre)
+                        addMaterial.put("material", "Papel")
+                        addMaterial.put("precio", 1556.50)
+                        addMaterial.put("unidad", "Kg")
+
+                        val bd11 =  BaseDeDatos(applicationContext, "Recicladoras", null , 1)
+                        val zzz = bd11.writableDatabase
+                        zzz.insert("Materiales", null, addMaterial)
+                        zzz.close()
+
+                        val bd =  BaseDeDatos(applicationContext, "Recicladoras", null , 1)
+                        val basededatos = bd.readableDatabase
+                        val datos = basededatos.rawQuery("select material, precio, unidad from Materiales where usuario = '$nombre'", null)
+
+                        if(datos.moveToFirst())
+                        {
+                            do{
+                                var material = datos.getString(0)
+                                var precio = datos.getDouble(1)
+                                var unidad = datos.getString(2)
+
+                                listaMateriales!!.add("Material: "+material+"\nPrecio: "+precio+"\nUnidad: "+unidad)
+                            } while(datos.moveToNext())
+                        }
+
+                        basededatos.close()
+                        val adap = Adapter(listaMateriales!!)
+                        rv?.adapter = adap
+                        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+                        val bd =  BaseDeDatos(applicationContext, "Recicladoras", null , 1)
+                        val basededatos = bd.readableDatabase
+                        val datos = basededatos.rawQuery("select usuario from Recicladoras where nombre = '$nombre'", null)
+
+                            //// SOLO SE TIENE EL NOMBRE DE LA RECI, ASI QUE SE BUSCARA EL USUARIO CON ESE NOMBRE PARA ACCEDER A SUS MATERIALES ////
+
+                        if(datos.moveToFirst())
+                        {
+                            do{
+                                var material = datos.getString(0)
+                                var precio = datos.getDouble(1)
+                                var unidad = datos.getString(2)
+
+                                listaMateriales!!.add("Material: "+material+"\nPrecio: "+precio+"\nUnidad: "+unidad)
+                            } while(datos.moveToNext())
+                        }
+
+                        basededatos.close()
+                        val adap = Adapter(listaMateriales!!)
+                        rv?.adapter = adap
+*/
                     }
+
                     BottomSheetBehavior.STATE_COLLAPSED ->{
                         drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                     }
@@ -319,10 +391,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    fun masCercana(view : View){
-        mensaje()
-    }
-
     private fun mensaje(){
         val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
         ventana.setView(layoutInflater.inflate(R.layout.ventana_mensaje_mapa, null))
@@ -366,4 +434,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    class Adapter(var listita: ArrayList<String>) : RecyclerView.Adapter<Adapter.ViewHolder>(){
+
+        override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
+            val v = LayoutInflater.from(p0.context).inflate(R.layout.materiales_datos_recicladora, p0, false)
+            return ViewHolder(v)
+        }
+
+        override fun getItemCount(): Int {
+            return listita.size
+        }
+
+        override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
+            p0.mostrarDatos(listita[p1])
+        }
+
+        class ViewHolder(view : View) : RecyclerView.ViewHolder(view){
+
+            fun mostrarDatos(texto : String){
+                val t : TextView = itemView.findViewById(R.id.tvMostrar_materiales_datos_recicladora)
+                t.text = texto
+            }
+        }// ViewHolder
+    }//Adapter
 }

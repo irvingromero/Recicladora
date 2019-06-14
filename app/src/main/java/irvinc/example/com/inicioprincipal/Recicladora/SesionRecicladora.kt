@@ -1,6 +1,5 @@
 package irvinc.example.com.inicioprincipal.Recicladora
 
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -81,7 +80,7 @@ class SesionRecicladora : AppCompatActivity() {
         }
 
         basededatos.close()
-        val adap = Adapter(listaMateriales!!)
+        val adap = Adapter(listaMateriales!!, usuarioLogeado!!)
         rv?.adapter = adap
     }
 
@@ -283,7 +282,7 @@ class SesionRecicladora : AppCompatActivity() {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
-    class Adapter(var list: ArrayList<String>) : RecyclerView.Adapter<Adapter.ViewHolder>(){
+    class Adapter(var list: ArrayList<String>, val usuario : String) : RecyclerView.Adapter<Adapter.ViewHolder>(){
 
         override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
             val v = LayoutInflater.from(p0.context).inflate(R.layout.datos_material, p0, false)
@@ -325,7 +324,26 @@ class SesionRecicladora : AppCompatActivity() {
                 campoUnidad.setText(unidadViejo)
 
                 ventana.setPositiveButton(R.string.modificar_str){ _, _ ->
+                    val materialNuevo = campoMaterial.text.toString()
+                    val precioNuevo = campoPrecio.text.toString()
+                    val unidadNuevo = campoUnidad.text.toString()
 
+                    val datos = ContentValues()
+                    datos.put("material", materialNuevo)
+                    datos.put("precio", precioNuevo)
+                    datos.put("unidad", unidadNuevo)
+
+                    val bd =  BaseDeDatos(p0.itemView.context, "Materiales", null , 1)
+                    val basededatos = bd.writableDatabase
+                    basededatos.update("Materiales", datos, "material=? AND precio=? AND unidad=?", arrayOf(materialViejo, precioViejo,unidadViejo))
+                    basededatos.close()
+
+                    //// ELIMINA EL ELEMENTO DE LA VISTA ////
+                    list.removeAt(p1)
+                    notifyItemRemoved(p1)
+                    notifyItemChanged(p1, list.size)
+
+                    list!!.add("Material: "+materialNuevo+"\nPrecio: "+precioNuevo+"\nUnidad: "+unidadNuevo)
                 }
                 ventana.setNeutralButton(R.string.cancelar_str){ _, _ ->
                 }

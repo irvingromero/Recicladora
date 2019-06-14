@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <android.support.design.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorGris"
+            app:cardCornerRadius="15dp"
+            app:strokeColor="#f000"
+            app:strokeWidth="1dp"
+            android:layout_margin="5dp">
+
+        <TextView
+                android:id="@+id/tvMostrar_materiales_datos_recicladora"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:textColor="@color/colorNegro"/>
+    </android.support.design.card.MaterialCardView>
+</LinearLayout>
