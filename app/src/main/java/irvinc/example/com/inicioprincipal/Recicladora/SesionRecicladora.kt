@@ -61,9 +61,9 @@ class SesionRecicladora : AppCompatActivity() {
     }
 
     private fun cargarMateriales(){
-
         rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         listaMateriales = ArrayList<String>()
+
         val bd =  BaseDeDatos(this, "Materiales", null , 1)
         val basededatos = bd.readableDatabase
         val datos = basededatos.rawQuery("select material, precio, unidad from Materiales where usuario = '$usuarioLogeado'", null)
@@ -78,7 +78,7 @@ class SesionRecicladora : AppCompatActivity() {
                 listaMateriales!!.add("Material: "+material+"\nPrecio: "+precio+"\nUnidad: "+unidad)
             } while(datos.moveToNext())
         }
-
+        bd.close()
         basededatos.close()
         val adap = Adapter(listaMateriales!!, usuarioLogeado!!)
         rv?.adapter = adap
@@ -215,7 +215,10 @@ class SesionRecicladora : AppCompatActivity() {
         val hilo = Handler(Looper.getMainLooper())
         hilo.post {
             val i = Intent(this, DatosRecicladora::class.java)
+            i.putExtra("usuario", usuarioLogeado)
             startActivity(i)
+
+            cerrarDrawer()
         }
     }
 

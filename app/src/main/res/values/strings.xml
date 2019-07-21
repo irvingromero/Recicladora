@@ -23,7 +23,6 @@
     <string name="IngreseCorreo_str">Ingrese Correo</string>
     <string name="enviar_str">Enviar</string>
 
-
     <!-- Registro usuario -->
     <string name="nombreUsuario_str">Nombre de usuario</string>
     <string name="correo_str">Correo</string>
@@ -44,7 +43,7 @@
     <string name="maximoMateriales_str">Maximo 1 material</string>
 
     <!-- Sesion recicladora -->
-    <string name="usuario_str">Usuario:</string>
+    <string name="hola_str">Hola:</string>
     <string name="agregarImagen_str">Fotos</string>
     <string name="misDatos_str">Mis datos</string>
     <string name="horario_str">Horario</string>
@@ -61,5 +60,15 @@
     <string name="materialAgregado_str">Material agregado</string>
     <string name="eliminar_str">Eliminar</string>
     <string name="material_eliminado_str">Material Eliminado</string>
+
+    <!-- Datos Recicladora -->
+    <string name="tusDatos_str">Tus datos</string>
+    <string name="sinDatos_str">Sin datos</string>
+    <string name="nombre_str">Nombre</string>
+    <string name="telefono_str">Telefono</string>
+    <string name="colonia_str">Colonia</string>
+    <string name="contra_str">Contraseña</string>
+    <string name="calle_str">Calle</string>
+    <string name="numeroInt_str">Numero Interior</string>
 
 </resources>

@@ -85,28 +85,44 @@ class IniciarSesion : AppCompatActivity() {
     }
 
     private fun iniciarSesion(usuario : String, contra : String){
+        val mantenerSesion = findViewById<CheckBox>(R.id.cbMantenerSesion_InicioSesion)
 
-        if(usuario == "r"){
-            val i = Intent(this@IniciarSesion, SesionRecicladora::class.java)
-            i.putExtra("usuario", usuario)
-            finishAffinity()
-            startActivity(i)
+        val basededatos = bd.readableDatabase
+        var usuarioExiste = false
+        var recicladora = false
+        var incorrecto = true
+
+        val consultaRecicladora = basededatos.rawQuery("select usuario from Recicladoras where usuario = '$usuario' and contra = '$contra'",null)
+        recicladora = consultaRecicladora.moveToFirst()
+
+        val consultaUsuario = basededatos.rawQuery("select usuario from Usuarios where usuario ='$usuario' and contra = '$contra'",null)
+         usuarioExiste = consultaUsuario.moveToFirst()
+        bd.close()
+        basededatos.close()
+
+        if(usuarioExiste){
+            cerrarTeclado() //// ESCONDE EL TECLADO /////
+
+            val intent = Intent(this, SesionUsuario::class.java)
+            intent.putExtra("usuario", usuario)
+            finishAffinity()    //// CIERRA LAS DEMAS ACTIVITYS EN SEGUNDO PLANO////
+            startActivity(intent)
+
+            incorrecto = false
         }
 
-        var usuarioExiste = false
-        var contraExiste = false
-        val basededatos = bd.readableDatabase
+        if(recicladora){
+            cerrarTeclado()
 
-        val consultaUsuario = basededatos.rawQuery("select usuario from Usuarios where usuario ='$usuario'",null)
-         usuarioExiste = consultaUsuario.moveToFirst()
+            val intent = Intent(this, SesionRecicladora::class.java)
+            intent.putExtra("usuario", usuario)
+            finishAffinity()    //// CIERRA LAS DEMAS ACTIVITYS EN SEGUNDO PLANO////
+            startActivity(intent)
 
-        val consultaContra = basededatos.rawQuery("select contra from Usuarios where contra = '$contra'", null)
-        contraExiste = consultaContra.moveToFirst()
-        bd.close()
+            incorrecto = false
+        }
 
-        if(usuarioExiste && contraExiste){
-            val mantenerSesion = findViewById<CheckBox>(R.id.cbMantenerSesion_InicioSesion)
-
+        if(usuarioExiste || recicladora){
             if (mantenerSesion.isChecked) {
                 val preferences = this.getSharedPreferences("user", Context.MODE_PRIVATE)
                 /// GUARDAR SOLO USUARIO ///
@@ -114,15 +130,10 @@ class IniciarSesion : AppCompatActivity() {
                 editor.putString("usuario", usuario)
                 editor.apply()
             }
-                //// ESCONDE EL TECLADO /////
-            cerrarTeclado()
+        }
 
-            val intent = Intent(this, SesionUsuario::class.java)
-            intent.putExtra("usuario", usuario)
-            finishAffinity()    //// CIERRA LAS DEMAS ACTIVITYS EN SEGUNDO PLANO////
-            startActivity(intent)
-        } else {
-            Toast.makeText(this, R.string.incorrectos_str, Toast.LENGTH_LONG).show()
+        if(incorrecto){
+            Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -177,6 +188,7 @@ class IniciarSesion : AppCompatActivity() {
 
     fun ventanaRegistroUsuario(view : View){
         val botonRegistro = findViewById<Button>(R.id.btnRegistro_inicioSesion)
+
         var usuarioOk = false
         var contraOk = usuarioOk
         var confirmContra = false
@@ -237,13 +249,15 @@ class IniciarSesion : AppCompatActivity() {
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
                 } else {
                     usuarioOk = true
-
                     usuarioValido = validaUsuario(etUsuario.text.toString())
+
                     if(!usuarioValido){
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
                         etUsuario.error = getString(R.string.yaexiste_str)
                         requestFocus(etContra)
-                    } else { usuarioValido = true }
+                    } else {
+                        usuarioValido = true
+                    }
 
                     if(contraOk && confirmContra && usuarioValido)
                     {
@@ -315,11 +329,179 @@ class IniciarSesion : AppCompatActivity() {
         toast.show()
     }
 
-    private fun validaUsuario(nombre : String) : Boolean {
+    fun ventanaRegistroRecicladora(view : View){
+        val botonRegistroRecicladora = findViewById<Button>(R.id.btnRegistroRecicladora_inicioSesion)
+
+        var usuarioOk = false
+        var contraOk = usuarioOk
+        var confirmContra = false
+        var usuarioValido = false
+
+        val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
+        ventana.setCancelable(false) // EVITA QUE SE CIERRE EL DIALOG CON UN CLICK AFUERA DE EL //
+        // CARGA EL LAYOUT PERSONALIZADO//
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.ventana_registro_usuario, null)
+        ventana.setView(dialogView)
+
+        val etCorreo = dialogView.findViewById<TextInputEditText>(R.id.etCorreo_registroUsuario)
+        val etContra = dialogView.findViewById<TextInputEditText>(R.id.etContra_registroUsuario)
+        val etConfirmContra = dialogView.findViewById<TextInputEditText>(R.id.etConfirmarContra_registroUsuario)
+        val etUsuario = dialogView.findViewById<TextInputEditText>(R.id.etUsuario_registroUsuario)
+        //// TRANSFORMA EL FORMATO TEXT A TEXTPASSWORD ////
+        etContra.transformationMethod =  PasswordTransformationMethod()
+        etConfirmContra.transformationMethod =  PasswordTransformationMethod()
+
+        etConfirmContra.isEnabled = false
+
+        ventana.setPositiveButton(R.string.registrar_str){ _, _ ->
+            registrarRecicladora(etUsuario.text.toString(), etCorreo.text.toString(), etContra.text.toString())
+            botonRegistroRecicladora.isEnabled = true
+            cerrarTeclado()
+        }
+        ventana.setNeutralButton(R.string.cancelar_str){ _, _ ->
+            botonRegistroRecicladora.isEnabled = true
+            cerrarTeclado()
+        }
+
+        val dialog: AlertDialog = ventana.create()
+        //// CIERRA EL DIALOG CON EL BOTON HACIA ATRAS ////
+        dialog.setOnKeyListener(object : DialogInterface.OnKeyListener {
+            override fun onKey(
+                arg0: DialogInterface, keyCode: Int, event: KeyEvent): Boolean {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    botonRegistroRecicladora.isEnabled = true
+                    dialog.dismiss()
+                }
+                return true
+            }
+        })
+        dialog.show()
+        botonRegistroRecicladora.isEnabled = false
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+
+        etUsuario.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if(etUsuario.length() < 3)
+                {
+                    etUsuario.error = getString(R.string.mensajeUsuario_str)
+                    requestFocus(etUsuario)
+                    usuarioOk = false
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                } else {
+                    usuarioOk = true
+                    usuarioValido = validaRecicladora(etUsuario.text.toString())
+
+                    if(!usuarioValido){
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                        etUsuario.error = getString(R.string.yaexiste_str)
+                        requestFocus(etContra)
+                    } else {
+                        usuarioValido = true
+                    }
+
+                    if(contraOk && confirmContra && usuarioValido)
+                    {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                    }
+                }
+            }
+        })
+
+        etContra.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if(etContra.length() < 3)
+                {
+                    etContra.error = getString(R.string.mensajeUsuario_str)
+                    requestFocus(etContra)
+                    etConfirmContra.isEnabled = false
+                    contraOk = false
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                } else {
+                    etConfirmContra.isEnabled = true
+                    contraOk = true
+                    if(usuarioOk && confirmContra && usuarioValido){
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                    }
+                }
+            }
+        })
+
+        etConfirmContra.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if(etConfirmContra.text.toString().equals(etContra.text.toString())){
+                    confirmContra = true
+                    if(usuarioOk && contraOk && usuarioValido){
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                    }
+                } else {
+                    etConfirmContra.error = getString(R.string.mensajeContras_str)
+                    requestFocus(etConfirmContra)
+                    confirmContra = false
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                }
+            }
+        })
+    }
+
+    private fun registrarRecicladora(usuario : String, correo : String, contra : String){
+        cerrarTeclado()
+
+        val datosRecicladora = ContentValues()
+
+        val nombre = "Sin datos"
+        val telefono = "Sin datos"
+        val calle = "Sin datos"
+        val colonia = "Sin datos"
+        val numeroInt = 0
+
+        datosRecicladora.put("usuario", usuario)
+        datosRecicladora.put("correo", correo)
+        datosRecicladora.put("contra", contra)
+        datosRecicladora.put("nombre", nombre)
+        datosRecicladora.put("telefono", telefono)
+        datosRecicladora.put("calle", calle)
+        datosRecicladora.put("colonia", colonia)
+        datosRecicladora.put("numeroInt", numeroInt)
+
         val basededatos = bd.writableDatabase
+        basededatos.insert("Recicladoras", null, datosRecicladora)
+        basededatos.close()
+
+        val toast = Toast(applicationContext)
+        //// CARGA EL LAYOUT A UNA VISTA ////
+        val view = layoutInflater.inflate(R.layout.usuario_registrado, null)
+        toast.view = view
+        toast.duration = Toast.LENGTH_LONG
+        toast.setGravity(Gravity.TOP,0, 0)
+        view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text = getString(R.string.registrado_str)
+        toast.show()
+    }
+
+    private fun validaUsuario(nombre : String) : Boolean {
+        val basededatos = bd.readableDatabase
 
         val consultaUsuario = basededatos.rawQuery("select usuario from Usuarios where usuario ='$nombre'",null)
         if(consultaUsuario.moveToFirst())
+        {
+            bd.close()
+            return false
+        }
+        bd.close()
+        return true
+    }
+
+    private fun validaRecicladora(nombre : String) : Boolean {
+        val basededatos = bd.readableDatabase
+
+        val consultaReci = basededatos.rawQuery("select usuario from Recicladoras where usuario ='$nombre'",null)
+        if(consultaReci.moveToFirst())
         {
             bd.close()
             return false

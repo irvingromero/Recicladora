@@ -46,6 +46,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.R
+import irvinc.example.com.inicioprincipal.Recicladora.SesionRecicladora
 import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
 import kotlinx.android.synthetic.main.datos_recicladora.*
 import java.util.ArrayList
@@ -70,7 +71,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         setContentView(R.layout.activity_maps)
         supportActionBar?.hide()
 
-        bottomSheetBehavior  = BottomSheetBehavior.from<LinearLayout>(bottomSheet)
+        bottomSheetBehavior = BottomSheetBehavior.from<LinearLayout>(bottomSheet)
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
         sesionGuardada()
@@ -88,12 +89,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         rv = findViewById(R.id.rvMateriales_datosRecicla)
 
-            //// LISTENER PARA ABRIR EL BOTTOM SHEET CON UN TOUCH /////
+        //// LISTENER PARA ABRIR EL BOTTOM SHEET CON UN TOUCH /////
         findViewById<LinearLayout>(R.id.ly_datosRecicladora).setOnClickListener {
-            if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_COLLAPSED){
+            if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_COLLAPSED) {
                 bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
             }
-            if(bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
+            if (bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
                 bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
@@ -115,6 +116,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 intent.putExtra("usuario", usuario)
                 startActivity(intent)
                 finish()
+            } else {
+                val consultaRecicla = basededatos.rawQuery("select usuario from Recicladoras where usuario ='$usuario'",null)
+                if(consultaRecicla.moveToFirst()) {
+                    basededatos.close()
+                    val intent = Intent(this, SesionRecicladora::class.java)
+                    intent.putExtra("usuario", usuario)
+                    startActivity(intent)
+                    finish()
+                }
             }
             basededatos.close()
         }
@@ -285,7 +295,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     @SuppressLint("MissingPermission")
     private fun camaraAubicacion(){
-        val locationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        var locationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val criteria = Criteria()
         miUbicacion = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false))
         try {

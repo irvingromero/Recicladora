@@ -100,7 +100,7 @@
             android:id="@+id/cv2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             app:cardCornerRadius="25dp"
@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:text="¿Olvidaste tu contraseña?"
                     android:gravity="center_horizontal"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="5dp"/>
 
             <Button
                     android:id="@+id/btnRecuperarContra_inicioSesion"
@@ -132,7 +132,7 @@
     <android.support.design.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             app:cardCornerRadius="25dp"
@@ -150,15 +150,22 @@
                     android:layout_height="wrap_content"
                     android:text="¿No tienes cuenta?"
                     android:gravity="center_horizontal"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="5dp"/>
 
             <Button
                     android:id="@+id/btnRegistro_inicioSesion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/registrate_str"
-                    android:layout_marginBottom="10dp"
+                    android:text="@string/usuarioHint_str"
                     android:onClick="ventanaRegistroUsuario"/>
+
+            <Button
+                    android:id="@+id/btnRegistroRecicladora_inicioSesion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recicladora_str"
+                    android:layout_marginBottom="10dp"
+                    android:onClick="ventanaRegistroRecicladora"/>
         </LinearLayout>
     </android.support.design.card.MaterialCardView>
 </RelativeLayout>
