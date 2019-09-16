@@ -111,6 +111,7 @@ class SesionRecicladora : AppCompatActivity() {
             val basededatos = bd.writableDatabase
             basededatos.insert("Materiales", null, addMaterial)
             basededatos.close()
+            bd.close()
 
             val toast = Toast(applicationContext)
             //// CARGA EL LAYOUT A UNA VISTA ////
@@ -227,7 +228,14 @@ class SesionRecicladora : AppCompatActivity() {
     }
 
     fun ubicacion(vista : View){
+        val h = Handler(Looper.getMainLooper())
+        h.post{
+            val intent = Intent(this, UbicacionRecicladora::class.java)
+            intent.putExtra("usuario", usuarioLogeado)
+            startActivity(intent)
 
+            cerrarDrawer()
+        }
     }
 
     fun horario(vista : View){

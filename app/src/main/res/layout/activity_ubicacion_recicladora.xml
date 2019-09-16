@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Recicladora.UbicacionRecicladora"
+        android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark">
+
+        <ImageButton
+                android:id="@+id/btnAtras_ubicacionRecicla"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/back"
+                android:backgroundTint="@color/colorPrimaryDark" />
+
+        <TextView
+                android:id="@+id/tw_ubicacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/miUbicacion_str"
+                android:textColor="@color/colorNegro"
+                android:textSize="19sp" />
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <fragment
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/mapa_ubicacionRecicladora"
+                tools:context=".Recicladora.UbicacionRecicladora"
+                android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+        <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabAceptar_ubicacionRecicladora"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:backgroundTint="@color/colorPrimary"
+                android:src="@drawable/palomita_icono"
+                android:visibility="gone"/>
+    </RelativeLayout>
+</LinearLayout>

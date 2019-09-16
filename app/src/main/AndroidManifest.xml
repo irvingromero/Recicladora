@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:dist="http://schemas.android.com/apk/distribution"
-          package="irvinc.example.com.inicioprincipal">
+        xmlns:dist="http://schemas.android.com/apk/distribution"
+        package="irvinc.example.com.inicioprincipal">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <dist:module dist:instant="true"/>
+    <dist:module dist:instant="true" />
 
     <application
             android:allowBackup="true"
@@ -16,40 +16,38 @@
             android:theme="@style/AppTheme">
 
         <activity
-                android:name=".Recicladora.DatosRecicladora">
-        </activity>
+                android:name=".Recicladora.UbicacionRecicladora">
 
-        <activity
-                android:name=".Recicladora.SesionRecicladora">
         </activity>
+        <activity
+                android:name=".Recicladora.DatosRecicladora"></activity>
+        <activity
+                android:name=".Recicladora.SesionRecicladora"></activity>
 
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
-                android:value="@string/google_maps_key"/>
+                android:value="@string/google_maps_key" />
 
         <activity
                 android:name=".UsuarioLogeado.SesionUsuario"
                 android:resizeableActivity="false"
                 android:supportsPictureInPicture="false"
-                android:windowSoftInputMode="stateHidden">
-        </activity>
-
+                android:windowSoftInputMode="stateHidden"></activity>
         <activity
                 android:name=".InicioSinSesion.IniciarSesion"
                 android:resizeableActivity="false"
-                android:supportsPictureInPicture="false">
-        </activity>
-
+                android:supportsPictureInPicture="false"></activity>
         <activity
                 android:name=".InicioSinSesion.MapsActivity"
                 android:resizeableActivity="false"
                 android:supportsPictureInPicture="false"
                 android:windowSoftInputMode="stateHidden">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

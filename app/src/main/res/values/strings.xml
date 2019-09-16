@@ -71,4 +71,9 @@
     <string name="calle_str">Calle</string>
     <string name="numeroInt_str">Numero Interior</string>
 
+    <!-- Ubicacion Recicladora -->
+    <string name="miUbicacion_str">Mi ubicacion</string>
+    <string name="ubicacionAgregada_str">Ubicacion agregada</string>
+    <string name="ubicacionActualizada_str">Ubicacion Actualizada</string>
+
 </resources>

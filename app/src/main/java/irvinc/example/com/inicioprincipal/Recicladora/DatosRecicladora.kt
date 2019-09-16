@@ -13,10 +13,10 @@ import irvinc.example.com.inicioprincipal.R
 
 class DatosRecicladora : AppCompatActivity() {
 
-    private var usuarioLogeado : String? = null
+    private var usuarioLogeado: String? = null
 
-    private var campoCorreo : TextInputEditText? = null
-    private var campoContra : TextInputEditText? = null
+    private var campoCorreo: TextInputEditText? = null
+    private var campoContra: TextInputEditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +27,7 @@ class DatosRecicladora : AppCompatActivity() {
         supportActionBar?.hide()
 
         campoCorreo = findViewById(R.id.tietCorreo_datosRecicadora)
-        campoContra = findViewById<TextInputEditText>(R.id.tietContra_datosRecicladora)
+        campoContra = findViewById(R.id.tietContra_datosRecicladora)
 
         cargarDatos()
 
@@ -36,27 +36,30 @@ class DatosRecicladora : AppCompatActivity() {
         }
     }
 
-    private fun cargarDatos(){
-        val bd =  BaseDeDatos(this, "Recicladoras", null , 1)
-        val basededatos = bd.readableDatabase
-        val c = basededatos.rawQuery("select usuario from Recicladoras where usuario = '$usuarioLogeado'",null)
-        if(c.moveToFirst())
-        {
-            campoCorreo?.setText(c.getString(0))
+    private fun cargarDatos() {
+        val bd = BaseDeDatos(this, "Recicladoras", null, 1)
+        val basededatos = bd.writableDatabase
+
+            /// PROBLEMAS DE CONEXION ///
+
+        val c = basededatos.rawQuery("select material from Materiales where usuario = '$usuarioLogeado'", null)
+        if (c.moveToFirst()) {
+            campoCorreo?.setText("sefsef")
         }
-    }
 
-    fun modificarDatos(v : View){
-        val toast = Toast(applicationContext)
-        //// CARGA EL LAYOUT A UNA VISTA ////
-        val view = layoutInflater.inflate(R.layout.usuario_registrado, null)
-        toast.view = view
-        toast.duration = Toast.LENGTH_LONG
-        toast.setGravity(Gravity.BOTTOM,0, 30)
-        view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text = getString(R.string.datosModificados_str)
-        view.setBackgroundColor(resources.getColor(R.color.colorPrimaryDark))
-        toast.show()
+        fun modificarDatos(v: View) {
+            val toast = Toast(applicationContext)
+            //// CARGA EL LAYOUT A UNA VISTA ////
+            val view = layoutInflater.inflate(R.layout.usuario_registrado, null)
+            toast.view = view
+            toast.duration = Toast.LENGTH_LONG
+            toast.setGravity(Gravity.BOTTOM, 0, 30)
+            view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text =
+                getString(R.string.datosModificados_str)
+            view.setBackgroundColor(resources.getColor(R.color.colorPrimaryDark))
+            toast.show()
 
-        onBackPressed()
+            onBackPressed()
+        }
     }
 }

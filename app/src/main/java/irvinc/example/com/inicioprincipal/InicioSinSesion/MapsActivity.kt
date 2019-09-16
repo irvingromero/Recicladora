@@ -7,7 +7,6 @@ Al eliminar un material queda desfasado el conntador del array
  */
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -37,7 +36,6 @@ import android.support.design.chip.ChipGroup
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -170,51 +168,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         listaMateriales?.clear()
                     }
 
-                    BottomSheetBehavior.STATE_EXPANDED ->{
+                    BottomSheetBehavior.STATE_EXPANDED ->
+                    {
                         mMap.setPadding(0,0,0, bottomSize)
                         drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
-                        rv?.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false)
+/*                        rv?.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false)
                         listaMateriales = ArrayList()
 
-                        val nombre = p0?.title
-                                ////////////////// PARA EJEMPLO ///////////////////////
-                        val addMaterial = ContentValues()
-                        addMaterial.put("usuario", nombre)
-                        addMaterial.put("material", "Papel")
-                        addMaterial.put("precio", 1556.50)
-                        addMaterial.put("unidad", "Kg")
-
-                        val bd11 =  BaseDeDatos(applicationContext, "Recicladoras", null , 1)
-                        val zzz = bd11.writableDatabase
-                        zzz.insert("Materiales", null, addMaterial)
-                        zzz.close()
-
-                        val bd =  BaseDeDatos(applicationContext, "Recicladoras", null , 1)
+                        val bd =  BaseDeDatos(applicationContext, "Materiales", null , 1)
                         val basededatos = bd.readableDatabase
-                        val datos = basededatos.rawQuery("select material, precio, unidad from Materiales where usuario = '$nombre'", null)
-
-                        if(datos.moveToFirst())
-                        {
-                            do{
-                                var material = datos.getString(0)
-                                var precio = datos.getDouble(1)
-                                var unidad = datos.getString(2)
-
-                                listaMateriales!!.add("Material: "+material+"\nPrecio: "+precio+"\nUnidad: "+unidad)
-                            } while(datos.moveToNext())
-                        }
-
-                        basededatos.close()
-                        val adap = Adapter(listaMateriales!!)
-                        rv?.adapter = adap
-                        ///////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-                        val bd =  BaseDeDatos(applicationContext, "Recicladoras", null , 1)
-                        val basededatos = bd.readableDatabase
-                        val datos = basededatos.rawQuery("select usuario from Recicladoras where nombre = '$nombre'", null)
-
-                            //// SOLO SE TIENE EL NOMBRE DE LA RECI, ASI QUE SE BUSCARA EL USUARIO CON ESE NOMBRE PARA ACCEDER A SUS MATERIALES ////
+                        val datos = basededatos.rawQuery("select material, precio, unidad from Materiales where nombre = '$p0.title'", null)
 
                         if(datos.moveToFirst())
                         {
@@ -348,12 +312,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         val listaview = dialogView.findViewById<ListView>(R.id.lvBuscar_material)
         listaview.isClickable = true
+/*
         listaview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val dato = parent.getItemAtPosition(position)
             dialog.dismiss()
             chipMaterial(v, dato.toString())
         }
-
+*/
         val values = arrayOf("Latas", "Chatarra","Vidrio","Carton","Alumino")
         val a = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, values)
         listaview.adapter = a
