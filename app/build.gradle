@@ -8,10 +8,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "irvinc.example.com.inicioprincipal"
-        minSdkVersion 21
+        minSdkVersion 22
         targetSdkVersion 27
         versionCode 1
-        versionName "1.5.4"
+        versionName "1.5.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

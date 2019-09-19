@@ -312,13 +312,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         val listaview = dialogView.findViewById<ListView>(R.id.lvBuscar_material)
         listaview.isClickable = true
-/*
+
         listaview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val dato = parent.getItemAtPosition(position)
             dialog.dismiss()
             chipMaterial(v, dato.toString())
         }
-*/
+
         val values = arrayOf("Latas", "Chatarra","Vidrio","Carton","Alumino")
         val a = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, values)
         listaview.adapter = a

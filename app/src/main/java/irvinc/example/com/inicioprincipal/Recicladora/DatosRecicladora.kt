@@ -41,8 +41,7 @@ class DatosRecicladora : AppCompatActivity() {
         val basededatos = bd.writableDatabase
 
             /// PROBLEMAS DE CONEXION ///
-
-        val c = basededatos.rawQuery("select material from Materiales where usuario = '$usuarioLogeado'", null)
+        val c = basededatos.rawQuery("select usuario from Recicladoras where usuario = '$usuarioLogeado'", null)
         if (c.moveToFirst()) {
             campoCorreo?.setText("sefsef")
         }
