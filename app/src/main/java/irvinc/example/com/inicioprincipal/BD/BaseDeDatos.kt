@@ -10,7 +10,7 @@ class BaseDeDatos(context: Context, name: String?, factory: SQLiteDatabase.Curso
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("create table Usuarios(usuario text, correo text, contra text)")
 
-        db.execSQL("create table Recicladoras(usuario text, correo text, contra text, nombre text, telefono text, calle text, colonia text, numeroInt int)")
+        db.execSQL("create table Recicladoras(usuario text, correo text, contra text, nombre text, telefono text, calle text, colonia text, numeroInt text)")
         db.execSQL("create table Materiales(usuario text, material text, precio double, unidad text)")
         db.execSQL("create table Ubicacion(usuario text, latitud double, longitud double)")
     }

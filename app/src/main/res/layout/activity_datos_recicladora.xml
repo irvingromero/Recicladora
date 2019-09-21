@@ -40,7 +40,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/nombre_str"
-                android:textColor="@color/colorNegro"/>
+                android:textColor="@color/colorNegro"
+                android:inputType="text"
+                android:maxLength="35"/>
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
@@ -61,7 +63,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/correo_str"
-                    android:textColor="@color/colorNegro"/>
+                    android:textColor="@color/colorNegro"
+                    android:inputType="textEmailAddress"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -95,7 +98,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/telefono_str"
-                android:textColor="@color/colorNegro"/>
+                android:textColor="@color/colorNegro"
+                android:inputType="number"
+                android:maxLength="15"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -110,7 +115,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/calle_str"
-                android:textColor="@color/colorNegro"/>
+                android:textColor="@color/colorNegro"
+                android:inputType="text"
+                android:maxLength="60"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -125,7 +132,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/colonia_str"
-                android:textColor="@color/colorNegro"/>
+                android:textColor="@color/colorNegro"
+                android:inputType="text"
+                android:maxLength="50"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -140,7 +149,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/numeroInt_str"
-                android:textColor="@color/colorNegro"/>
+                android:textColor="@color/colorNegro"
+                android:inputType="number"
+                android:maxLength="8"/>
     </android.support.design.widget.TextInputLayout>
 
     <RelativeLayout

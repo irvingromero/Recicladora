@@ -94,9 +94,11 @@ class IniciarSesion : AppCompatActivity() {
 
         val consultaRecicladora = basededatos.rawQuery("select usuario from Recicladoras where usuario = '$usuario' and contra = '$contra'",null)
         recicladora = consultaRecicladora.moveToFirst()
+        consultaRecicladora.close()
 
         val consultaUsuario = basededatos.rawQuery("select usuario from Usuarios where usuario ='$usuario' and contra = '$contra'",null)
          usuarioExiste = consultaUsuario.moveToFirst()
+        consultaUsuario.close()
         bd.close()
         basededatos.close()
 
@@ -333,6 +335,7 @@ class IniciarSesion : AppCompatActivity() {
         val botonRegistroRecicladora = findViewById<Button>(R.id.btnRegistroRecicladora_inicioSesion)
 
         var usuarioOk = false
+        var nombre = false
         var contraOk = usuarioOk
         var confirmContra = false
         var usuarioValido = false
@@ -341,13 +344,13 @@ class IniciarSesion : AppCompatActivity() {
         ventana.setCancelable(false) // EVITA QUE SE CIERRE EL DIALOG CON UN CLICK AFUERA DE EL //
         // CARGA EL LAYOUT PERSONALIZADO//
         val inflater = this.layoutInflater
-        val dialogView = inflater.inflate(R.layout.ventana_registro_usuario, null)
+        val dialogView = inflater.inflate(R.layout.ventana_registro_recicladora, null)
         ventana.setView(dialogView)
 
-        val etCorreo = dialogView.findViewById<TextInputEditText>(R.id.etCorreo_registroUsuario)
-        val etContra = dialogView.findViewById<TextInputEditText>(R.id.etContra_registroUsuario)
-        val etConfirmContra = dialogView.findViewById<TextInputEditText>(R.id.etConfirmarContra_registroUsuario)
-        val etUsuario = dialogView.findViewById<TextInputEditText>(R.id.etUsuario_registroUsuario)
+        val etUsuario = dialogView.findViewById<TextInputEditText>(R.id.etUsuario_registroRecicladora)
+        val etNombreReci = dialogView.findViewById<TextInputEditText>(R.id.etNombreReci_registroRecicladora)
+        val etContra = dialogView.findViewById<TextInputEditText>(R.id.etContra_registroRecicladora)
+        val etConfirmContra = dialogView.findViewById<TextInputEditText>(R.id.etConfirmarContra_registroRecicladora)
         //// TRANSFORMA EL FORMATO TEXT A TEXTPASSWORD ////
         etContra.transformationMethod =  PasswordTransformationMethod()
         etConfirmContra.transformationMethod =  PasswordTransformationMethod()
@@ -355,7 +358,7 @@ class IniciarSesion : AppCompatActivity() {
         etConfirmContra.isEnabled = false
 
         ventana.setPositiveButton(R.string.registrar_str){ _, _ ->
-            registrarRecicladora(etUsuario.text.toString(), etCorreo.text.toString(), etContra.text.toString())
+            registrarRecicladora(etUsuario.text.toString(), etNombreReci.text.toString(), etContra.text.toString())
             botonRegistroRecicladora.isEnabled = true
             cerrarTeclado()
         }
@@ -402,7 +405,28 @@ class IniciarSesion : AppCompatActivity() {
                         usuarioValido = true
                     }
 
-                    if(contraOk && confirmContra && usuarioValido)
+                    if(contraOk && confirmContra && usuarioValido && nombre)
+                    {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                    }
+                }
+            }
+        })
+
+        etNombreReci.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if(etNombreReci.length() < 3)
+                {
+                    etNombreReci.error = getString(R.string.mensajeUsuario_str)
+                    requestFocus(etNombreReci)
+                    nombre = false
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                } else {
+                    nombre = true
+
+                    if(contraOk && confirmContra && usuarioValido && nombre)
                     {
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
                     }
@@ -424,7 +448,8 @@ class IniciarSesion : AppCompatActivity() {
                 } else {
                     etConfirmContra.isEnabled = true
                     contraOk = true
-                    if(usuarioOk && confirmContra && usuarioValido){
+
+                    if(usuarioOk && confirmContra && usuarioValido && nombre){
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
                     }
                 }
@@ -437,7 +462,8 @@ class IniciarSesion : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(etConfirmContra.text.toString().equals(etContra.text.toString())){
                     confirmContra = true
-                    if(usuarioOk && contraOk && usuarioValido){
+
+                    if(usuarioOk && contraOk && usuarioValido && nombre){
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
                     }
                 } else {
@@ -450,16 +476,15 @@ class IniciarSesion : AppCompatActivity() {
         })
     }
 
-    private fun registrarRecicladora(usuario : String, correo : String, contra : String){
+    private fun registrarRecicladora(usuario : String, nombre : String, contra : String){
         cerrarTeclado()
 
         val datosRecicladora = ContentValues()
-
-        val nombre = "Sin datos"
-        val telefono = "Sin datos"
+        val correo = "Sin datos"
+        val telefono = "0"
         val calle = "Sin datos"
         val colonia = "Sin datos"
-        val numeroInt = 0
+        val numeroInt = "0"
 
         datosRecicladora.put("usuario", usuario)
         datosRecicladora.put("correo", correo)

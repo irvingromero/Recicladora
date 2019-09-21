@@ -29,7 +29,7 @@
     <string name="confirmaContra_str">Confirma contraseña</string>
     <string name="cancelar_str">Cancelar</string>
     <string name="registrar_str">Registrar</string>
-    <string name="mensajeUsuario_str">3 caracteres de a-z y 0-9</string>
+    <string name="mensajeUsuario_str">3 caracteres de A-z y 0-9</string>
     <string name="mensajeContras_str">Las contraseñas no coinciden</string>
     <string name="yaexiste_str">Usuario ya existe</string>
     <string name="registrado_str">Usuario registrado</string>
@@ -60,6 +60,8 @@
     <string name="materialAgregado_str">Material agregado</string>
     <string name="eliminar_str">Eliminar</string>
     <string name="material_eliminado_str">Material Eliminado</string>
+    <string name="nombreRecicladora_str">Nombre recicladora</string>
+    <string name="arroba_str">Debe contener un @</string>
 
     <!-- Datos Recicladora -->
     <string name="tusDatos_str">Tus datos</string>

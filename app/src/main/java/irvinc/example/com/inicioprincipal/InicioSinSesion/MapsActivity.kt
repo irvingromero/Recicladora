@@ -7,6 +7,7 @@ Al eliminar un material queda desfasado el conntador del array
  */
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -134,11 +135,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mMap.uiSettings.isCompassEnabled = false
         mMap.setOnMarkerClickListener(this)
 
-        mMap.addMarker(MarkerOptions().position(LatLng(32.6578,-115.584)).title("Recicladora 11"))
-        mMap.addMarker(MarkerOptions().position(LatLng(32.6578,-115.484)).title("Recicladora asFnk"))
-        mMap.addMarker(MarkerOptions().position(LatLng(32.6278,-115.584)).title("r"))
-
         permiso()
+        cargarRecicladoras()
 
         mMap.setOnMapClickListener {
             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
@@ -218,6 +216,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
 
         return false
+    }
+
+    private fun cargarRecicladoras(){
+        val bdClase =  BaseDeDatos(this, "Ubicacion", null , 1)
+        val bdConexion = bdClase.readableDatabase
+
+        val ubicacionReci = bdConexion.rawQuery("select usuario, latitud, longitud from Ubicacion",null)
+        if(ubicacionReci.moveToFirst()){
+            var usuarioRecicladora : String  /// GUARDA EL USUARIO DE RECICLADORA EN CADA ITERACION ///
+            do {
+                usuarioRecicladora = ubicacionReci.getString(0)
+
+//                val nombreReci = bdConexion.rawQuery("select usuario from Reci",null)
+//    val x = nombreReci.moveToFirst()
+//                mMap.addMarker(MarkerOptions().position(LatLng(ubicacionReci.getDouble(0), ubicacionReci.getDouble(1))).title(nombreReci.getString(0)))
+            }while (ubicacionReci.moveToNext())
+        }
+        ubicacionReci.close()
+        bdConexion.close()
     }
 
     @SuppressLint("MissingPermission")
