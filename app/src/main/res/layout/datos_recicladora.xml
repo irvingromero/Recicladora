@@ -88,14 +88,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:paddingLeft="5dp"
+                            android:paddingLeft="2dp"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                         <android.support.design.widget.TextInputEditText
-                                android:id="@+id/etMostrarCorreo_datosRecicladora"
+                                android:id="@+id/tietMostrarCorreo_datosRecicladora"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Correo"
-                                android:text="correo"
+                                android:hint="@string/correo_str"
                                 android:textColor="@color/colorNegro"
                                 android:enabled="false"
                                 android:focusable="false"/>
@@ -111,8 +110,7 @@
                                 android:id="@+id/etMostrarTelefono_datosRecicladora"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Telefono"
-                                android:text="616816154984"
+                                android:hint="@string/telefono_str"
                                 android:textColor="@color/colorNegro"
                                 android:enabled="false"
                                 android:focusable="false"/>
@@ -125,38 +123,18 @@
                         android:id="@+id/lyCalles_datosRecicla"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
+                        android:orientation="horizontal">
 
                     <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
                             android:paddingLeft="5dp"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                         <android.support.design.widget.TextInputEditText
                                 android:id="@+id/etMostrarCalle1_datosRecicladora"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Calle"
-                                android:text="Av. calleejempllo"
-                                android:textColor="@color/colorNegro"
-                                android:enabled="false"
-                                android:focusable="false"/>
-                    </android.support.design.widget.TextInputLayout>
-
-                    <android.support.design.widget.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:paddingRight="5dp"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-                        <android.support.design.widget.TextInputEditText
-                                android:id="@+id/etMostrarCalle2_datosRecicladora"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="Entre calle"
-                                android:text="iosemk"
+                                android:hint="@string/calle_str"
                                 android:textColor="@color/colorNegro"
                                 android:enabled="false"
                                 android:focusable="false"/>
@@ -175,14 +153,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:paddingLeft="5dp"
+                            android:paddingLeft="2dp"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                         <android.support.design.widget.TextInputEditText
                                 android:id="@+id/etMostrarColonia_datosRecicla"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Colonia"
-                                android:text="coloniacualquiera"
+                                android:hint="@string/colonia_str"
                                 android:textColor="@color/colorNegro"
                                 android:enabled="false"
                                 android:focusable="false"/>
@@ -198,8 +175,7 @@
                                 android:id="@+id/etMostrarNumueroInt_datosRecicla"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Numero interior"
-                                android:text="31113"
+                                android:hint="@string/numeroInt_str"
                                 android:textColor="@color/colorNegro"
                                 android:enabled="false"
                                 android:focusable="false"/>

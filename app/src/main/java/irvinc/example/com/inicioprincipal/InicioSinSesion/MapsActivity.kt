@@ -7,7 +7,6 @@ Al eliminar un material queda desfasado el conntador del array
  */
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -37,6 +36,8 @@ import android.support.design.chip.ChipGroup
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
+import android.support.design.widget.TextInputEditText
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -149,7 +150,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    override fun onMarkerClick(p0: Marker?): Boolean {
+        override fun onMarkerClick(p0: Marker?): Boolean {
         findViewById<TextView>(R.id.tvNombre_datosRecicladora).text = p0?.title
 
         val bottomSize = bottomSheetBehavior?.peekHeight
@@ -162,8 +163,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN ->{
                         mMap.setPadding(0,0,0,0)
-
-                        listaMateriales?.clear()
                     }
 
                     BottomSheetBehavior.STATE_EXPANDED ->
@@ -171,28 +170,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         mMap.setPadding(0,0,0, bottomSize)
                         drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
-/*                        rv?.layoutManager = LinearLayoutManager(applicationContext, LinearLayout.VERTICAL, false)
-                        listaMateriales = ArrayList()
-
-                        val bd =  BaseDeDatos(applicationContext, "Materiales", null , 1)
-                        val basededatos = bd.readableDatabase
-                        val datos = basededatos.rawQuery("select material, precio, unidad from Materiales where nombre = '$p0.title'", null)
-
-                        if(datos.moveToFirst())
-                        {
-                            do{
-                                var material = datos.getString(0)
-                                var precio = datos.getDouble(1)
-                                var unidad = datos.getString(2)
-
-                                listaMateriales!!.add("Material: "+material+"\nPrecio: "+precio+"\nUnidad: "+unidad)
-                            } while(datos.moveToNext())
-                        }
-
-                        basededatos.close()
-                        val adap = Adapter(listaMateriales!!)
-                        rv?.adapter = adap
-*/
+                        cargarDatosRecicladora(p0!!.title)
+                        cargarMaterialesRecicladora(p0!!.title)
                     }
 
                     BottomSheetBehavior.STATE_COLLAPSED ->{
@@ -227,14 +206,74 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             var usuarioRecicladora : String  /// GUARDA EL USUARIO DE RECICLADORA EN CADA ITERACION ///
             do {
                 usuarioRecicladora = ubicacionReci.getString(0)
+                    /// NO MOVER CONFIGURACION DE LA BASE DE DATOS, PROBLEMAS DE CONEXION u.u///
+                val wwww = BaseDeDatos(applicationContext, "Usuarios", null , 1)
+                val zzzz = wwww.readableDatabase
+                val nombreReci = zzzz.rawQuery("select nombre from Recicladoras where usuario = '$usuarioRecicladora'",null)
 
-//                val nombreReci = bdConexion.rawQuery("select usuario from Reci",null)
-//    val x = nombreReci.moveToFirst()
-//                mMap.addMarker(MarkerOptions().position(LatLng(ubicacionReci.getDouble(0), ubicacionReci.getDouble(1))).title(nombreReci.getString(0)))
+                val bandera = nombreReci.moveToFirst()
+                val nombre = nombreReci.getString(0)
+
+                mMap.addMarker(MarkerOptions().position(LatLng(ubicacionReci.getDouble(1), ubicacionReci.getDouble(2))).title(nombre))
             }while (ubicacionReci.moveToNext())
         }
         ubicacionReci.close()
         bdConexion.close()
+    }
+
+    private fun cargarDatosRecicladora(nombreRecicladora : String){
+        val campoCorreo = findViewById<TextInputEditText>(R.id.tietMostrarCorreo_datosRecicladora)
+        val campoTelefono = findViewById<TextInputEditText>(R.id.etMostrarTelefono_datosRecicladora)
+        val campoCalle = findViewById<TextInputEditText>(R.id.etMostrarCalle1_datosRecicladora)
+        val campoColonia = findViewById<TextInputEditText>(R.id.etMostrarColonia_datosRecicla)
+        val campoNumeroInt = findViewById<TextInputEditText>(R.id.etMostrarNumueroInt_datosRecicla)
+
+        val objetobasededatos = BaseDeDatos(this, "Usuarios", null, 1)
+        val flujodedatos = objetobasededatos.readableDatabase
+        val variableCursor = flujodedatos.rawQuery("select correo, telefono, calle, colonia, numeroInt from Recicladoras where nombre = '$nombreRecicladora'", null)
+        val bandera = variableCursor.moveToFirst()
+
+        if(variableCursor.moveToFirst()){
+            campoCorreo.setText(variableCursor.getString(0))
+            campoTelefono.setText(variableCursor.getString(1))
+            campoCalle.setText(variableCursor.getString(2))
+            campoColonia.setText(variableCursor.getString(3))
+            campoNumeroInt.setText(variableCursor.getString(4))
+        }
+        variableCursor.close()
+        flujodedatos.close()
+    }
+
+    private fun cargarMaterialesRecicladora(nombreRecicladora : String){
+        rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        listaMateriales = ArrayList()
+
+        val objetobasededatos = BaseDeDatos(applicationContext, "Usuarios", null, 1)
+        val flujodedatos = objetobasededatos.readableDatabase
+        val variableCursor = flujodedatos.rawQuery("select usuario from Recicladoras where nombre = '$nombreRecicladora'", null)
+        val bandera = variableCursor.moveToFirst()
+        val usuarioRecicladora = variableCursor.getString(0)
+        variableCursor.close()
+        flujodedatos.close()
+
+        val bd =  BaseDeDatos(applicationContext, "Materiales", null , 1)
+        val basededatos = bd.readableDatabase
+        val datos = basededatos.rawQuery("select material, precio, unidad from Materiales where usuario = '$usuarioRecicladora'", null)
+
+        if(datos.moveToFirst())
+        {
+            do{
+                var material = datos.getString(0)
+                var precio = datos.getDouble(1)
+                var unidad = datos.getString(2)
+
+                listaMateriales!!.add("Material: "+material+"\nPrecio: "+precio+"\nUnidad: "+unidad)
+            } while(datos.moveToNext())
+        }
+        basededatos.close()
+        datos.close()
+        val adap = Adapter(listaMateriales!!)
+        rv?.adapter = adap
     }
 
     @SuppressLint("MissingPermission")
@@ -304,7 +343,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         })
     }
-
+        ///////// OPCIONES DEL MENU //////////////////
     fun iniciarSesion(view : View){
         val handler = Handler(Looper.getMainLooper())
         handler.post {
@@ -342,7 +381,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         dialog.show()
     }
-
+        //////////// TERMINA EL MENU ///////////////
     private fun chipMaterial(vista : View ,material : String){
         val i = LayoutInflater.from(this@MapsActivity)
         val chipItem = i.inflate(R.layout.chip, null , false) as Chip

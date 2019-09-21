@@ -71,6 +71,7 @@
     <string name="colonia_str">Colonia</string>
     <string name="contra_str">Contraseña</string>
     <string name="calle_str">Calle</string>
+    <string name="entreCalle_str">Entre calle</string>
     <string name="numeroInt_str">Numero Interior</string>
 
     <!-- Ubicacion Recicladora -->
