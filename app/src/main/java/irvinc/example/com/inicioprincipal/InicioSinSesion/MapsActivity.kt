@@ -1,9 +1,7 @@
 package irvinc.example.com.inicioprincipal.InicioSinSesion
 /*
 validar tener la ubicacion prendida
-VALIDAR QUE NO SE SELECCIONE EL MISMO MATERIAL////
-
-Al eliminar un material queda desfasado el conntador del array
+Al eliminar un material queda desfasado el conntador del array en sesion recicladora
  */
 import android.Manifest
 import android.annotation.SuppressLint
@@ -35,7 +33,6 @@ import android.support.design.chip.Chip
 import android.support.design.chip.ChipGroup
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputEditText
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -98,6 +95,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
+
+        val rb = findViewById<RatingBar>(R.id.rbPuntuar_datosRecicladora)
+        rb.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener{
+            override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
+                mensaje()
+                rb.rating = 0.0f
+            }
+        })
     }
 
     private fun sesionGuardada(){
@@ -375,8 +380,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             chipMaterial(v, dato.toString())
         }
 
-        val values = arrayOf("Latas", "Chatarra","Vidrio","Carton","Alumino")
-        val a = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, values)
+        val odb = BaseDeDatos(this, "Materiales", null, 1)
+        val fdb = odb.readableDatabase
+        val cursorMaterial = fdb.rawQuery("select material from Materiales", null)
+
+        if(cursorMaterial.moveToFirst()){
+            listaMateriales = ArrayList()
+
+            do{
+                listaMateriales?.add(cursorMaterial.getString(0))
+            }while (cursorMaterial.moveToNext())
+
+                /// ELIMINA LOS ELEMENTOS REPETIDOS ////
+            val hs = HashSet<String>()
+            hs.addAll(listaMateriales!!)
+            listaMateriales!!.clear()
+            listaMateriales!!.addAll(hs)
+        }
+        fdb.close()
+        cursorMaterial.close()
+        val a = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listaMateriales)
         listaview.adapter = a
 
         dialog.show()
@@ -394,9 +417,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             chipgroup?.visibility = View.VISIBLE
             contador ++
         } else {
-            Snackbar.make(vista, R.string.maximoMateriales_str, Snackbar.LENGTH_LONG).show()
+//            Snackbar.make(vista, R.string.maximoMateriales_str, Snackbar.LENGTH_LONG).show()
         }
-
+/*
         chipItem.setOnClickListener {
             if(contador < 1) {
                 buscarMaterial(vista)
@@ -404,7 +427,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 Snackbar.make(vista, R.string.maximoMateriales_str, Snackbar.LENGTH_LONG).show()
             }
         }
-
+*/
         chipItem.setOnCloseIconClickListener {
             chipgroup?.removeView(chipItem)
             contador --

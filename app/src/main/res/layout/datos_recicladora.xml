@@ -60,9 +60,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="4.5"
-                        android:textSize="18dp"
+                        android:textSize="19dp"
                         android:layout_toRightOf="@id/fotoRecicladora_datosRecicladora"
-                        android:paddingTop="5dp"
+                        android:paddingTop="6dp"
                         android:paddingLeft="5dp"/>
 
                 <RatingBar
@@ -70,9 +70,9 @@
                         style="@android:style/Widget.Holo.RatingBar.Indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/tvPuntuacion_datosRecicla"
                         android:layout_marginLeft="5dp"
-                        android:numStars="5"
+                        android:layout_toRightOf="@id/tvPuntuacion_datosRecicla"
+                        android:numStars="1"
                         android:progressTint="@color/colorAmarillo"
                         android:rating="4.5" />
 
@@ -205,7 +205,7 @@
                             android:id="@+id/materiales_datosReci"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="materiales"
+                            android:text="Materiales"
                             android:layout_gravity="center"/>
 
                     <android.support.v7.widget.RecyclerView
