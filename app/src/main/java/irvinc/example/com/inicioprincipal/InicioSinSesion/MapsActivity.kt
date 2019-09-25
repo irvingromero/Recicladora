@@ -374,12 +374,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val listaview = dialogView.findViewById<ListView>(R.id.lvBuscar_material)
         listaview.isClickable = true
 
-        listaview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            val dato = parent.getItemAtPosition(position)
-            dialog.dismiss()
-            chipMaterial(v, dato.toString())
-        }
-
         val odb = BaseDeDatos(this, "Materiales", null, 1)
         val fdb = odb.readableDatabase
         val cursorMaterial = fdb.rawQuery("select material from Materiales", null)
@@ -403,8 +397,46 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         listaview.adapter = a
 
         dialog.show()
+
+        listaview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            val dato = parent.getItemAtPosition(position)
+            dialog.dismiss()
+            chipMaterial(v, dato.toString())
+
+            mMap.clear()
+            recicladorasMaterialBuscado(dato.toString())
+        }
     }
         //////////// TERMINA EL MENU ///////////////
+    private fun recicladorasMaterialBuscado(materialBuscado : String){
+        val objetoparabasededatos = BaseDeDatos(this, "Materiales", null,1)
+        val conexionBd = objetoparabasededatos.readableDatabase
+
+        val usuarioMaterial = conexionBd.rawQuery("select usuario from Materiales where material ='$materialBuscado'", null)
+        if(usuarioMaterial.moveToFirst()){
+            conexionBd.close()
+            do{
+                val usuarioRecicladora = usuarioMaterial.getString(0)
+
+                val objetoparabasededatos2 = BaseDeDatos(this, "Ubicacion", null,1)
+                val conexionBd2 = objetoparabasededatos2.readableDatabase
+
+                val consultaUbicacion = conexionBd2.rawQuery("select latitud, longitud from Ubicacion where usuario='$usuarioRecicladora'", null)
+                if(consultaUbicacion.moveToFirst()){
+
+                    val objetoparabasededatos3 = BaseDeDatos(this, "Usuarios", null,1)
+                    val conexionBd3 = objetoparabasededatos3.readableDatabase
+
+                    val consultaRecicladora = conexionBd3.rawQuery("select nombre from Recicladoras where usuario ='$usuarioRecicladora'", null)
+                    if(consultaRecicladora.moveToFirst()){
+                        mMap.addMarker(MarkerOptions().position(LatLng(consultaUbicacion.getDouble(0), consultaUbicacion.getDouble(1))).title(consultaRecicladora.getString(0)))
+                    }
+                }
+            }while (usuarioMaterial.moveToNext())
+        }
+        usuarioMaterial.close()
+    }
+
     private fun chipMaterial(vista : View ,material : String){
         val i = LayoutInflater.from(this@MapsActivity)
         val chipItem = i.inflate(R.layout.chip, null , false) as Chip
@@ -429,6 +461,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 */
         chipItem.setOnCloseIconClickListener {
+            cargarRecicladoras()
+
             chipgroup?.removeView(chipItem)
             contador --
 

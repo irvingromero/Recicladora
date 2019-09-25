@@ -15,9 +15,10 @@
             tools:context=".UsuarioLogeado.SesionUsuario"
             android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
-    <FrameLayout
+    <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
         <ImageButton
                 android:id="@+id/btnMenu_sesionUsuario"
                 android:layout_width="45dp"
@@ -25,6 +26,30 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="8dp"
                 android:background="@drawable/menu_icono"/>
+
+        <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabMejorPrecio_sesionUsuario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btnMenu_sesionUsuario"
+                android:layout_marginLeft="5dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:src="@drawable/mejor_precio_icono"
+                android:visibility="gone"/>
+
+        <TextView
+                android:id="@+id/tvMejorPrecio_maps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fabMejorPrecio_sesionUsuario"
+                android:textColor="@color/colorNegro"
+                android:textSize="11sp"
+                android:layout_marginLeft="1dp"/>
+    </RelativeLayout>
+
+    <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
         <android.support.design.chip.ChipGroup
                 android:id="@+id/cg_sesionUsuario"
@@ -81,7 +106,7 @@
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"
                     android:onClick="buscarMaterial_sesionUsuario"/>
-
+<!--
             <android.support.design.button.MaterialButton
                     android:id="@+id/btnMejorPrecio_sesionUsuario"
                     android:layout_width="match_parent"
@@ -109,7 +134,7 @@
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"
                     android:onClick="masCercana_sesionUsuario"/>
-
+-->
             <android.support.design.button.MaterialButton
                     android:id="@+id/btnCerrarSesion_sesionUsuario"
                     android:layout_width="match_parent"
@@ -131,7 +156,7 @@
                     android:layout_marginLeft="35dp"
                     android:layout_marginRight="35dp"
                     android:background="@color/colorNegro"/>
-
+<!--
             <android.support.design.button.MaterialButton
                     android:id="@+id/btnGuiaReciclaje_sesionUsuario"
                     android:layout_width="match_parent"
@@ -157,6 +182,7 @@
                     android:layout_marginRight="25dp"
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"/>
+-->
         </LinearLayout>
     </ScrollView>
 </android.support.v4.widget.DrawerLayout>

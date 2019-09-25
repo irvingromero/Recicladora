@@ -18,6 +18,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
@@ -35,6 +37,8 @@ import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.InicioSinSesion.MapsActivity
 import irvinc.example.com.inicioprincipal.R
 import kotlinx.android.synthetic.main.datos_recicladora.*
+import java.util.*
+import kotlin.collections.HashSet
 
 class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -50,6 +54,9 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
 
     private var bottomSheetBehavior : BottomSheetBehavior<LinearLayout>? = null
 
+    private var rv : RecyclerView? = null
+    private var listaMateriales : ArrayList<String>? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sesion_usuario)
@@ -59,6 +66,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
         usuarioLogeado = intent.extras?.getString("usuario")
+        rv = findViewById(R.id.rvMateriales_datosRecicla)
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapaUsuario) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -103,11 +111,8 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         mMap.uiSettings.isCompassEnabled = false
         mMap.setOnMarkerClickListener(this)
 
-        mMap.addMarker(MarkerOptions().position(LatLng(32.6578,-115.584)).title("Recicladora 11"))
-        mMap.addMarker(MarkerOptions().position(LatLng(32.6578,-115.484)).title("Recicladora asFnk"))
-        mMap.addMarker(MarkerOptions().position(LatLng(32.6278,-115.584)).title("Reci:v:v"))
-
         permiso()
+        cargarRecicladoras()
 
         mMap.setOnMapClickListener {
             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
@@ -120,8 +125,91 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         }
     }
 
+    private fun cargarRecicladoras(){
+        val bdClase =  BaseDeDatos(this, "Ubicacion", null , 1)
+        val bdConexion = bdClase.readableDatabase
+
+        val ubicacionReci = bdConexion.rawQuery("select usuario, latitud, longitud from Ubicacion",null)
+        if(ubicacionReci.moveToFirst()){
+            var usuarioRecicladora : String  /// GUARDA EL USUARIO DE RECICLADORA EN CADA ITERACION ///
+            do {
+                usuarioRecicladora = ubicacionReci.getString(0)
+                /// NO MOVER CONFIGURACION DE LA BASE DE DATOS, PROBLEMAS DE CONEXION u.u///
+                val wwww = BaseDeDatos(applicationContext, "Usuarios", null , 1)
+                val zzzz = wwww.readableDatabase
+                val nombreReci = zzzz.rawQuery("select nombre from Recicladoras where usuario = '$usuarioRecicladora'",null)
+
+                val bandera = nombreReci.moveToFirst()
+                val nombre = nombreReci.getString(0)
+
+                mMap.addMarker(MarkerOptions().position(LatLng(ubicacionReci.getDouble(1), ubicacionReci.getDouble(2))).title(nombre))
+            }while (ubicacionReci.moveToNext())
+        }
+        ubicacionReci.close()
+        bdConexion.close()
+    }
+
+    private fun cargarDatosRecicladora(nombreRecicladora : String){
+        val campoCorreo = findViewById<TextInputEditText>(R.id.tietMostrarCorreo_datosRecicladora)
+        val campoTelefono = findViewById<TextInputEditText>(R.id.etMostrarTelefono_datosRecicladora)
+        val campoCalle = findViewById<TextInputEditText>(R.id.etMostrarCalle1_datosRecicladora)
+        val campoColonia = findViewById<TextInputEditText>(R.id.etMostrarColonia_datosRecicla)
+        val campoNumeroInt = findViewById<TextInputEditText>(R.id.etMostrarNumueroInt_datosRecicla)
+
+        val objetobasededatos = BaseDeDatos(this, "Usuarios", null, 1)
+        val flujodedatos = objetobasededatos.readableDatabase
+        val variableCursor = flujodedatos.rawQuery("select correo, telefono, calle, colonia, numeroInt from Recicladoras where nombre = '$nombreRecicladora'", null)
+        val bandera = variableCursor.moveToFirst()
+
+        if(variableCursor.moveToFirst()){
+            campoCorreo.setText(variableCursor.getString(0))
+            campoTelefono.setText(variableCursor.getString(1))
+            campoCalle.setText(variableCursor.getString(2))
+            campoColonia.setText(variableCursor.getString(3))
+            campoNumeroInt.setText(variableCursor.getString(4))
+        }
+        variableCursor.close()
+        flujodedatos.close()
+    }
+
+    private fun cargarMaterialesRecicladora(nombreRecicladora : String){
+        rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        listaMateriales = ArrayList()
+
+        val objetobasededatos = BaseDeDatos(applicationContext, "Usuarios", null, 1)
+        val flujodedatos = objetobasededatos.readableDatabase
+        val variableCursor = flujodedatos.rawQuery("select usuario from Recicladoras where nombre = '$nombreRecicladora'", null)
+        val bandera = variableCursor.moveToFirst()
+        val usuarioRecicladora = variableCursor.getString(0)
+        variableCursor.close()
+        flujodedatos.close()
+
+        val bd =  BaseDeDatos(applicationContext, "Materiales", null , 1)
+        val basededatos = bd.readableDatabase
+        val datos = basededatos.rawQuery("select material, precio, unidad from Materiales where usuario = '$usuarioRecicladora'", null)
+
+        if(datos.moveToFirst())
+        {
+            do{
+                var material = datos.getString(0)
+                var precio = datos.getDouble(1)
+                var unidad = datos.getString(2)
+
+                listaMateriales!!.add("Material: "+material+"\nPrecio: "+precio+"\nUnidad: "+unidad)
+            } while(datos.moveToNext())
+        }
+        basededatos.close()
+        datos.close()
+        val adap = MapsActivity.Adapter(listaMateriales!!)
+        rv?.adapter = adap
+    }
+
     override fun onMarkerClick(p0: Marker?): Boolean {
-        mMap.setPadding(0,0,0,140)
+        findViewById<TextView>(R.id.tvNombre_datosRecicladora).text = p0?.title
+
+        val bottomSize = bottomSheetBehavior?.peekHeight
+        mMap.setPadding(0,0,0,bottomSize!!)
+
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         //// BLOQUEA Y DESBLOQUEA EL MENU LATERAL CUANDO EL BOTTOMSHEET ESTA EXPANDIDO /////
         bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -132,6 +220,9 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
                     }
                     BottomSheetBehavior.STATE_EXPANDED ->{
                         drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
+                        cargarDatosRecicladora(p0!!.title)
+                        cargarMaterialesRecicladora(p0!!.title)
                     }
                     BottomSheetBehavior.STATE_COLLAPSED ->{
                         drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
@@ -141,7 +232,17 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
 
-        findViewById<TextView>(R.id.tvNombre_datosRecicladora).text = p0?.title
+        mMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter{
+            override fun getInfoContents(p0: Marker?): View {
+                val vista = layoutInflater.inflate(R.layout.infowindow, null)
+                return vista
+            }
+            override fun getInfoWindow(p0: Marker?): View? {
+                val vista = layoutInflater.inflate(R.layout.infowindow, null)
+                vista.findViewById<TextView>(R.id.tvNombreReci_infowindow).text = p0?.title.toString()
+                return vista
+            }
+        })
         return false
     }
 
@@ -196,7 +297,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
             mMap.setMinZoomPreference(11.0f)
         } catch (e: Exception) { }
     }
-
+        /// MENU ///
     fun modificarDatos_sesionUsuario(view : View){
         var contraOk = false
         var confirmContra = false
@@ -309,52 +410,39 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
 
         val listaview = dialogView.findViewById<ListView>(R.id.lvBuscar_material)
         listaview.isClickable = true
+
+        val odb = BaseDeDatos(this, "Materiales", null, 1)
+        val fdb = odb.readableDatabase
+        val cursorMaterial = fdb.rawQuery("select material from Materiales", null)
+
+        if(cursorMaterial.moveToFirst()){
+            listaMateriales = ArrayList()
+
+            do{
+                listaMateriales?.add(cursorMaterial.getString(0))
+            }while (cursorMaterial.moveToNext())
+
+            /// ELIMINA LOS ELEMENTOS REPETIDOS ////
+            val hs = HashSet<String>()
+            hs.addAll(listaMateriales!!)
+            listaMateriales!!.clear()
+            listaMateriales!!.addAll(hs)
+        }
+        fdb.close()
+        cursorMaterial.close()
+        val a = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listaMateriales)
+        listaview.adapter = a
+
+        dialog.show()
+
         listaview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val dato = parent.getItemAtPosition(position)
             dialog.dismiss()
             chipMaterial(vista, dato.toString())
+
+            mMap.clear()
+            recicladorasMaterialBuscado(dato.toString())
         }
-
-        val values = arrayOf("Latas", "Chatarra","Vidrio","Carton","Alumino")
-        val a = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, values)
-        listaview.adapter = a
-
-        dialog.show()
-    }
-
-    private fun chipMaterial(vista : View ,material : String){
-        val i = LayoutInflater.from(this@SesionUsuario)
-        val chipItem = i.inflate(R.layout.chip, null , false) as Chip
-
-        if(contador < 3){
-            chipItem.text = material
-            chipgroup?.addView(chipItem)
-            chipgroup?.visibility = View.VISIBLE
-            contador ++
-        } else {
-            Snackbar.make(vista, R.string.maximoMateriales_str, Snackbar.LENGTH_LONG).show()
-        }
-
-        chipItem.setOnClickListener {
-            if(contador < 3) {
-                buscarMaterial_sesionUsuario(vista)
-            } else {
-                Snackbar.make(vista, R.string.maximoMateriales_str, Snackbar.LENGTH_LONG).show()
-            }
-        }
-
-        chipItem.setOnCloseIconClickListener {
-            chipgroup?.removeView(chipItem)
-            contador --
-        }
-    }
-
-    fun mejorPrecio_sesionUsuario(view : View){
-
-    }
-
-    fun masCercana_sesionUsuario(view : View){
-
     }
 
     fun cerrarSesion_sesionUsuario(view : View){
@@ -364,6 +452,117 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         val intent = Intent(this, MapsActivity::class.java)
         startActivity(intent)
         finish()
+    }
+        /// FIN MENU ///
+
+    private fun recicladorasMaterialBuscado(materialBuscado : String){
+        val objetoparabasededatos = BaseDeDatos(this, "Materiales", null,1)
+        val conexionBd = objetoparabasededatos.readableDatabase
+
+        val usuarioMaterial = conexionBd.rawQuery("select usuario from Materiales where material ='$materialBuscado'", null)
+        if(usuarioMaterial.moveToFirst()){
+            conexionBd.close()
+            do{
+                val usuarioRecicladora = usuarioMaterial.getString(0)
+
+                val objetoparabasededatos2 = BaseDeDatos(this, "Ubicacion", null,1)
+                val conexionBd2 = objetoparabasededatos2.readableDatabase
+
+                val consultaUbicacion = conexionBd2.rawQuery("select latitud, longitud from Ubicacion where usuario='$usuarioRecicladora'", null)
+                if(consultaUbicacion.moveToFirst()){
+
+                    val objetoparabasededatos3 = BaseDeDatos(this, "Usuarios", null,1)
+                    val conexionBd3 = objetoparabasededatos3.readableDatabase
+
+                    val consultaRecicladora = conexionBd3.rawQuery("select nombre from Recicladoras where usuario ='$usuarioRecicladora'", null)
+                    if(consultaRecicladora.moveToFirst()){
+                        mMap.addMarker(MarkerOptions().position(LatLng(consultaUbicacion.getDouble(0), consultaUbicacion.getDouble(1))).title(consultaRecicladora.getString(0)))
+                    }
+                }
+            }while (usuarioMaterial.moveToNext())
+        }
+        usuarioMaterial.close()
+    }
+
+    private fun mejorPrecio(material : String){
+        val bd = BaseDeDatos(this, "Materiales", null, 1)
+        val flujoBdMateriales = bd.readableDatabase
+        val consultaMateriales = flujoBdMateriales.rawQuery("select precio from Materiales where material = '$material'", null)
+
+        var mayorPrecio : Double
+        mayorPrecio = 0.0
+
+        if(consultaMateriales.moveToFirst()){
+            var listaPrecios: ArrayList<Double> = ArrayList()
+
+            do {
+                listaPrecios.add(consultaMateriales.getDouble(0))
+            }while (consultaMateriales.moveToNext())
+
+            mayorPrecio = Collections.max(listaPrecios) /// DA EL NUMERO MAYOR EN LA LISTA ///
+        }
+        consultaMateriales.close()
+
+        val materialUsuario = flujoBdMateriales.rawQuery("select usuario from Materiales where precio='$mayorPrecio' and material='$material'", null)
+        if(materialUsuario.moveToFirst()){
+            val usuariorecicladora = materialUsuario.getString(0)
+
+            val bdUbicacion = BaseDeDatos(this, "Ubicacion", null, 1)
+            val flujoBdUbicacion = bdUbicacion.readableDatabase
+            val consultaUbicacion = flujoBdUbicacion.rawQuery("select latitud, longitud from Ubicacion where usuario = '$usuariorecicladora'", null)
+
+            if(consultaUbicacion.moveToFirst()){
+                val latlog = LatLng(consultaUbicacion.getDouble(0), consultaUbicacion.getDouble(1))
+                val camara = CameraUpdateFactory.newLatLngZoom(latlog, 16.5F)
+                mMap.animateCamera(camara)    /// MUEVE LA CAMARA HASTA EL MARCADOR ///
+            }
+            flujoBdUbicacion.close()
+            consultaUbicacion.close()
+        }
+        flujoBdMateriales.close()
+        materialUsuario.close()
+    }
+
+    private fun chipMaterial(vista : View ,material : String){
+        val i = LayoutInflater.from(this@SesionUsuario)
+        val chipItem = i.inflate(R.layout.chip, null , false) as Chip
+        val fab = findViewById<FloatingActionButton>(R.id.fabMejorPrecio_sesionUsuario)
+        val tv = findViewById<TextView>(R.id.tvMejorPrecio_maps)
+
+        if(contador < 1){
+            chipItem.text = material
+            chipgroup?.addView(chipItem)
+            chipgroup?.visibility = View.VISIBLE
+            contador ++
+        } else {
+            Snackbar.make(vista, R.string.maximoMateriales_str, Snackbar.LENGTH_LONG).show()
+        }
+
+        chipItem.setOnClickListener {
+            if(contador < 1) {
+                buscarMaterial_sesionUsuario(vista)
+            } else {
+                Snackbar.make(vista, R.string.maximoMateriales_str, Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        chipItem.setOnCloseIconClickListener {
+            cargarRecicladoras()
+
+            chipgroup?.removeView(chipItem)
+            contador --
+
+            if(contador == 0){
+                fab.hide()
+                tv.text = ""
+            }
+        }
+
+        fab.show()
+        tv.text = "Mejor precio"
+        fab.setOnClickListener {
+            mejorPrecio(material)
+        }
     }
 
     private fun cerrarDrawer(){

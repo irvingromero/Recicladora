@@ -202,7 +202,7 @@ class UbicacionRecicladora : AppCompatActivity(), OnMapReadyCallback {
 
             val latlog = LatLng(latitude!!, longitud!!)
             mapita.moveCamera(CameraUpdateFactory.newLatLng(latlog))
-            mapita.setMinZoomPreference(14.5f)
+            mapita.setMinZoomPreference(11.0f)
         } catch (e: Exception) { }
     }
 }
