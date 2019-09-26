@@ -38,6 +38,7 @@ import irvinc.example.com.inicioprincipal.InicioSinSesion.MapsActivity
 import irvinc.example.com.inicioprincipal.R
 import kotlinx.android.synthetic.main.datos_recicladora.*
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -87,6 +88,23 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
                 bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
+
+        val rb = findViewById<RatingBar>(R.id.rbPuntuar_datosRecicladora)
+        rb.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener{
+            override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
+                val b = BaseDeDatos(applicationContext, "Calificacion", null, 1)
+                val bf = b.readableDatabase
+                val c = bf.rawQuery("select usuarioCliente from Calificacion where usuarioCliente = '$usuarioLogeado'", null)
+
+                if(c.moveToFirst()){
+                    modificarCalificacion(p0!!.rating)
+                } else {
+                    calificar(p0!!.rating)
+                }
+                bf.close()
+                c.close()
+            }
+        })
     }
 
     private fun detectarSlide(){
@@ -123,6 +141,29 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         mMap.setOnInfoWindowClickListener {
             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         }
+    }
+
+    private fun calificar(calificacion : Float){
+        val nombreRecicladora = tvNombre_datosRecicladora.text.toString()
+
+        val db = BaseDeDatos(this, "Usuarios", null , 1)
+        val dbFlow = db.readableDatabase
+        val usuarioReci = dbFlow.rawQuery("select usuario from Recicladoras where nombre = '$nombreRecicladora'",null)
+
+        if(usuarioReci.moveToFirst()){
+            val datosNuevos = ContentValues()
+            datosNuevos.put("usuarioRecicladora", usuarioReci.getString(0))
+            datosNuevos.put("calificacion", calificacion)
+            datosNuevos.put("usuarioCliente", usuarioLogeado)
+
+            dbFlow.insert("Calificacion", null, datosNuevos)
+            dbFlow.close()
+        }
+        usuarioReci.close()
+    }
+
+    private fun modificarCalificacion(calificacion: Float){
+
     }
 
     private fun cargarRecicladoras(){
@@ -204,6 +245,40 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         rv?.adapter = adap
     }
 
+    private fun cargarCalificacionRecicladora(nombreRecicladora: String){
+        val rbMostrar = findViewById<RatingBar>(R.id.rbPuntuar_datosRecicladora)
+
+        val objetobasededatos = BaseDeDatos(this, "Usuarios", null, 1)
+        val flujodedatos = objetobasededatos.readableDatabase
+        val variableCursor = flujodedatos.rawQuery("select usuario from Recicladoras where nombre = '$nombreRecicladora'", null)
+
+        if(variableCursor.moveToFirst()){
+            val usuarioReci = variableCursor.getString(0)
+            variableCursor.close()
+
+            val cursorPuntuacion = flujodedatos.rawQuery("select calificacion from Calificacion where usuarioRecicladora = '$usuarioReci'", null)
+            if(cursorPuntuacion.moveToFirst()){
+                tvPuntuacion_datosRecicla.text = cursorPuntuacion.getFloat(0).toString()
+            } else {
+                tvPuntuacion_datosRecicla.text = "0"
+            }
+            flujodedatos.close()
+            cursorPuntuacion.close()
+
+                /// CARGA LA CALIFICACION QUE DIO EL USUARIO A LA RECICLADORA ///
+            val objetobasededatos2222 = BaseDeDatos(this, "Usuarios", null, 1)
+            val flujo = objetobasededatos2222.readableDatabase
+            val zz = flujo.rawQuery("select calificacion from Calificacion where usuarioRecicladora = '$usuarioReci' and usuarioCliente = '$usuarioLogeado'", null)
+            if(zz.moveToFirst()){
+                rbMostrar.rating = zz.getFloat(0)
+            } else {
+                rbMostrar.rating = 0.0f
+            }
+            flujo.close()
+            zz.close()
+        }
+    }
+
     override fun onMarkerClick(p0: Marker?): Boolean {
         findViewById<TextView>(R.id.tvNombre_datosRecicladora).text = p0?.title
 
@@ -223,6 +298,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
 
                         cargarDatosRecicladora(p0!!.title)
                         cargarMaterialesRecicladora(p0!!.title)
+                        cargarCalificacionRecicladora(p0!!.title)
                     }
                     BottomSheetBehavior.STATE_COLLAPSED ->{
                         drawerLayout?.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
@@ -409,15 +485,14 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         val dialog: AlertDialog = ventana.create()
 
         val listaview = dialogView.findViewById<ListView>(R.id.lvBuscar_material)
-        listaview.isClickable = true
+        listaMateriales = ArrayList()
 
         val odb = BaseDeDatos(this, "Materiales", null, 1)
         val fdb = odb.readableDatabase
         val cursorMaterial = fdb.rawQuery("select material from Materiales", null)
 
         if(cursorMaterial.moveToFirst()){
-            listaMateriales = ArrayList()
-
+            listaview.isClickable = true
             do{
                 listaMateriales?.add(cursorMaterial.getString(0))
             }while (cursorMaterial.moveToNext())
@@ -427,6 +502,9 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
             hs.addAll(listaMateriales!!)
             listaMateriales!!.clear()
             listaMateriales!!.addAll(hs)
+        } else {
+            listaMateriales!!.add("No materiales disponibles")
+            listaview.isClickable = false
         }
         fdb.close()
         cursorMaterial.close()

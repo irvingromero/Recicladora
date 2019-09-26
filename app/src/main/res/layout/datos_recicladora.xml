@@ -59,7 +59,6 @@
                         android:id="@+id/tvPuntuacion_datosRecicla"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4.5"
                         android:textSize="19dp"
                         android:layout_toRightOf="@id/fotoRecicladora_datosRecicladora"
                         android:paddingTop="6dp"

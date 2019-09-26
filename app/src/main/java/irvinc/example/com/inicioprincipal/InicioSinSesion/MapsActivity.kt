@@ -372,14 +372,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val dialog: AlertDialog = ventana.create()
 
         val listaview = dialogView.findViewById<ListView>(R.id.lvBuscar_material)
-        listaview.isClickable = true
+        listaMateriales = ArrayList()
 
         val odb = BaseDeDatos(this, "Materiales", null, 1)
         val fdb = odb.readableDatabase
         val cursorMaterial = fdb.rawQuery("select material from Materiales", null)
 
         if(cursorMaterial.moveToFirst()){
-            listaMateriales = ArrayList()
+            listaview.isClickable = true
 
             do{
                 listaMateriales?.add(cursorMaterial.getString(0))
@@ -390,6 +390,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             hs.addAll(listaMateriales!!)
             listaMateriales!!.clear()
             listaMateriales!!.addAll(hs)
+        } else {
+            listaMateriales!!.add("No materiales disponibles")
+            listaview.isClickable = false
         }
         fdb.close()
         cursorMaterial.close()
