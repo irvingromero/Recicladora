@@ -10,6 +10,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.button.MaterialButton
 import android.support.design.chip.Chip
 import android.support.design.chip.ChipGroup
 import android.support.design.widget.*
@@ -37,6 +38,7 @@ import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.InicioSinSesion.MapsActivity
 import irvinc.example.com.inicioprincipal.R
 import kotlinx.android.synthetic.main.datos_recicladora.*
+import java.math.RoundingMode
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
@@ -67,6 +69,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
         usuarioLogeado = intent.extras?.getString("usuario")
+        findViewById<TextView>(R.id.tvUsuario_SesionUsuario).text = usuarioLogeado.toString()
         rv = findViewById(R.id.rvMateriales_datosRecicla)
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapaUsuario) as SupportMapFragment
@@ -89,22 +92,10 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
             }
         }
 
-        val rb = findViewById<RatingBar>(R.id.rbPuntuar_datosRecicladora)
-        rb.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener{
-            override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
-                val b = BaseDeDatos(applicationContext, "Calificacion", null, 1)
-                val bf = b.readableDatabase
-                val c = bf.rawQuery("select usuarioCliente from Calificacion where usuarioCliente = '$usuarioLogeado'", null)
-
-                if(c.moveToFirst()){
-                    modificarCalificacion(p0!!.rating)
-                } else {
-                    calificar(p0!!.rating)
-                }
-                bf.close()
-                c.close()
-            }
-        })
+        val btnCalificar = findViewById<MaterialButton>(R.id.btnCalificar_datos_recicladora)
+        btnCalificar.setOnClickListener {
+            botonCalificar()
+        }
     }
 
     private fun detectarSlide(){
@@ -163,7 +154,21 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
     }
 
     private fun modificarCalificacion(calificacion: Float){
+        val nombreRecicladora = tvNombre_datosRecicladora.text.toString()
 
+        val db = BaseDeDatos(this, "Usuarios", null , 1)
+        val connect = db.writableDatabase
+        val usuarioRecicladora = connect.rawQuery("select usuario from Recicladoras where nombre = '$nombreRecicladora'",null)
+
+        if(usuarioRecicladora.moveToFirst()){
+            val calificacionNueva = ContentValues()
+            calificacionNueva.put("calificacion", calificacion)
+
+            connect.update("Calificacion", calificacionNueva, "usuarioRecicladora=? AND usuarioCliente=?", arrayOf(usuarioRecicladora.getString(0), usuarioLogeado))
+            connect.close()
+        }
+        connect.close()
+        usuarioRecicladora.close()
     }
 
     private fun cargarRecicladoras(){
@@ -258,14 +263,25 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
 
             val cursorPuntuacion = flujodedatos.rawQuery("select calificacion from Calificacion where usuarioRecicladora = '$usuarioReci'", null)
             if(cursorPuntuacion.moveToFirst()){
-                tvPuntuacion_datosRecicla.text = cursorPuntuacion.getFloat(0).toString()
-            } else {
+                var sumaPuntuaje = 0.0f
+                var temp: Float
+
+                do{
+                    temp = cursorPuntuacion.getFloat(0)
+                    var aux = temp + sumaPuntuaje
+                    sumaPuntuaje = aux
+                }while (cursorPuntuacion.moveToNext())
+
+                val promedio = sumaPuntuaje / cursorPuntuacion.count///NUMERO DE USUARIOS QUE HAN PUNTUADO///
+                val promedioCorto = promedio.toBigDecimal().setScale(1, RoundingMode.HALF_UP).toString()/// RECORTA LOS DECIMALES A 1 ////
+                tvPuntuacion_datosRecicla.text = promedioCorto
+            } else {///NUNCA A SIDO PUNTUADA LA RECICLADORA ///
                 tvPuntuacion_datosRecicla.text = "0"
             }
             flujodedatos.close()
             cursorPuntuacion.close()
 
-                /// CARGA LA CALIFICACION QUE DIO EL USUARIO A LA RECICLADORA ///
+                //// CARGA LA CALIFICACION QUE DIO EL USUARIO A LA RECICLADORA ////
             val objetobasededatos2222 = BaseDeDatos(this, "Usuarios", null, 1)
             val flujo = objetobasededatos2222.readableDatabase
             val zz = flujo.rawQuery("select calificacion from Calificacion where usuarioRecicladora = '$usuarioReci' and usuarioCliente = '$usuarioLogeado'", null)
@@ -320,6 +336,49 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
             }
         })
         return false
+    }
+
+    fun botonCalificar(){
+        val rb = findViewById<RatingBar>(R.id.rbPuntuar_datosRecicladora)
+        val nombreRecicladora = tvNombre_datosRecicladora.text.toString()
+
+        val db = BaseDeDatos(applicationContext, "Usuarios", null , 1)
+        val connect = db.readableDatabase
+        val usuarioRecicladora = connect.rawQuery("select usuario from Recicladoras where nombre = '$nombreRecicladora'",null)
+
+        if(usuarioRecicladora.moveToFirst()){
+            val recicladora = usuarioRecicladora.getString(0)
+            usuarioRecicladora.close()
+
+            val c = connect.rawQuery("select usuarioCliente from Calificacion where usuarioCliente = '$usuarioLogeado' and usuarioRecicladora = '$recicladora'", null)
+            if(c.moveToFirst()){
+                modificarCalificacion(rb.rating)
+
+                val toast = Toast(applicationContext)
+                //// CARGA EL LAYOUT A UNA VISTA ////
+                val view = layoutInflater.inflate(R.layout.usuario_registrado, null)
+                toast.view = view
+                toast.duration = Toast.LENGTH_LONG
+                toast.setGravity(Gravity.BOTTOM, 0, 30)
+                view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text = getString(R.string.calificacionModif_str)
+                view.setBackgroundColor(resources.getColor(R.color.colorPrimaryDark))
+                toast.show()
+            } else {
+                calificar(rb.rating)
+
+                val toast = Toast(applicationContext)
+                //// CARGA EL LAYOUT A UNA VISTA ////
+                val view = layoutInflater.inflate(R.layout.usuario_registrado, null)
+                toast.view = view
+                toast.duration = Toast.LENGTH_LONG
+                toast.setGravity(Gravity.BOTTOM, 0, 30)
+                view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text = getString(R.string.calificacionAgregada_str)
+                view.setBackgroundColor(resources.getColor(R.color.colorPrimaryDark))
+                toast.show()
+            }
+            connect.close()
+            c.close()
+        }
     }
 
     @SuppressLint("MissingPermission")

@@ -275,6 +275,16 @@
                         android:layout_below="@id/textoPuntuacion_datosRe"
                         android:layout_centerHorizontal="true"
                         android:progressTint="@color/colorAmarillo"/>
+
+                <android.support.design.button.MaterialButton
+                        android:id="@+id/btnCalificar_datos_recicladora"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/rbPuntuar_datosRecicladora"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/calificar_str"
+                        app:cornerRadius="30dp"
+                        app:rippleColor="@color/colorNegro" />
             </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>
     </FrameLayout>

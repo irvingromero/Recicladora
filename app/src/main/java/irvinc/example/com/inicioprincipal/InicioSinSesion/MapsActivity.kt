@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
+import android.support.design.button.MaterialButton
 import android.support.design.chip.Chip
 import android.support.design.chip.ChipGroup
 import android.support.design.widget.BottomSheetBehavior
@@ -46,6 +47,7 @@ import irvinc.example.com.inicioprincipal.R
 import irvinc.example.com.inicioprincipal.Recicladora.SesionRecicladora
 import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
 import kotlinx.android.synthetic.main.datos_recicladora.*
+import java.math.RoundingMode
 import java.util.ArrayList
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -96,13 +98,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         }
 
-        val rb = findViewById<RatingBar>(R.id.rbPuntuar_datosRecicladora)
-        rb.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener{
-            override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
-                mensaje()
-                rb.rating = 0.0f
-            }
-        })
+        val botonCalificar = findViewById<MaterialButton>(R.id.btnCalificar_datos_recicladora)
+        botonCalificar.setOnClickListener {
+            mensaje()
+            val rb = findViewById<RatingBar>(R.id.rbPuntuar_datosRecicladora)
+            rb.rating = 0.0f
+        }
     }
 
     private fun sesionGuardada(){
@@ -177,6 +178,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                         cargarDatosRecicladora(p0!!.title)
                         cargarMaterialesRecicladora(p0!!.title)
+                        cargarCalificacionRecicladora(p0!!.title)
                     }
 
                     BottomSheetBehavior.STATE_COLLAPSED ->{
@@ -279,6 +281,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         datos.close()
         val adap = Adapter(listaMateriales!!)
         rv?.adapter = adap
+    }
+
+    private fun cargarCalificacionRecicladora(nombreRecicladora: String){
+        val objetobasededatos = BaseDeDatos(this, "Usuarios", null, 1)
+        val flujodedatos = objetobasededatos.readableDatabase
+        val variableCursor = flujodedatos.rawQuery("select usuario from Recicladoras where nombre = '$nombreRecicladora'", null)
+
+        if(variableCursor.moveToFirst()){
+            val usuarioReci = variableCursor.getString(0)
+            variableCursor.close()
+
+            val cursorPuntuacion = flujodedatos.rawQuery("select calificacion from Calificacion where usuarioRecicladora = '$usuarioReci'", null)
+            if(cursorPuntuacion.moveToFirst()){
+                var sumaPuntuaje = 0.0f
+                var temp: Float
+
+                do{
+                    temp = cursorPuntuacion.getFloat(0)
+                    var aux = temp + sumaPuntuaje
+                    sumaPuntuaje = aux
+                }while (cursorPuntuacion.moveToNext())
+
+                val promedio = sumaPuntuaje / cursorPuntuacion.count///NUMERO DE USUARIOS QUE HAN PUNTUADO///
+                val promedioCorto = promedio.toBigDecimal().setScale(1, RoundingMode.HALF_UP).toString()/// RECORTA LOS DECIMALES A 1 ////
+                tvPuntuacion_datosRecicla.text = promedioCorto
+            } else {///NUNCA A SIDO PUNTUADA LA RECICLADORA ///
+                tvPuntuacion_datosRecicla.text = "0"
+            }
+            flujodedatos.close()
+            cursorPuntuacion.close()
+        }
     }
 
     @SuppressLint("MissingPermission")

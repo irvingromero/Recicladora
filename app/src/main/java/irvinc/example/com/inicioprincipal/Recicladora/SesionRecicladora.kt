@@ -48,7 +48,6 @@ class SesionRecicladora : AppCompatActivity() {
         usuarioLogeado = intent.extras?.getString("usuario")
         findViewById<TextView>(R.id.tvUsuario_SesionRecicladora).text = usuarioLogeado.toString()
 
-
         rv = findViewById(R.id.rvMateriales_sesionRecicladora)
 
         cargarMateriales()

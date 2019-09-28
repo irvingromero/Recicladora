@@ -41,6 +41,8 @@
     <string name="datosModificados_str">Datos modificados</string>
     <string name="materialesDisponibles_str">Materiales disponibles</string>
     <string name="maximoMateriales_str">Maximo 1 material</string>
+    <string name="calificacionAgregada_str">Calificacion agregada!</string>
+    <string name="calificacionModif_str">Calificacion modificada!</string>
 
     <!-- Sesion recicladora -->
     <string name="hola_str">Hola:</string>
@@ -73,6 +75,7 @@
     <string name="calle_str">Calle</string>
     <string name="entreCalle_str">Entre calle</string>
     <string name="numeroInt_str">Numero Interior</string>
+    <string name="calificar_str">Calificar</string>
 
     <!-- Ubicacion Recicladora -->
     <string name="miUbicacion_str">Mi ubicacion</string>

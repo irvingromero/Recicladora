@@ -79,6 +79,7 @@
                         android:layout_marginTop="6dp"
                         android:layout_marginBottom="7dp"
                         android:text="@string/hola_str"
+                        android:textSize="16sp"
                         android:textColor="@android:color/white"/>
 
                 <TextView
@@ -86,9 +87,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/white"
+                        android:textSize="16sp"
                         android:layout_marginTop="6dp"
-                        android:layout_marginBottom="7dp"
-                        android:text="usuario xd"/>
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginBottom="7dp"/>
             </LinearLayout>
 
             <android.support.design.button.MaterialButton
@@ -160,6 +162,14 @@
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"
                     android:onClick="cerrarSesion"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginRight="35dp"
+                    android:background="@color/colorNegro"/>
         </LinearLayout>
     </ScrollView>
 </android.support.v4.widget.DrawerLayout>
