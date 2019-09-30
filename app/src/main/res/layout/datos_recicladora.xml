@@ -181,15 +181,38 @@
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
-                <TextView
-                        android:layout_below="@id/lyColoniaYnum_datosRecicla"
+                <LinearLayout
                         android:id="@+id/separador1"
                         android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/colorNegro"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginLeft="25dp"
-                        android:layout_marginRight="25dp"/>
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@id/lyColoniaYnum_datosRecicla"
+                        android:weightSum="2">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="2dp"
+                            android:layout_marginLeft="25dp"
+                            android:background="@color/colorNegro"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:text="@string/materiales_str"
+                            android:textColor="@color/colorNegro"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="2dp"
+                            android:layout_marginRight="25dp"
+                            android:background="@color/colorNegro"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"/>
+                </LinearLayout>
 
                 <LinearLayout
                         android:layout_below="@id/separador1"
@@ -200,13 +223,6 @@
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp">
 
-                    <TextView
-                            android:id="@+id/materiales_datosReci"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Materiales"
-                            android:layout_gravity="center"/>
-
                     <android.support.v7.widget.RecyclerView
                             android:id="@+id/rvMateriales_datosRecicla"
                             android:layout_width="match_parent"
@@ -214,15 +230,38 @@
                     </android.support.v7.widget.RecyclerView>
                 </LinearLayout>
 
-                <TextView
-                        android:layout_below="@id/ly"
+                <LinearLayout
                         android:id="@+id/separador2"
                         android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/colorNegro"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginLeft="25dp"
-                        android:layout_marginRight="25dp"/>
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@id/ly"
+                        android:weightSum="2">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="2dp"
+                            android:layout_marginLeft="25dp"
+                            android:background="@color/colorNegro"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:text="@string/horario_str"
+                            android:textColor="@color/colorNegro"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="2dp"
+                            android:layout_marginRight="25dp"
+                            android:background="@color/colorNegro"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"/>
+                </LinearLayout>
 
                 <LinearLayout
                         android:id="@+id/lyHorarios_datosReci"
@@ -233,14 +272,6 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp">
 
-                    <TextView
-                            android:id="@+id/horarios_datosReci"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="horarios"
-                            android:layout_below="@id/separador2"
-                            android:layout_gravity="center" />
-
                     <android.support.v7.widget.RecyclerView
                             android:id="@+id/rvHorarios_datosRecicla"
                             android:layout_width="match_parent"
@@ -248,31 +279,45 @@
                     </android.support.v7.widget.RecyclerView>
                 </LinearLayout>
 
-                <TextView
-                        android:id="@+id/seprador3"
+                <LinearLayout
+                        android:id="@+id/separador3"
                         android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/colorNegro"
-                        android:layout_below="@id/lyHorarios_datosReci"
-                        android:layout_marginLeft="25dp"
-                        android:layout_marginRight="25dp"
-                        android:layout_marginTop="5dp"/>
-
-                <TextView
-                        android:id="@+id/textoPuntuacion_datosRe"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/seprador3"
-                        android:text="puntuacion"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="5dp"/>
+                        android:orientation="horizontal"
+                        android:layout_below="@id/lyHorarios_datosReci"
+                        android:weightSum="2">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="2dp"
+                            android:layout_marginLeft="25dp"
+                            android:background="@color/colorNegro"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:text="@string/evaluar_str"
+                            android:textColor="@color/colorNegro"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="2dp"
+                            android:layout_marginRight="25dp"
+                            android:background="@color/colorNegro"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"/>
+                </LinearLayout>
 
                 <RatingBar
                         android:id="@+id/rbPuntuar_datosRecicladora"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:numStars="5"
-                        android:layout_below="@id/textoPuntuacion_datosRe"
+                        android:layout_below="@id/separador3"
                         android:layout_centerHorizontal="true"
                         android:progressTint="@color/colorAmarillo"/>
 

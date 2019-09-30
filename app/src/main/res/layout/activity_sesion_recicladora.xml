@@ -52,6 +52,36 @@
                 android:layout_marginRight="10dp"
                 android:layout_below="@id/btnMenu_sesionRecicladora">
         </android.support.v7.widget.RecyclerView>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                android:layout_below="@id/rvMateriales_sesionRecicladora">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/puntuacion_str"
+                    android:textSize="20sp"/>
+
+            <TextView
+                    android:id="@+id/tvMostrarCalificacion_sesionRecicladora"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="21sp"/>
+
+            <RatingBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="1"
+                    android:rating="1"
+                    android:progressTint="@color/colorAmarillo" />
+        </LinearLayout>
     </RelativeLayout>
 
     <ScrollView
@@ -106,7 +136,7 @@
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"
                     android:onClick="misDatos"/>
-
+<!--
             <android.support.design.button.MaterialButton
                     android:id="@+id/btnImagen_sesionRecicladora"
                     android:layout_width="match_parent"
@@ -120,7 +150,7 @@
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"
                     android:onClick="fotos"/>
-
+-->
             <android.support.design.button.MaterialButton
                     android:id="@+id/btnUbicacion_sesionRecicladora"
                     android:layout_width="match_parent"

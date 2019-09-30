@@ -23,6 +23,7 @@ import android.widget.*
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.InicioSinSesion.MapsActivity
 import irvinc.example.com.inicioprincipal.R
+import java.math.RoundingMode
 import java.util.ArrayList
 
 class SesionRecicladora : AppCompatActivity() {
@@ -47,6 +48,7 @@ class SesionRecicladora : AppCompatActivity() {
         rv = findViewById(R.id.rvMateriales_sesionRecicladora)
 
         cargarMateriales()
+        cargarCalificacion()
 
         detectarSlide()
         findViewById<ImageButton>(R.id.btnMenu_sesionRecicladora).setOnClickListener {
@@ -57,7 +59,7 @@ class SesionRecicladora : AppCompatActivity() {
 
     private fun cargarMateriales(){
         rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
-        listaMateriales = ArrayList<String>()
+        listaMateriales = ArrayList()
 
         val bd =  BaseDeDatos(this, "Materiales", null , 1)
         val basededatos = bd.readableDatabase
@@ -77,6 +79,33 @@ class SesionRecicladora : AppCompatActivity() {
         basededatos.close()
         val adap = Adapter(listaMateriales!!, usuarioLogeado!!)
         rv?.adapter = adap
+    }
+
+    private fun cargarCalificacion(){
+        val tvCalificacion = findViewById<TextView>(R.id.tvMostrarCalificacion_sesionRecicladora)
+
+        val objetobasededatos = BaseDeDatos(this, "Usuarios", null, 1)
+        val flujodedatos = objetobasededatos.readableDatabase
+
+        val cursorPuntuacion = flujodedatos.rawQuery("select calificacion from Calificacion where usuarioRecicladora = '$usuarioLogeado'", null)
+        if(cursorPuntuacion.moveToFirst()){
+            var sumaPuntuaje = 0.0f
+            var temp: Float
+
+            do{
+                temp = cursorPuntuacion.getFloat(0)
+                var aux = temp + sumaPuntuaje
+                sumaPuntuaje = aux
+            }while (cursorPuntuacion.moveToNext())
+
+            val promedio = sumaPuntuaje / cursorPuntuacion.count///NUMERO DE USUARIOS QUE HAN PUNTUADO///
+            val promedioCorto = promedio.toBigDecimal().setScale(1, RoundingMode.HALF_UP).toString()/// RECORTA LOS DECIMALES A 1 ////
+            tvCalificacion.text = promedioCorto
+        } else {///NUNCA A SIDO PUNTUADA LA RECICLADORA ///
+            tvCalificacion.text = "0"
+        }
+        flujodedatos.close()
+        cursorPuntuacion.close()
     }
 
     fun agregarMaterial(v : View){

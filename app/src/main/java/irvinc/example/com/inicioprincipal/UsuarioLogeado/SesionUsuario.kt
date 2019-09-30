@@ -378,6 +378,8 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
             }
             connect.close()
             c.close()
+
+            cargarCalificacionRecicladora(nombreRecicladora)
         }
     }
 

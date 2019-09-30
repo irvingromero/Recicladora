@@ -64,6 +64,8 @@
     <string name="material_eliminado_str">Material Eliminado</string>
     <string name="nombreRecicladora_str">Nombre recicladora</string>
     <string name="arroba_str">Debe contener un @</string>
+    <string name="puntuacion_str">Puntuacion:</string>
+    <string name="evaluar_str">Evaluar</string>
 
     <!-- Datos Recicladora -->
     <string name="tusDatos_str">Tus datos</string>
