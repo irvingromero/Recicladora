@@ -551,7 +551,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         val cursorMaterial = fdb.rawQuery("select material from Materiales", null)
 
         if(cursorMaterial.moveToFirst()){
-            listaview.isClickable = true
+            listaview.isEnabled = true
             do{
                 listaMateriales?.add(cursorMaterial.getString(0))
             }while (cursorMaterial.moveToNext())
@@ -563,7 +563,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
             listaMateriales!!.addAll(hs)
         } else {
             listaMateriales!!.add("No materiales disponibles")
-            listaview.isClickable = false
+            listaview.isEnabled = false
         }
         fdb.close()
         cursorMaterial.close()

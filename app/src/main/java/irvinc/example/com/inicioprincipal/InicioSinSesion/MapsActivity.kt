@@ -412,7 +412,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val cursorMaterial = fdb.rawQuery("select material from Materiales", null)
 
         if(cursorMaterial.moveToFirst()){
-            listaview.isClickable = true
+            listaview.isEnabled = true
 
             do{
                 listaMateriales?.add(cursorMaterial.getString(0))
@@ -425,7 +425,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             listaMateriales!!.addAll(hs)
         } else {
             listaMateriales!!.add("No materiales disponibles")
-            listaview.isClickable = false
+            listaview.isEnabled = false
         }
         fdb.close()
         cursorMaterial.close()
@@ -435,12 +435,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         dialog.show()
 
         listaview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            val dato = parent.getItemAtPosition(position)
+            val material = parent.getItemAtPosition(position)
             dialog.dismiss()
-            chipMaterial(v, dato.toString())
+            chipMaterial(v, material.toString())
 
             mMap.clear()
-            recicladorasMaterialBuscado(dato.toString())
+            recicladorasMaterialBuscado(material.toString())
         }
     }
         //////////// TERMINA EL MENU ///////////////

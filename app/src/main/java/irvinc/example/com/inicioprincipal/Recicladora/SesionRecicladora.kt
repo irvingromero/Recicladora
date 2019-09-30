@@ -19,10 +19,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.InicioSinSesion.MapsActivity
 import irvinc.example.com.inicioprincipal.R
@@ -38,8 +35,7 @@ class SesionRecicladora : AppCompatActivity() {
     private var rv : RecyclerView? = null
     private var listaMateriales : ArrayList<String>? = null
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sesion_recicladora)
         cerrarTeclado()
@@ -87,30 +83,32 @@ class SesionRecicladora : AppCompatActivity() {
         var materialOk = false
         var precioOk = false
         var unidadOk = false
-        val bd =  BaseDeDatos(this, "Materiales", null , 1)
+
         val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
-        // CARGA EL LAYOUT PERSONALIZADO//
+        // CARGA EL LAYOUT PERSONALIZADO DEL DIALOG//
         val inflater = this.layoutInflater
         val dialogView = inflater.inflate(R.layout.agregar_material, null)
         ventana.setView(dialogView)
 
-        val material = dialogView.findViewById<TextInputEditText>(R.id.tietMaterial_agregarMaterialXML)
+        val spMaterial = dialogView.findViewById<Spinner>(R.id.spMaterial_agregar_mateiral)
+        val spUnidad = dialogView.findViewById<Spinner>(R.id.spUnidades_agregar_mateiral)
+//        val material = dialogView.findViewById<TextInputEditText>(R.id.tietMaterial_agregarMaterialXML)
         val precio = dialogView.findViewById<TextInputEditText>(R.id.tietPrecio_agregarMaterialXML)
-        val unidad = dialogView.findViewById<TextInputEditText>(R.id.tietUnidad_agregarMaterialXML)
+//        val unidad = dialogView.findViewById<TextInputEditText>(R.id.tietUnidad_agregarMaterialXML)
 
         ventana.setPositiveButton(R.string.agregar_str){ _, _ ->
             cerrarTeclado()
 
             val addMaterial = ContentValues()
             addMaterial.put("usuario", usuarioLogeado)
-            addMaterial.put("material", material.text.toString())
+            addMaterial.put("material", spMaterial.selectedItem.toString())
             addMaterial.put("precio", precio.text.toString().toDouble())
-            addMaterial.put("unidad", unidad.text.toString())
+            addMaterial.put("unidad", spUnidad.selectedItem.toString())
 
+            val bd =  BaseDeDatos(this, "Materiales", null , 1)
             val basededatos = bd.writableDatabase
             basededatos.insert("Materiales", null, addMaterial)
             basededatos.close()
-            bd.close()
 
             val toast = Toast(applicationContext)
             //// CARGA EL LAYOUT A UNA VISTA ////
@@ -131,6 +129,24 @@ class SesionRecicladora : AppCompatActivity() {
         dialog.show()
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
 
+
+        spMaterial.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                if(!spMaterial.selectedItem.toString().contains("Seleccionar material")){
+                    materialOk = true
+
+                    if(materialOk && precioOk && unidadOk)
+                    {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                    }
+                } else {
+                    materialOk = false
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                }
+            }
+        }
+/*
         material.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -156,7 +172,7 @@ class SesionRecicladora : AppCompatActivity() {
                 }
             }
         })
-
+*/
         precio.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -183,6 +199,23 @@ class SesionRecicladora : AppCompatActivity() {
             }
         })
 
+        spUnidad.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                if(!spUnidad.selectedItem.toString().contains("Seleccionar unidad")){
+                    unidadOk = true
+
+                    if(materialOk && precioOk && unidadOk)
+                    {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                    }
+                } else {
+                    unidadOk = false
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                }
+            }
+        }
+/*
         unidad.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -209,8 +242,9 @@ class SesionRecicladora : AppCompatActivity() {
                 }
             }
         })
+*/
     }
-
+        //// MENU ////
     fun misDatos(vista : View){
         val hilo = Handler(Looper.getMainLooper())
         hilo.post {
@@ -249,7 +283,7 @@ class SesionRecicladora : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
-
+        ////    FIN MENU ////
     override fun onBackPressed() {
         if (drawerOpen)
         {
@@ -306,7 +340,6 @@ class SesionRecicladora : AppCompatActivity() {
         override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
             p0.mostrarDatos(list[p1])
 
-
             p0.itemView.findViewById<MaterialButton>(R.id.mbModificar_datosmaterial).setOnClickListener {
                 var materialOk = true
                 var precioOk = true
@@ -324,24 +357,26 @@ class SesionRecicladora : AppCompatActivity() {
 
                 val titulo = dialogView.findViewById<TextView>(R.id.tvTitulo_agregarMaterial)
                 titulo.text = "Editar: "+materialViejo
-                    //////
-                val campoMaterial = dialogView.findViewById<TextInputEditText>(R.id.tietMaterial_agregarMaterialXML)
-                val campoPrecio = dialogView.findViewById<TextInputEditText>(R.id.tietPrecio_agregarMaterialXML)
-                val campoUnidad = dialogView.findViewById<TextInputEditText>(R.id.tietUnidad_agregarMaterialXML)
 
-                campoMaterial.setText(materialViejo)
+                val material = dialogView.findViewById<Spinner>(R.id.spMaterial_agregar_mateiral)
+                val unidad = dialogView.findViewById<Spinner>(R.id.spUnidades_agregar_mateiral)
+//                val campoMaterial = dialogView.findViewById<TextInputEditText>(R.id.tietMaterial_agregarMaterialXML)
+                val campoPrecio = dialogView.findViewById<TextInputEditText>(R.id.tietPrecio_agregarMaterialXML)
+//                val campoUnidad = dialogView.findViewById<TextInputEditText>(R.id.tietUnidad_agregarMaterialXML)
+
+//                campoMaterial.setText(materialViejo)
                 campoPrecio.setText(precioViejo)
-                campoUnidad.setText(unidadViejo)
+//                campoUnidad.setText(unidadViejo)
 
                 ventana.setPositiveButton(R.string.modificar_str){ _, _ ->
-                    val materialNuevo = campoMaterial.text.toString()
+//                    val materialNuevo = campoMaterial.text.toString()
                     val precioNuevo = campoPrecio.text.toString()
-                    val unidadNuevo = campoUnidad.text.toString()
+//                    val unidadNuevo = campoUnidad.text.toString()
 
                     val datos = ContentValues()
-                    datos.put("material", materialNuevo)
+                    datos.put("material", material.selectedItem.toString())
                     datos.put("precio", precioNuevo)
-                    datos.put("unidad", unidadNuevo)
+                    datos.put("unidad", unidad.selectedItem.toString())
 
                     val bd =  BaseDeDatos(p0.itemView.context, "Materiales", null , 1)
                     val basededatos = bd.writableDatabase
@@ -353,7 +388,7 @@ class SesionRecicladora : AppCompatActivity() {
                     notifyItemRemoved(p1)
                     notifyItemChanged(p1, list.size)
 
-                    list!!.add("Material: "+materialNuevo+"\nPrecio: "+precioNuevo+"\nUnidad: "+unidadNuevo)
+                    list.add("Material: "+material.selectedItem.toString()+"\nPrecio: "+precioNuevo+"\nUnidad: "+unidad.selectedItem.toString())
                 }
                 ventana.setNeutralButton(R.string.cancelar_str){ _, _ ->
                 }
@@ -361,6 +396,23 @@ class SesionRecicladora : AppCompatActivity() {
                 val dialog: AlertDialog = ventana.create()
                 dialog.show()
 
+                material.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                    override fun onNothingSelected(p0: AdapterView<*>?) {}
+                    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                        if(!material.selectedItem.toString().contains("Seleccionar material")){
+                            materialOk = true
+
+                            if(materialOk && precioOk && unidadOk)
+                            {
+                                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                            }
+                        } else {
+                            unidadOk = false
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                        }
+                    }
+                }
+/*
                 campoMaterial.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {}
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -384,7 +436,7 @@ class SesionRecicladora : AppCompatActivity() {
                         }
                     }
                 })
-
+*/
                 campoPrecio.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {}
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -396,7 +448,7 @@ class SesionRecicladora : AppCompatActivity() {
                         } else {
                             precioOk = true
 
-                            if(campoPrecio.length() == 26){
+                            if(campoPrecio.length() == 8){
                                 precioOk = false
                                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
                             }
@@ -409,6 +461,23 @@ class SesionRecicladora : AppCompatActivity() {
                     }
                 })
 
+                unidad.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                    override fun onNothingSelected(p0: AdapterView<*>?) {}
+                    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                        if(!unidad.selectedItem.toString().contains("Seleccionar unidad")){
+                            unidadOk = true
+
+                            if(materialOk && precioOk && unidadOk)
+                            {
+                                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                            }
+                        } else {
+                            unidadOk = false
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                        }
+                    }
+                }
+/*
                 campoUnidad.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {}
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -432,8 +501,8 @@ class SesionRecicladora : AppCompatActivity() {
                         }
                     }
                 })
+*/
             }
-
 
             p0.itemView.findViewById<MaterialButton>(R.id.mbEliminar_datosmaterial).setOnClickListener {
                 val material = p0.nombreMaterial(list[p1])
@@ -443,14 +512,15 @@ class SesionRecicladora : AppCompatActivity() {
                 val bdM = BaseDeDatos(p0.itemView.context, "Materiales", null, 1)
                 val basededatosMateriales = bdM.writableDatabase
 
-                basededatosMateriales.delete("Materiales", "material=? AND precio=? AND unidad=?", arrayOf(material, precio, unidad))
+                basededatosMateriales.delete("Materiales", "usuario=? AND material=? AND precio=? AND unidad=?", arrayOf(usuario, material, precio, unidad))
                 basededatosMateriales.close()
+
                     //// ELIMINA EL ELEMENTO DE LA VISTA ////
                 list.removeAt(p1)
                 notifyItemRemoved(p1)
                 notifyItemChanged(p1, list.size)
 
-                Snackbar.make(p0.itemView, "Material eliminado", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(p0.itemView, "$material eliminado", Snackbar.LENGTH_LONG).show()
             }
         }
 
