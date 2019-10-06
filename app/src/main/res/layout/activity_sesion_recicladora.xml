@@ -200,6 +200,48 @@
                     android:layout_marginLeft="35dp"
                     android:layout_marginRight="35dp"
                     android:background="@color/colorNegro"/>
+
+            <android.support.design.button.MaterialButton
+                    android:id="@+id/btnVenta_sesionRecicladora"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/registrarVenta_str"
+                    app:icon="@drawable/mejor_precio_icono"
+                    app:iconTint="@color/colorNegro"
+                    app:cornerRadius="30dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="5dp"
+                    app:rippleColor="@color/colorNegro"
+                    android:onClick="regristroVenta"/>
+
+            <android.support.design.button.MaterialButton
+                    android:id="@+id/btnCompra_sesionRecicladora"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/registrarCompra_str"
+                    app:icon="@drawable/compra_icono"
+                    app:iconTint="@color/colorNegro"
+                    app:cornerRadius="30dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="5dp"
+                    app:rippleColor="@color/colorNegro"
+                    android:onClick="registroCompra"/>
+
+            <android.support.design.button.MaterialButton
+                    android:id="@+id/btnReporte_sesionRecicladora"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/generarReporte_str"
+                    app:icon="@drawable/reporte_icono"
+                    app:iconTint="@color/colorNegro"
+                    app:cornerRadius="30dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="5dp"
+                    app:rippleColor="@color/colorNegro"
+                    android:onClick="generarReporte"/>
         </LinearLayout>
     </ScrollView>
 </android.support.v4.widget.DrawerLayout>

@@ -14,15 +14,10 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-
-        <activity
-                android:name=".Recicladora.UbicacionRecicladora">
-
-        </activity>
-        <activity
-                android:name=".Recicladora.DatosRecicladora"></activity>
-        <activity
-                android:name=".Recicladora.SesionRecicladora"></activity>
+        <activity android:name=".Recicladora.RegistroVenta"></activity>
+        <activity android:name=".Recicladora.UbicacionRecicladora"></activity>
+        <activity android:name=".Recicladora.DatosRecicladora" />
+        <activity android:name=".Recicladora.SesionRecicladora" />
 
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
@@ -32,11 +27,11 @@
                 android:name=".UsuarioLogeado.SesionUsuario"
                 android:resizeableActivity="false"
                 android:supportsPictureInPicture="false"
-                android:windowSoftInputMode="stateHidden"></activity>
+                android:windowSoftInputMode="stateHidden" />
         <activity
                 android:name=".InicioSinSesion.IniciarSesion"
                 android:resizeableActivity="false"
-                android:supportsPictureInPicture="false"></activity>
+                android:supportsPictureInPicture="false" />
         <activity
                 android:name=".InicioSinSesion.MapsActivity"
                 android:resizeableActivity="false"

@@ -66,6 +66,9 @@
     <string name="arroba_str">Debe contener un @</string>
     <string name="puntuacion_str">Puntuacion:</string>
     <string name="evaluar_str">Evaluar</string>
+    <string name="registrarVenta_str">Registrar venta</string>
+    <string name="registrarCompra_str">Registrar compra</string>
+    <string name="generarReporte_str">Reportes</string>
 
     <!-- Datos Recicladora -->
     <string name="tusDatos_str">Tus datos</string>
@@ -84,4 +87,11 @@
     <string name="ubicacionAgregada_str">Ubicacion agregada</string>
     <string name="ubicacionActualizada_str">Ubicacion Actualizada</string>
 
+    <!-- Registrar venta -->
+    <string name="cliente_str">Nombre cliente</string>
+    <string name="materialVendido_str">Material vendido:</string>
+    <string name="cantidadVendida_str">Cantidad vendida</string>
+    <string name="ganancia_str">Ganancia</string>
+    <string name="fechaVenta_str">Fecha de la venta</string>
+    <string name="registroAgregado_str">Registro agregado</string>
 </resources>

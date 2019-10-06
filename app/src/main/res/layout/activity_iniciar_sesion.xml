@@ -48,7 +48,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/usuarioHint_str"
-                        android:inputType="text"/>
+                        android:inputType="text"
+                        android:drawableStart="@drawable/usuario_icono"/>
             </android.support.design.widget.TextInputLayout>
 
 
@@ -64,7 +65,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/contraHint_str"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword"
+                        android:drawableStart="@drawable/candado_icono"/>
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout

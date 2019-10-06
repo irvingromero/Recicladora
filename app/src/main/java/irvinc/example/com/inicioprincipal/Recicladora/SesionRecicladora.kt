@@ -312,6 +312,25 @@ class SesionRecicladora : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
+    fun regristroVenta(vista: View){
+        val hilo = Handler(Looper.getMainLooper())
+        hilo.post {
+            val i = Intent(this, RegistroVenta::class.java)
+            i.putExtra("usuario", usuarioLogeado)
+            startActivity(i)
+
+            cerrarDrawer()
+        }
+    }
+
+    fun registroCompra(view: View){
+
+    }
+
+    fun generarReporte(view: View){
+
+    }
         ////    FIN MENU ////
     override fun onBackPressed() {
         if (drawerOpen)
