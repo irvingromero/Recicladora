@@ -14,9 +14,11 @@ class BaseDeDatos(context: Context, name: String?, factory: SQLiteDatabase.Curso
 
         db.execSQL("create table Recicladoras(usuario text, correo text, contra text, nombre text, telefono text, calle text, colonia text, numeroInt text)")
         db.execSQL("create table Materiales(usuario text, material text, precio double, unidad text)")
+        db.execSQL("create table ListaMateriales(material text)")
         db.execSQL("create table Ubicacion(usuario text, latitud double, longitud double)")
 
         db.execSQL("create table Ventas(usuarioRecicladora text, nombreCliente text, material text, cantidad double, unidad text, ganancia double, fecha text)")
+        db.execSQL("create table Compras(usuarioRecicladora text, nombreCliente text, material text, cantidad double, unidad text, gasto double, fecha text)")
         db.execSQL("create table ClientesRecicladora(nombre text primary key)")
     }
 

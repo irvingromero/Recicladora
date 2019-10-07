@@ -128,27 +128,31 @@ class SesionRecicladora : AppCompatActivity() {
         ventana.setPositiveButton(R.string.agregar_str){ _, _ ->
             cerrarTeclado()
 
-            val addMaterial = ContentValues()
-            addMaterial.put("usuario", usuarioLogeado)
-            addMaterial.put("material", spMaterial.selectedItem.toString())
-            addMaterial.put("precio", precio.text.toString().toDouble())
-            addMaterial.put("unidad", spUnidad.selectedItem.toString())
+            if(!materialRepetido(spMaterial.selectedItem.toString(), precio.text.toString().toDouble(), spUnidad.selectedItem.toString())){
+                val addMaterial = ContentValues()
+                addMaterial.put("usuario", usuarioLogeado)
+                addMaterial.put("material", spMaterial.selectedItem.toString())
+                addMaterial.put("precio", precio.text.toString().toDouble())
+                addMaterial.put("unidad", spUnidad.selectedItem.toString())
 
-            val bd =  BaseDeDatos(this, "Materiales", null , 1)
-            val basededatos = bd.writableDatabase
-            basededatos.insert("Materiales", null, addMaterial)
-            basededatos.close()
+                val bd =  BaseDeDatos(this, "Materiales", null , 1)
+                val basededatos = bd.writableDatabase
+                basededatos.insert("Materiales", null, addMaterial)
+                basededatos.close()
 
-            val toast = Toast(applicationContext)
-            //// CARGA EL LAYOUT A UNA VISTA ////
-            val view = layoutInflater.inflate(R.layout.usuario_registrado, null)
-            toast.view = view
-            toast.duration = Toast.LENGTH_LONG
-            toast.setGravity(Gravity.BOTTOM,0, 30)
-            view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text = getString(R.string.materialAgregado_str)
-            toast.show()
+                val toast = Toast(applicationContext)
+                //// CARGA EL LAYOUT A UNA VISTA ////
+                val view = layoutInflater.inflate(R.layout.usuario_registrado, null)
+                toast.view = view
+                toast.duration = Toast.LENGTH_LONG
+                toast.setGravity(Gravity.BOTTOM,0, 30)
+                view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text = getString(R.string.materialAgregado_str)
+                toast.show()
 
-            cargarMateriales()
+                cargarMateriales()
+            } else {
+                Snackbar.make(v, "Material repetido", Snackbar.LENGTH_LONG).show()
+            }
         }
         ventana.setNeutralButton(R.string.cancelar_str){ _, _ ->
             cerrarTeclado()
@@ -273,6 +277,21 @@ class SesionRecicladora : AppCompatActivity() {
         })
 */
     }
+
+    private fun materialRepetido(material : String, precio: Double, unidad : String) : Boolean {
+        val bd =  BaseDeDatos(this, "Materiales", null , 1)
+        val basededatos = bd.readableDatabase
+        val repetido = basededatos.rawQuery("select material, precio, unidad from Materiales where usuario = '$usuarioLogeado' and material='$material' and precio='$precio' and unidad='$unidad'", null)
+        if(repetido.moveToFirst()){
+            basededatos.close()
+            repetido.close()
+            return true
+        }
+        basededatos.close()
+        repetido.close()
+        return false
+    }
+
         //// MENU ////
     fun misDatos(vista : View){
         val hilo = Handler(Looper.getMainLooper())
@@ -325,7 +344,14 @@ class SesionRecicladora : AppCompatActivity() {
     }
 
     fun registroCompra(view: View){
+        val hilo = Handler(Looper.getMainLooper())
+        hilo.post {
+            val i = Intent(this, RegistrarCompra::class.java)
+            i.putExtra("usuario", usuarioLogeado)
+            startActivity(i)
 
+            cerrarDrawer()
+        }
     }
 
     fun generarReporte(view: View){

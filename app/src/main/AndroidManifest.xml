@@ -14,8 +14,9 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".Recicladora.RegistroVenta"></activity>
-        <activity android:name=".Recicladora.UbicacionRecicladora"></activity>
+        <activity android:name=".Recicladora.RegistrarCompra"></activity>
+        <activity android:name=".Recicladora.RegistroVenta" />
+        <activity android:name=".Recicladora.UbicacionRecicladora" />
         <activity android:name=".Recicladora.DatosRecicladora" />
         <activity android:name=".Recicladora.SesionRecicladora" />
 

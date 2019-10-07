@@ -94,4 +94,10 @@
     <string name="ganancia_str">Ganancia</string>
     <string name="fechaVenta_str">Fecha de la venta</string>
     <string name="registroAgregado_str">Registro agregado</string>
+
+        <!-- Registrar Compra -->
+    <string name="materialComprado">Material comprado:</string>
+    <string name="cantidadComprada_str">Cantidad comprada</string>
+    <string name="gasto_str">Cantidad pagada</string>
+    <string name="fechaCompra_str">Fecha de la compra:</string>
 </resources>
