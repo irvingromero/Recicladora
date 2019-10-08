@@ -335,7 +335,7 @@ class SesionRecicladora : AppCompatActivity() {
     fun regristroVenta(vista: View){
         val hilo = Handler(Looper.getMainLooper())
         hilo.post {
-            val i = Intent(this, RegistroVenta::class.java)
+            val i = Intent(this, VentasRecicladora::class.java)
             i.putExtra("usuario", usuarioLogeado)
             startActivity(i)
 

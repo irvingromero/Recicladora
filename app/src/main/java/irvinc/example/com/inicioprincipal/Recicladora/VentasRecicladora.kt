@@ -2,33 +2,74 @@ package irvinc.example.com.inicioprincipal.Recicladora
 
 import android.app.DatePickerDialog
 import android.content.ContentValues
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.button.MaterialButton
+import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.TextInputEditText
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.R
+import kotlinx.android.synthetic.main.registro_venta_bs.*
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 
-class RegistroVenta : AppCompatActivity() {
+class VentasRecicladora : AppCompatActivity() {
 
     private var usuarioLogeado : String? = null
+    private var bottomSheetBehavior : BottomSheetBehavior<LinearLayout>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_registro_venta)
+        setContentView(R.layout.activity_ventas_recicladora)
 
         supportActionBar?.hide()
         usuarioLogeado = intent.extras?.getString("usuario")
 
+        mostrarVentas()
+
+        bottomSheetBehavior = BottomSheetBehavior.from<LinearLayout>(bsRegistroVenta)
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior?.skipCollapsed = true
+
+            //// LISTENER PARA EL BOTTOMSHEET /////
+        bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(p0: View, p1: Float) {
+                cerrarTeclado()
+
+                val campoNombre = findViewById<TextInputEditText>(R.id.tietNombreVenta_registroVenta)
+                campoNombre.error = null
+            }
+
+            override fun onStateChanged(p0: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN ->{
+                        Toast.makeText(applicationContext, "Cancelado", Toast.LENGTH_SHORT).show()
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> { }
+                }
+            }
+        })
+
+        val boton = findViewById<MaterialButton>(R.id.btnAgregarVenta_VentasRecicladora)
+        boton.setOnClickListener {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+            formularioVenta()
+        }
+
+        findViewById<ImageButton>(R.id.btnAtras_VentasRecicladora).setOnClickListener {
+            onBackPressed()
+        }
+    }
+
+    private fun formularioVenta(){
         val campoNombre = findViewById<TextInputEditText>(R.id.tietNombreVenta_registroVenta)
         val material = findViewById<Spinner>(R.id.spMaterialVendido_registroVenta)
         val campoCantidad = findViewById<TextInputEditText>(R.id.tietCantidad_registroVenta)
@@ -36,10 +77,16 @@ class RegistroVenta : AppCompatActivity() {
         val campoGanancia = findViewById<TextInputEditText>(R.id.tietGanacia_registroVenta)
         val btnRegistro = findViewById<MaterialButton>(R.id.mbRegistroVenta_registroVenta)
         btnRegistro.isEnabled = false
-            //// CARGA LA FECHA DEL DIA ////
+        //// CARGA LA FECHA DEL DIA ////
         val fecha = SimpleDateFormat("d/MM/yyyy").format(Date())
         val campoFecha = findViewById<TextInputEditText>(R.id.tietFecha_registroVenta)
         campoFecha.setText(fecha.toString())
+
+        campoNombre.setText("")
+        campoCantidad.setText("")
+        campoGanancia.setText("")
+        material.setSelection(0)
+        unidad.setSelection(0)
 
         var bnombre = false
         var bmaterial = false
@@ -61,11 +108,7 @@ class RegistroVenta : AppCompatActivity() {
             ventanaFecha.show()
         }
 
-        findViewById<ImageButton>(R.id.btnAtras_registroVenta).setOnClickListener {
-            onBackPressed()
-        }
-        ///////////
-        campoNombre.addTextChangedListener(object : TextWatcher{
+        campoNombre.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -113,8 +156,6 @@ class RegistroVenta : AppCompatActivity() {
                         btnRegistro.isEnabled = true
                     }
                 } else {
-//                    campoCantidad.error = getString(R.string.mensajeUsuario_str)
-//                    requestFocus(campoCantidad)
                     btnRegistro.isEnabled = false
                 }
             }
@@ -146,8 +187,6 @@ class RegistroVenta : AppCompatActivity() {
                         btnRegistro.isEnabled = true
                     }
                 } else {
-//                    campoGanancia.error = getString(R.string.mensajeUsuario_str)
-//                    requestFocus(campoGanancia)
                     btnRegistro.isEnabled = false
                 }
             }
@@ -162,6 +201,7 @@ class RegistroVenta : AppCompatActivity() {
                 campoFecha.text.toString())
 
             onBackPressed()
+            cerrarTeclado()
         }
     }
 
@@ -195,9 +235,26 @@ class RegistroVenta : AppCompatActivity() {
         toast.show()
     }
 
+    private fun mostrarVentas(){
+
+    }
+
+    override fun onBackPressed() {
+        if(bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED){
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     private fun requestFocus(view: View) {
         if (view.requestFocus()) {
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
         }
+    }
+
+    private fun cerrarTeclado(){
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 }
