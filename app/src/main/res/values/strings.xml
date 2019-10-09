@@ -69,6 +69,8 @@
     <string name="registrarVenta_str">Ventas</string>
     <string name="registrarCompra_str">Compras</string>
     <string name="generarReporte_str">Reporte</string>
+    <string name="agregarMaterialLista_str">Agrega un material a la lista</string>
+    <string name="AgregarUnidad_str">Agrega una unidad</string>
 
     <!-- Datos Recicladora -->
     <string name="tusDatos_str">Tus datos</string>

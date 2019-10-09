@@ -82,6 +82,9 @@ class VentasRecicladora : AppCompatActivity() {
         val campoFecha = findViewById<TextInputEditText>(R.id.tietFecha_registroVenta)
         campoFecha.setText(fecha.toString())
 
+        cargarListaMateriales(material)
+        cargarListaUnidad(unidad)
+
         campoNombre.setText("")
         campoCantidad.setText("")
         campoGanancia.setText("")
@@ -203,6 +206,50 @@ class VentasRecicladora : AppCompatActivity() {
             onBackPressed()
             cerrarTeclado()
         }
+    }
+
+    private fun cargarListaMateriales(spmaterial : Spinner){
+        var listaMateriales : ArrayList<String>? = ArrayList()
+
+        val bd =  BaseDeDatos(this, "material", null , 1)
+        val basededatos = bd.readableDatabase
+        val materiales = basededatos.rawQuery("select material from ListaMateriales", null)
+        if(materiales.moveToFirst()){
+            do{
+                listaMateriales?.add(materiales.getString(0))
+            }while (materiales.moveToNext())
+
+            listaMateriales!!.sort()/// ORDENA ALFABETICAMENTE ///
+            listaMateriales?.add(0, "Seleccionar material")
+
+            val a = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listaMateriales)
+            a.setDropDownViewResource(android.R.layout.simple_list_item_activated_1)
+            spmaterial.adapter = a
+        }
+        basededatos.close()
+        materiales.close()
+    }
+
+    private fun cargarListaUnidad(unidad : Spinner){
+        var listaMateriales : ArrayList<String>? = ArrayList()
+
+        val bd =  BaseDeDatos(this, "material", null , 1)
+        val basededatos = bd.readableDatabase
+        val unidades = basededatos.rawQuery("select unidad from ListaUnidades", null)
+        if(unidades.moveToFirst()){
+            do{
+                listaMateriales?.add(unidades.getString(0))
+            }while (unidades.moveToNext())
+
+            listaMateriales!!.sort()/// ORDENA ALFABETICAMENTE ///
+            listaMateriales?.add(0, "Seleccionar unidad")
+
+            val a = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listaMateriales)
+            a.setDropDownViewResource(android.R.layout.simple_list_item_activated_1)
+            unidad.adapter = a
+        }
+        basededatos.close()
+        unidades.close()
     }
 
     private fun registrarVenta(cliente : String, material : String, cantidad : Double, unidad : String, ganancia: Double, fecha : String){

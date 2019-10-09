@@ -28,9 +28,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:entries="@array/materiales"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:background="@drawable/spinner_background" />
 <!--
         <android.support.design.widget.TextInputLayout
@@ -70,7 +69,6 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/spinner_background"
-                android:entries="@array/unidades"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"/>
 <!--

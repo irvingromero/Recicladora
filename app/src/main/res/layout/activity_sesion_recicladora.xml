@@ -242,6 +242,42 @@
                     android:layout_marginTop="5dp"
                     app:rippleColor="@color/colorNegro"
                     android:onClick="generarReporte"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginRight="35dp"
+                    android:background="@color/colorNegro"/>
+
+            <android.support.design.button.MaterialButton
+                    android:id="@+id/btnMaterialLista_sesionRecicladora"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/agregarMaterialLista_str"
+                    app:icon="@drawable/guia_reciclaje_icono"
+                    app:iconTint="@color/colorNegro"
+                    app:cornerRadius="30dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="5dp"
+                    app:rippleColor="@color/colorNegro"
+                    android:onClick="AgregarMaterialLista"/>
+
+            <android.support.design.button.MaterialButton
+                    android:id="@+id/btnUnidadLista_sesionRecicladora"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/AgregarUnidad_str"
+                    app:icon="@drawable/manualidades_icono"
+                    app:iconTint="@color/colorNegro"
+                    app:cornerRadius="30dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="5dp"
+                    app:rippleColor="@color/colorNegro"
+                    android:onClick="AgregarUnidadLista"/>
         </LinearLayout>
     </ScrollView>
 </android.support.v4.widget.DrawerLayout>
