@@ -538,9 +538,10 @@ class SesionRecicladora : AppCompatActivity() {
 
                 val material = dialogView.findViewById<Spinner>(R.id.spMaterial_agregar_mateiral)
                 val unidad = dialogView.findViewById<Spinner>(R.id.spUnidades_agregar_mateiral)
-//                val campoMaterial = dialogView.findViewById<TextInputEditText>(R.id.tietMaterial_agregarMaterialXML)
                 val campoPrecio = dialogView.findViewById<TextInputEditText>(R.id.tietPrecio_agregarMaterialXML)
-//                val campoUnidad = dialogView.findViewById<TextInputEditText>(R.id.tietUnidad_agregarMaterialXML)
+
+                cargarListaMateriales(p0, material)
+                cargarListaUnidades(p0, unidad)
 
 //                campoMaterial.setText(materialViejo)
                 campoPrecio.setText(precioViejo)
@@ -651,6 +652,50 @@ class SesionRecicladora : AppCompatActivity() {
 
                 Snackbar.make(p0.itemView, "$material eliminado", Snackbar.LENGTH_LONG).show()
             }
+        }
+
+        private fun cargarListaMateriales(c : ViewHolder, spmaterial : Spinner){
+            val listaMateriales = ArrayList<String>()
+
+            val bd =  BaseDeDatos(c.itemView.context, "material", null , 1)
+            val basededatos = bd.readableDatabase
+            val materiales = basededatos.rawQuery("select material from ListaMateriales", null)
+            if(materiales.moveToFirst()){
+                do{
+                    listaMateriales?.add(materiales.getString(0))
+                }while (materiales.moveToNext())
+
+                listaMateriales!!.sort()/// ORDENA ALFABETICAMENTE ///
+                listaMateriales?.add(0, "Seleccionar material")
+
+                val a = ArrayAdapter<String>(c.itemView.context, android.R.layout.simple_spinner_item, listaMateriales)
+                a.setDropDownViewResource(android.R.layout.simple_list_item_activated_1)
+                spmaterial.adapter = a
+            }
+            basededatos.close()
+            materiales.close()
+        }
+
+        private fun cargarListaUnidades(c : ViewHolder, unidad : Spinner){
+            val listaUnidades = ArrayList<String>()
+
+            val bd =  BaseDeDatos(c.itemView.context, "material", null , 1)
+            val basededatos = bd.readableDatabase
+            val unidades = basededatos.rawQuery("select unidad from ListaUnidades", null)
+            if(unidades.moveToFirst()){
+                do{
+                    listaUnidades?.add(unidades.getString(0))
+                }while (unidades.moveToNext())
+
+                listaUnidades!!.sort()/// ORDENA ALFABETICAMENTE ///
+                listaUnidades?.add(0, "Seleccionar material")
+
+                val a = ArrayAdapter<String>(c.itemView.context, android.R.layout.simple_spinner_item, listaUnidades)
+                a.setDropDownViewResource(android.R.layout.simple_list_item_activated_1)
+                unidad.adapter = a
+            }
+            basededatos.close()
+            unidades.close()
         }
 
         class ViewHolder(view : View) : RecyclerView.ViewHolder(view){
