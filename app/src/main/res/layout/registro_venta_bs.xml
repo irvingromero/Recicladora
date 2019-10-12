@@ -27,12 +27,18 @@
                 android:background="@drawable/agregar_icono"/>
 
         <TextView
+                android:id="@+id/tvTitulo_registroVenta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="@string/agregarVenta_str"
                 android:textColor="@color/colorNegro"
                 android:textSize="19sp"/>
+
+        <TextView
+                android:id="@+id/tvId_registroVenta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"/>
     </LinearLayout>
 
     <FrameLayout
@@ -60,7 +66,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/cliente_str"
                             android:inputType="text"
-                            android:maxLength="70"/>
+                            android:maxLength="60"
+                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_@#!/-*?~ "/>
                 </android.support.design.widget.TextInputLayout>
 
                 <TextView
@@ -99,7 +106,8 @@
                                 android:layout_height="wrap_content"
                                 android:hint="@string/cantidadVendida_str"
                                 android:inputType="numberDecimal"
-                                android:maxLength="10"/>
+                                android:maxLength="10"
+                                android:digits="0123456789."/>
                     </android.support.design.widget.TextInputLayout>
 
                     <Spinner
@@ -127,7 +135,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/ganancia_str"
                             android:inputType="numberDecimal"
-                            android:maxLength="10"/>
+                            android:maxLength="10"
+                            android:digits="0123456789."/>
                 </android.support.design.widget.TextInputLayout>
 
                 <LinearLayout
@@ -149,6 +158,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/fechaVenta_str"
+                                android:textColor="@color/colorNegro"
                                 android:inputType="date"
                                 android:maxLength="10"
                                 android:focusable="false"

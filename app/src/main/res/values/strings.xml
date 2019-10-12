@@ -99,6 +99,14 @@
     <string name="registroAgregado_str">Registro agregado</string>
     <string name="agregarVenta_str">Agregar venta</string>
     <string name="historialVenta_str">HISTORIAL DE VENTAS</string>
+    <string name="clientedospuntos_str">Cliente:</string>
+    <string name="iddospuntos_str">ID:</string>
+    <string name="materialdospuntos_str">Material:</string>
+    <string name="cantidaddospuntos_str">Cantidad:</string>
+    <string name="unidaddospuntos_str">Unidad:</string>
+    <string name="gananciadospuntos_str">Ganancia:</string>
+    <string name="fechadospuntos_str">Fecha:</string>
+    <string name="editarRegistro_str">Editar registro</string>
 
     <!-- Registrar Compra -->
     <string name="materialComprado">Material comprado:</string>

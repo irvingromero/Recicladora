@@ -21,20 +21,6 @@
                 android:layout_margin="4dp"
                 android:orientation="vertical">
 
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cliente: empresa de ejemplo xdxd S.A de C.V :D"
-                    android:textColor="@color/colorNegro"
-                    android:textSize="16sp"/>
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Material: Aluminio"
-                    android:textColor="@color/colorNegro"
-                    android:textSize="16sp"/>
-
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -44,18 +30,18 @@
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cantidad: 80"
-                        android:layout_weight="1"
+                        android:text="@string/clientedospuntos_str"
                         android:textColor="@color/colorNegro"
                         android:textSize="16sp"/>
 
                 <TextView
+                        android:id="@+id/tvCliente_ventasRecicladora"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Unidad: Toneladas"
-                        android:layout_weight="1"
+                        android:layout_marginLeft="3dp"
                         android:textColor="@color/colorNegro"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp"
+                        android:layout_weight="1"/>
             </LinearLayout>
 
             <LinearLayout
@@ -67,18 +53,113 @@
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ganacia: 2657"
-                        android:layout_weight="1"
+                        android:text="@string/materialdospuntos_str"
                         android:textColor="@color/colorNegro"
                         android:textSize="16sp"/>
 
                 <TextView
+                        android:id="@+id/tvMaterial_ventasRecicladora"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fecha: 31/11/2019"
-                        android:layout_weight="1"
+                        android:layout_marginLeft="3dp"
+                        android:textColor="@color/colorNegro"
+                        android:textSize="16sp"
+                        android:layout_weight="1"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/iddospuntos_str"
+                        android:textColor="@color/colorNegro"
+                        android:textSize="16sp" />
+
+                <TextView
+                        android:id="@+id/tvId_ventasRecicladora"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:text="001"
+                        android:textColor="@color/colorNegro"
+                        android:textSize="16sp"
+                        android:layout_weight="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cantidaddospuntos_str"
                         android:textColor="@color/colorNegro"
                         android:textSize="16sp"/>
+
+                <TextView
+                        android:id="@+id/tvCantidad_ventasRecicladora"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:textColor="@color/colorNegro"
+                        android:textSize="16sp"
+                        android:layout_weight="1"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/unidaddospuntos_str"
+                        android:textColor="@color/colorNegro"
+                        android:textSize="16sp" />
+
+                <TextView
+                        android:id="@+id/tvUnidad_ventasRecicladora"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:textColor="@color/colorNegro"
+                        android:textSize="16sp"
+                        android:layout_weight="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/gananciadospuntos_str"
+                        android:textColor="@color/colorNegro"
+                        android:textSize="16sp"/>
+
+                <TextView
+                        android:id="@+id/tvGanancia_ventaRecicladora"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:textColor="@color/colorNegro"
+                        android:textSize="16sp"
+                        android:layout_weight="1"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fechadospuntos_str"
+                        android:textColor="@color/colorNegro"
+                        android:textSize="16sp" />
+
+                <TextView
+                        android:id="@+id/tvFecha_ventasRecicladora"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:textColor="@color/colorNegro"
+                        android:textSize="16sp"
+                        android:layout_weight="1"/>
             </LinearLayout>
         </LinearLayout>
     </android.support.design.card.MaterialCardView>
