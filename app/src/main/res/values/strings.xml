@@ -107,10 +107,15 @@
     <string name="gananciadospuntos_str">Ganancia:</string>
     <string name="fechadospuntos_str">Fecha:</string>
     <string name="editarRegistro_str">Editar registro</string>
+    <string name="ventaEliminada_str">Venta eliminada</string>
 
     <!-- Registrar Compra -->
+    <string name="datosCompras_str">Datos de Compras</string>
+    <string name="agregarCompra_str">Agregar compra</string>
+    <string name="historialCompras_str">HISTORIAL DE COMPRAS</string>
     <string name="materialComprado">Material comprado:</string>
     <string name="cantidadComprada_str">Cantidad comprada</string>
     <string name="gasto_str">Cantidad pagada</string>
     <string name="fechaCompra_str">Fecha de la compra:</string>
+    <string name="compraEliminada_str">Compra eliminada</string>
 </resources>

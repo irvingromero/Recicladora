@@ -21,112 +21,103 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.R
-import kotlinx.android.synthetic.main.registro_venta_bs.*
+import kotlinx.android.synthetic.main.registro_compra_bs.*
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Calendar
+import java.util.Date
+import kotlin.collections.ArrayList
 
-class VentasRecicladora : AppCompatActivity() {
+class ComprasRecicladora : AppCompatActivity() {
 
-    private var usuarioLogeado : String? = null
+    private var usuarioLogeado : String?= null
     private var bottomSheetBehavior : BottomSheetBehavior<LinearLayout>? = null
     private var rv : RecyclerView? = null
-    private var listaVentas : ArrayList<String>? = null
+    private var listaCompras : ArrayList<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ventas_recicladora)
+        setContentView(R.layout.activity_compras_recicladora)
 
         supportActionBar?.hide()
         usuarioLogeado = intent.extras?.getString("usuario")
 
-        mostrarVentas()
+        mostrarCompras()
 
-        bottomSheetBehavior = BottomSheetBehavior.from<LinearLayout>(bsRegistroVenta)
+        bottomSheetBehavior = BottomSheetBehavior.from<LinearLayout>(bsCompra)
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheetBehavior?.skipCollapsed = true
 
-            //// LISTENER PARA EL BOTTOMSHEET /////
-        bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(p0: View, p1: Float) {
-                val campoNombre = findViewById<TextInputEditText>(R.id.tietNombreVenta_registroVenta)
-                campoNombre.error = null
-            }
-
-            override fun onStateChanged(p0: View, newState: Int) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN ->{ }
-                    BottomSheetBehavior.STATE_EXPANDED -> { }
-                }
-            }
-        })
-
-        findViewById<MaterialButton>(R.id.btnAgregarVenta_VentasRecicladora).setOnClickListener {
-            val titulo = findViewById<TextView>(R.id.tvTitulo_registroVenta)
-            titulo?.text = getString(R.string.agregarVenta_str)
+        findViewById<MaterialButton>(R.id.btnAgregarCompra_ComprasRecicladora).setOnClickListener {
+            val titulo = findViewById<TextView>(R.id.tvTitulo_registroCompra)
+            titulo?.text = getString(R.string.agregarCompra_str)
             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-            formularioVenta()
+            validaCamposCompra()
         }
 
-        findViewById<ImageButton>(R.id.btnAtras_VentasRecicladora).setOnClickListener {
+        findViewById<ImageButton>(R.id.btnAtras_ComprasRecicladora).setOnClickListener {
             onBackPressed()
         }
+
         setRecyclerViewItemTouchListener()
     }
 
-    private fun mostrarVentas(){
-        rv = findViewById(R.id.rvRegistrosVentas_ventasRecicladora)
+    private fun mostrarCompras(){
+        rv = findViewById(R.id.rvRegistroCompras_comprasRecicladora)
         rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
-        listaVentas = ArrayList()
+        listaCompras = ArrayList()
 
-        val bd =  BaseDeDatos(this, "Ventas", null , 1)
-        val basededatos = bd.readableDatabase
-        val datos = basededatos.rawQuery("select nombreCliente, material, id,cantidad, unidad, ganancia, fecha from Ventas where usuarioRecicladora= '$usuarioLogeado'", null)
-        if(datos.moveToFirst())
+        val bdCompras =  BaseDeDatos(this, "Compras", null , 1)
+        val con = bdCompras.readableDatabase
+        val datosCompras = con.rawQuery("select nombreCliente, material, id, cantidad, unidad, gasto, fecha from Compras where usuarioRecicladora= '$usuarioLogeado'", null)
+
+        if(datosCompras.moveToFirst())
         {
             do{
-                val cliente = datos.getString(0)
-                val material = datos.getString(1)
-                val id = datos.getInt(2)
-                val cantidad = datos.getDouble(3)
-                val unidad = datos.getString(4)
-                val ganancia = datos.getDouble(5)
-                val fecha = datos.getString(6)
+                val cliente = datosCompras.getString(0)
+                val material = datosCompras.getString(1)
+                val id = datosCompras.getInt(2)
+                val cantidad = datosCompras.getDouble(3)
+                val unidad = datosCompras.getString(4)
+                val gasto = datosCompras.getDouble(5)
+                val fecha = datosCompras.getString(6)
 
-                listaVentas?.add("$cliente:$material:$id:$cantidad:$unidad:$ganancia:$fecha")
-            } while(datos.moveToNext())
+                listaCompras?.add("$cliente:$material:$id:$cantidad:$unidad:$gasto:$fecha")
+            } while(datosCompras.moveToNext())
         }
-        datos.close()
-        basededatos.close()
+        datosCompras.close()
+        con.close()
 
         val contexto = this
-        val adap = Adapter(listaVentas!!, usuarioLogeado!!, contexto)
+        val adap = Adapter(listaCompras!!, usuarioLogeado!!, contexto)
         rv?.adapter = adap
     }
 
-    private fun formularioVenta(){
-        val campoNombre = findViewById<TextInputEditText>(R.id.tietNombreVenta_registroVenta)
-        val material = findViewById<Spinner>(R.id.spMaterialVendido_registroVenta)
-        val campoCantidad = findViewById<TextInputEditText>(R.id.tietCantidad_registroVenta)
-        val unidad = findViewById<Spinner>(R.id.spUnidad_registroVenta)
-        val campoGanancia = findViewById<TextInputEditText>(R.id.tietGanacia_registroVenta)
-        val btnRegistro = findViewById<MaterialButton>(R.id.mbRegistroVenta_registroVenta)
+    private fun validaCamposCompra(){
+        val campoNombre = findViewById<TextInputEditText>(R.id.tietNombre_registroCompra)
+        val spMaterial = findViewById<Spinner>(R.id.spMaterial_registroCompra)
+        val campoCantidad = findViewById<TextInputEditText>(R.id.tietCantidad_registroCompra)
+        val spUnidad = findViewById<Spinner>(R.id.spUnidad_registroCompra)
+        val campoGasto = findViewById<TextInputEditText>(R.id.tietGasto_registroCompra)
+        val campoFecha = findViewById<TextInputEditText>(R.id.tietFecha_registroCompra)
+        val btnRegistro = findViewById<MaterialButton>(R.id.mbRegistrar_registroCompra)
         btnRegistro.text = getString(R.string.registrar_str)
         btnRegistro.isEnabled = false
+
         //// CARGA LA FECHA DEL DIA ////
         val fecha = SimpleDateFormat("d/MM/yyyy").format(Date())
-        val campoFecha = findViewById<TextInputEditText>(R.id.tietFecha_registroVenta)
         campoFecha.setText(fecha.toString())
-
         campoNombre.setText("")
         campoCantidad.setText("")
-        campoGanancia.setText("")
-        material.setSelection(0)
-        unidad.setSelection(0)
+        campoGasto.setText("")
+        spMaterial.setSelection(0)
+        spUnidad.setSelection(0)
 
         var bnombre = false
         var bmaterial = false
@@ -134,7 +125,7 @@ class VentasRecicladora : AppCompatActivity() {
         var bunidad = false
         var bganancia = false
 
-        findViewById<ImageButton>(R.id.ibCalendario_registroVenta).setOnClickListener {
+        findViewById<ImageButton>(R.id.ibCalendario_registroCompra).setOnClickListener {
             val c = Calendar.getInstance()
             val year = c.get(Calendar.YEAR)
             val month = c.get(Calendar.MONTH)
@@ -158,34 +149,29 @@ class VentasRecicladora : AppCompatActivity() {
                     if(bmaterial && bcantidad && bunidad && bganancia){
                         btnRegistro.isEnabled = true
                     }
-
                 } else {
                     bnombre = false
-
-                    campoNombre.error = getString(R.string.mensajeUsuario_str)
-                    requestFocus(campoNombre)
                     btnRegistro.isEnabled = false
                 }
             }
         })
 
-        material.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        spMaterial.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(p0: AdapterView<*>?) {}
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                if(!material.selectedItem.toString().contains("Seleccionar material")){
+                if(!spMaterial.selectedItem.toString().contains("Seleccionar material")){
                     bmaterial = true
 
                     if(bnombre && bcantidad && bunidad && bganancia){
                         btnRegistro.isEnabled = true
                     }
-
                 } else {
                     btnRegistro.isEnabled = false
                 }
             }
         }
 
-        campoCantidad.addTextChangedListener(object : TextWatcher{
+        campoCantidad.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -201,10 +187,10 @@ class VentasRecicladora : AppCompatActivity() {
             }
         })
 
-        unidad.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        spUnidad.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(p0: AdapterView<*>?) {}
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                if(!unidad.selectedItem.toString().contains("Seleccionar unidad")){
+                if(!spUnidad.selectedItem.toString().contains("Seleccionar unidad")){
                     bunidad = true
 
                     if(bnombre && bcantidad && bcantidad && bganancia){
@@ -216,11 +202,11 @@ class VentasRecicladora : AppCompatActivity() {
             }
         }
 
-        campoGanancia.addTextChangedListener(object : TextWatcher{
+        campoGasto.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(campoGanancia.length() > 0){
+                if(campoGasto.length() > 0){
                     bganancia = true
 
                     if(bnombre && bcantidad && bunidad && bunidad){
@@ -233,11 +219,11 @@ class VentasRecicladora : AppCompatActivity() {
         })
 
         btnRegistro.setOnClickListener {
-            registrarVenta(campoNombre.text.toString(),
-                material.selectedItem.toString(),
+            agregarCompra(campoNombre.text.toString(),
+                spMaterial.selectedItem.toString(),
                 campoCantidad.text.toString().toDouble(),
-                unidad.selectedItem.toString(),
-                campoGanancia.text.toString().toDouble(),
+                spUnidad.selectedItem.toString(),
+                campoGasto.text.toString().toDouble(),
                 campoFecha.text.toString())
 
             //// VOLVER A LANZAR EL ACTIVITY PARA AHORRAR METODO PARA VOLVER A CARGAR EL RV
@@ -245,31 +231,26 @@ class VentasRecicladora : AppCompatActivity() {
             finish()
             val hilo = Handler(Looper.getMainLooper())
             hilo.post {
-                val i = Intent(this, VentasRecicladora::class.java)
+                val i = Intent(this, ComprasRecicladora::class.java)
                 i.putExtra("usuario", usuarioLogeado)
                 startActivity(i)
             }
         }
     }
 
-    private fun registrarVenta(cliente : String, material : String, cantidad : Double, unidad : String, ganancia: Double, fecha : String){
+    private fun agregarCompra(cliente : String, material : String, cantidad : Double, unidad : String, gasto: Double, fecha : String){
         val cv = ContentValues()
         cv.put("usuarioRecicladora", usuarioLogeado)
         cv.put("nombreCliente", cliente)
         cv.put("material", material)
         cv.put("cantidad", cantidad)
         cv.put("unidad", unidad)
-        cv.put("ganancia", ganancia)
+        cv.put("gasto", gasto)
         cv.put("fecha", fecha)
 
-        val cvClientesRecicladora = ContentValues()
-        cvClientesRecicladora.put("nombre", cliente)
-
-        val bd =  BaseDeDatos(this, "Ventas", null , 1)
+        val bd =  BaseDeDatos(this, "Compras", null , 1)
         val basededatos = bd.writableDatabase
-        basededatos.insert("Ventas", null, cv)
-
-        basededatos.insert("ClientesRecicladora", null, cvClientesRecicladora)
+        basededatos.insert("Compras", null, cv)
         basededatos.close()
 
         val toast = Toast(applicationContext)
@@ -282,14 +263,14 @@ class VentasRecicladora : AppCompatActivity() {
         toast.show()
     }
 
-    private fun eliminarVenta(){
+    private fun eliminarCompra(){
         val tvId = findViewById<TextView>(R.id.tvId_ventasRecicladora)
         val id = tvId.text.toString()
 
-        val bdM = BaseDeDatos(this, "Ventas", null, 1)
+        val bdM = BaseDeDatos(this, "Compras", null, 1)
         val basededatosMateriales = bdM.writableDatabase
 
-        basededatosMateriales.delete("Ventas", "id=?", arrayOf(id))
+        basededatosMateriales.delete("Compras", "id=?", arrayOf(id))
         basededatosMateriales.close()
 
         val toast = Toast(applicationContext)
@@ -298,22 +279,8 @@ class VentasRecicladora : AppCompatActivity() {
         toast.view = view
         toast.duration = Toast.LENGTH_LONG
         toast.setGravity(Gravity.BOTTOM,0, 30)
-        view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text = getString(R.string.ventaEliminada_str)
+        view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text = getString(R.string.compraEliminada_str)
         toast.show()
-    }
-
-    override fun onBackPressed() {
-        if(bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED){
-            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-        } else {
-            super.onBackPressed()
-        }
-    }
-
-    private fun requestFocus(view: View) {
-        if (view.requestFocus()) {
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
-        }
     }
 
     private fun setRecyclerViewItemTouchListener() {
@@ -323,13 +290,13 @@ class VentasRecicladora : AppCompatActivity() {
             }
 
             override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
-                dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+                                     dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
 
                 val deleteIcon = ContextCompat.getDrawable(applicationContext, R.drawable.basura_icono)
                 val itemView = viewHolder.itemView
                 val itemHeight = itemView.bottom - itemView.top
                 val intrinsicHeight = deleteIcon?.intrinsicHeight
-                    // Draw the red delete background
+                // Draw the red delete background
                 val background = ColorDrawable()
                 val backgroundColor = Color.parseColor("#E90000")
 
@@ -353,17 +320,25 @@ class VentasRecicladora : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 val position = viewHolder.adapterPosition
-                listaVentas?.removeAt(position)
+                listaCompras?.removeAt(position)
                 rv?.adapter!!.notifyItemRemoved(position)
 
-                eliminarVenta()
+                eliminarCompra()
             }
         }
         val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
         itemTouchHelper.attachToRecyclerView(rv)
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class Adapter(var listaVenta: ArrayList<String>, val usuario : String, contextoActividad : Activity) : RecyclerView.Adapter<Adapter.ViewHolder>(){
+
+    override fun onBackPressed() {
+        if(bottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED){
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        } else {
+            super.onBackPressed()
+        }
+    }
+        /////////////////////////////////////////////////////////////////////////////////////////////
+    class Adapter(var listaComp: ArrayList<String>, val usuario : String, contextoActividad : Activity) : RecyclerView.Adapter<Adapter.ViewHolder>(){
 
         private var bottomSheetBehavior : BottomSheetBehavior<LinearLayout>? = null
         private var titulo : TextView? = null
@@ -372,25 +347,25 @@ class VentasRecicladora : AppCompatActivity() {
         private var spMaterial : Spinner? = null
         private var campoCantidad : TextInputEditText? = null
         private var spUnidad : Spinner? = null
-        private var campoGanancia : TextInputEditText? = null
+        private var campoGasto : TextInputEditText? = null
         private var campoFecha : TextInputEditText? = null
         private var btnCalendar : ImageButton? = null
         private var btnModificar : MaterialButton? = null
-            //// DATOS PARA EDITAR UN REGISTRO ////
+
         init {
-            bottomSheetBehavior = BottomSheetBehavior.from<LinearLayout>(contextoActividad.findViewById(R.id.bsRegistroVenta))
+            bottomSheetBehavior = BottomSheetBehavior.from<LinearLayout>(contextoActividad.findViewById(R.id.bsCompra))
             bottomSheetBehavior?.skipCollapsed = true
 
-            id = contextoActividad.findViewById(R.id.tvId_registroVenta)
-            titulo = contextoActividad.findViewById(R.id.tvTitulo_registroVenta)
-            campoCliente = contextoActividad.findViewById(R.id.tietNombreVenta_registroVenta)
-            spMaterial = contextoActividad.findViewById(R.id.spMaterialVendido_registroVenta)
-            campoCantidad = contextoActividad.findViewById(R.id.tietCantidad_registroVenta)
-            spUnidad = contextoActividad.findViewById(R.id.spUnidad_registroVenta)
-            campoGanancia = contextoActividad.findViewById(R.id.tietGanacia_registroVenta)
-            campoFecha = contextoActividad.findViewById(R.id.tietFecha_registroVenta)
-            btnCalendar = contextoActividad.findViewById(R.id.ibCalendario_registroVenta)
-            btnModificar = contextoActividad.findViewById(R.id.mbRegistroVenta_registroVenta)
+            id = contextoActividad.findViewById(R.id.tvId_registroCompra)
+            titulo = contextoActividad.findViewById(R.id.tvTitulo_registroCompra)
+            campoCliente = contextoActividad.findViewById(R.id.tietNombre_registroCompra)
+            spMaterial = contextoActividad.findViewById(R.id.spMaterial_registroCompra)
+            campoCantidad = contextoActividad.findViewById(R.id.tietCantidad_registroCompra)
+            spUnidad = contextoActividad.findViewById(R.id.spUnidad_registroCompra)
+            campoGasto = contextoActividad.findViewById(R.id.tietGasto_registroCompra)
+            campoFecha = contextoActividad.findViewById(R.id.tietFecha_registroCompra)
+            btnCalendar = contextoActividad.findViewById(R.id.ibCalendario_registroCompra)
+            btnModificar = contextoActividad.findViewById(R.id.mbRegistrar_registroCompra)
 
             cargarListaMateriales(spMaterial!!, contextoActividad.applicationContext)
             cargarListaUnidad(spUnidad!!, contextoActividad.applicationContext)
@@ -401,28 +376,29 @@ class VentasRecicladora : AppCompatActivity() {
                 val month = c.get(Calendar.MONTH)
                 val day = c.get(Calendar.DAY_OF_MONTH)
 
-                val ventanaFecha = DatePickerDialog(contextoActividad, DatePickerDialog.OnDateSetListener { _, year, mes, dia ->
-                    val mesReal = mes+1
-                    val fechaCompleta = "$dia/$mesReal/$year"
-                    campoFecha?.setText(fechaCompleta)
-                }, year, month, day)
+                val ventanaFecha = DatePickerDialog(
+                    contextoActividad,
+                    DatePickerDialog.OnDateSetListener { _, year, mes, dia ->
+                        val mesReal = mes + 1
+                        val fechaCompleta = "$dia/$mesReal/$year"
+                        campoFecha?.setText(fechaCompleta)
+                    }, year, month, day)
                 ventanaFecha.show()
             }
 
             btnModificar?.setOnClickListener {
                 modificarRegistro(contextoActividad.applicationContext)
                 Toast.makeText(contextoActividad.applicationContext, "Registro modificado", Toast.LENGTH_SHORT).show()
-                    //// VOLVER A LANZAR EL ACTIVITY PARA AHORRAR METODO PARA VOLVER A CARGAR EL RV
-                    /// CORRIGE BUG DEL BOTTOMSHEET CON EL TECLADO ABIERTO //////////////
+                //// VOLVER A LANZAR EL ACTIVITY PARA AHORRAR METODO PARA VOLVER A CARGAR EL RV
+                /// CORRIGE BUG DEL BOTTOMSHEET CON EL TECLADO ABIERTO //////////////
                 contextoActividad.finish()
                 val hilo = Handler(Looper.getMainLooper())
                 hilo.post {
-                    val i = Intent(contextoActividad.applicationContext, VentasRecicladora::class.java)
+                    val i = Intent(contextoActividad.applicationContext, ComprasRecicladora::class.java)
                     i.putExtra("usuario", usuario)
                     contextoActividad.startActivity(i)
                 }
             }
-
             validaCampos()
         }
 
@@ -440,7 +416,7 @@ class VentasRecicladora : AppCompatActivity() {
                     if(campoCliente?.length()!! > 2){
                         bnombre = true
 
-                       if(bmaterial && bcantidad && bunidad && bganancia){
+                        if(bmaterial && bcantidad && bunidad && bganancia){
                             btnModificar?.isEnabled = true
                         }
                     } else {
@@ -497,11 +473,11 @@ class VentasRecicladora : AppCompatActivity() {
                 }
             }
 
-            campoGanancia?.addTextChangedListener(object : TextWatcher{
+            campoGasto?.addTextChangedListener(object : TextWatcher{
                 override fun afterTextChanged(p0: Editable?) {}
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    if(campoGanancia?.length()!! > 0){
+                    if(campoGasto?.length()!! > 0){
                         bganancia = true
 
                         if(bnombre && bcantidad && bunidad && bunidad){
@@ -520,15 +496,15 @@ class VentasRecicladora : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return listaVenta.size
+            return listaComp.size
         }
 
         override fun onBindViewHolder(p0: ViewHolder, pos: Int) {
-            p0.mostrarDatosRegistro(listaVenta[pos])
+            p0.mostrarDatosRegistro(listaComp[pos])
 
             p0.itemView.setOnLongClickListener{
-                titulo?.text = "Editar venta"
-                    //// OBTENER EL TEXTO DEL REGISTRO ////
+                titulo?.text = "Editar compra"
+                //// OBTENER EL TEXTO DEL REGISTRO ////
                 val tvId = p0.itemView.findViewById<TextView>(R.id.tvId_ventasRecicladora)
                 val cliente = p0.itemView.findViewById<TextView>(R.id.tvCliente_ventasRecicladora)
                 val tvMaterial = p0.itemView.findViewById<TextView>(R.id.tvMaterial_ventasRecicladora)
@@ -543,13 +519,57 @@ class VentasRecicladora : AppCompatActivity() {
                 id?.text = tvId.text.toString()
                 campoCliente?.setText(cliente.text.toString())
                 campoCantidad?.setText(tvCantidad.text.toString())
-                campoGanancia?.setText(tvGanancia.text.toString())
+                campoGasto?.setText(tvGanancia.text.toString())
                 campoFecha?.setText(tvFecha.text.toString())
                 btnModificar?.text = "Modificar"
 
                 bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
                 true
             }
+        }
+
+        fun cargarListaMateriales(spmaterial : Spinner, contexto : Context){
+            val listaMateriales : ArrayList<String>? = ArrayList()
+
+            val bd =  BaseDeDatos(contexto, "material", null , 1)
+            val basededatos = bd.readableDatabase
+            val materiales = basededatos.rawQuery("select material from ListaMateriales", null)
+            if(materiales.moveToFirst()){
+                do{
+                    listaMateriales?.add(materiales.getString(0))
+                }while (materiales.moveToNext())
+
+                listaMateriales!!.sort()/// ORDENA ALFABETICAMENTE ///
+                listaMateriales.add(0, "Seleccionar material")
+
+                val a = ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaMateriales)
+                a.setDropDownViewResource(android.R.layout.simple_list_item_activated_1)
+                spmaterial.adapter = a
+            }
+            basededatos.close()
+            materiales.close()
+        }
+
+        fun cargarListaUnidad(unidad : Spinner, contexto : Context){
+            val listaMateriales : ArrayList<String>? = ArrayList()
+
+            val bd =  BaseDeDatos(contexto, "material", null , 1)
+            val basededatos = bd.readableDatabase
+            val unidades = basededatos.rawQuery("select unidad from ListaUnidades", null)
+            if(unidades.moveToFirst()){
+                do{
+                    listaMateriales?.add(unidades.getString(0))
+                }while (unidades.moveToNext())
+
+                listaMateriales!!.sort()/// ORDENA ALFABETICAMENTE ///
+                listaMateriales.add(0, "Seleccionar unidad")
+
+                val a = ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaMateriales)
+                a.setDropDownViewResource(android.R.layout.simple_list_item_activated_1)
+                unidad.adapter = a
+            }
+            basededatos.close()
+            unidades.close()
         }
 
         private fun materialPosicion(p0 : ViewHolder, material : String){
@@ -591,50 +611,6 @@ class VentasRecicladora : AppCompatActivity() {
             unidadesc.close()
         }
 
-        fun cargarListaMateriales(spmaterial : Spinner, contexto : Context){
-            var listaMateriales : ArrayList<String>? = ArrayList()
-
-            val bd =  BaseDeDatos(contexto, "material", null , 1)
-            val basededatos = bd.readableDatabase
-            val materiales = basededatos.rawQuery("select material from ListaMateriales", null)
-            if(materiales.moveToFirst()){
-                do{
-                    listaMateriales?.add(materiales.getString(0))
-                }while (materiales.moveToNext())
-
-                listaMateriales!!.sort()/// ORDENA ALFABETICAMENTE ///
-                listaMateriales.add(0, "Seleccionar material")
-
-                val a = ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaMateriales)
-                a.setDropDownViewResource(android.R.layout.simple_list_item_activated_1)
-                spmaterial.adapter = a
-            }
-            basededatos.close()
-            materiales.close()
-        }
-
-        fun cargarListaUnidad(unidad : Spinner, contexto : Context){
-            var listaMateriales : ArrayList<String>? = ArrayList()
-
-            val bd =  BaseDeDatos(contexto, "material", null , 1)
-            val basededatos = bd.readableDatabase
-            val unidades = basededatos.rawQuery("select unidad from ListaUnidades", null)
-            if(unidades.moveToFirst()){
-                do{
-                    listaMateriales?.add(unidades.getString(0))
-                }while (unidades.moveToNext())
-
-                listaMateriales!!.sort()/// ORDENA ALFABETICAMENTE ///
-                listaMateriales?.add(0, "Seleccionar unidad")
-
-                val a = ArrayAdapter<String>(contexto, android.R.layout.simple_spinner_item, listaMateriales)
-                a.setDropDownViewResource(android.R.layout.simple_list_item_activated_1)
-                unidad.adapter = a
-            }
-            basededatos.close()
-            unidades.close()
-        }
-
         fun modificarRegistro(contexto : Context){
             val id = id?.text.toString()
 
@@ -643,32 +619,35 @@ class VentasRecicladora : AppCompatActivity() {
             nuevosDatos.put("material", spMaterial?.selectedItem.toString())
             nuevosDatos.put("cantidad", campoCantidad?.text.toString())
             nuevosDatos.put("unidad", spUnidad?.selectedItem.toString())
-            nuevosDatos.put("ganancia", campoGanancia?.text.toString())
+            nuevosDatos.put("gasto", campoGasto?.text.toString())
             nuevosDatos.put("fecha", campoFecha?.text.toString())
 
-            val bd =  BaseDeDatos(contexto, "Ventas", null , 1)
+            val bd =  BaseDeDatos(contexto, "Compras", null , 1)
             val basededatos = bd.writableDatabase
-            basededatos.update("Ventas", nuevosDatos, "id=?", arrayOf(id))
+            basededatos.update("Compras", nuevosDatos, "id=?", arrayOf(id))
             basededatos.close()
         }
 
         class ViewHolder(view : View) : RecyclerView.ViewHolder(view){
 
             fun mostrarDatosRegistro(texto : String){
+                val tvMostrarGasto : TextView = itemView.findViewById(R.id.tvGasto_ventasRecicladora)
+                tvMostrarGasto.text = "Gasto: "
+
                 val tvCliente : TextView = itemView.findViewById(R.id.tvCliente_ventasRecicladora)
                 val tvMaterial : TextView = itemView.findViewById(R.id.tvMaterial_ventasRecicladora)
                 val tvId : TextView = itemView.findViewById(R.id.tvId_ventasRecicladora)
                 val tvCantidad : TextView = itemView.findViewById(R.id.tvCantidad_ventasRecicladora)
                 val tvUnidad : TextView = itemView.findViewById(R.id.tvUnidad_ventasRecicladora)
-                val tvGanancia : TextView = itemView.findViewById(R.id.tvGanancia_ventaRecicladora)
+                val tvGasto : TextView = itemView.findViewById(R.id.tvGanancia_ventaRecicladora)
                 val tvFecha : TextView = itemView.findViewById(R.id.tvFecha_ventasRecicladora)
-                    //// MUESTRA LOS DATOS EN EL RV ///
+                //// MUESTRA LOS DATOS EN EL RV ///
                 tvCliente.text = cliente(texto)
                 tvMaterial.text = material(texto)
                 tvId.text = id(texto)
                 tvCantidad.text = cantidad(texto)
                 tvUnidad.text = unidad(texto)
-                tvGanancia.text = ganancia(texto)
+                tvGasto.text = gasto(texto)
                 tvFecha.text = fecha(texto)
             }
 
@@ -692,7 +671,7 @@ class VentasRecicladora : AppCompatActivity() {
                 val u = cadena.split(":")
                 return u[4].trim()
             }
-            private fun ganancia(cadena : String) : String {
+            private fun gasto(cadena : String) : String {
                 val g = cadena.split(":")
                 return g[5].trim()
             }
