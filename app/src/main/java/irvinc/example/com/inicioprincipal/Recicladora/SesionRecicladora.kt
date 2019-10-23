@@ -75,7 +75,7 @@ class SesionRecicladora : AppCompatActivity() {
                 listaMateriales!!.add("Material: "+material+"\nPrecio: "+precio+"\nUnidad: "+unidad)
             } while(datos.moveToNext())
         }
-        bd.close()
+        datos.close()
         basededatos.close()
         val adap = Adapter(listaMateriales!!, usuarioLogeado!!)
         rv?.adapter = adap
@@ -346,7 +346,10 @@ class SesionRecicladora : AppCompatActivity() {
     }
 
     fun generarReporte(view: View){
-
+        val reporte = Intent(this, ReporteRecicladora::class.java)
+        reporte.putExtra("usuario", usuarioLogeado)
+        startActivity(reporte)
+        cerrarDrawer()
     }
 
     fun AgregarMaterialLista(view: View){

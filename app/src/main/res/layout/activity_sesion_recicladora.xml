@@ -233,7 +233,7 @@
                     android:id="@+id/btnReporte_sesionRecicladora"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/generarReporte_str"
+                    android:text="@string/reporte_str"
                     app:icon="@drawable/reporte_icono"
                     app:iconTint="@color/colorNegro"
                     app:cornerRadius="30dp"

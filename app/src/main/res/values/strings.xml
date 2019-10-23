@@ -68,7 +68,7 @@
     <string name="evaluar_str">Evaluar</string>
     <string name="registrarVenta_str">Ventas</string>
     <string name="registrarCompra_str">Compras</string>
-    <string name="generarReporte_str">Reporte</string>
+    <string name="reporte_str">Reporte</string>
     <string name="agregarMaterialLista_str">Agrega un material a la lista</string>
     <string name="AgregarUnidad_str">Agrega una unidad</string>
 
@@ -118,4 +118,11 @@
     <string name="gasto_str">Cantidad pagada</string>
     <string name="fechaCompra_str">Fecha de la compra:</string>
     <string name="compraEliminada_str">Compra eliminada</string>
+
+    <!-- Reporte  -->
+    <string name="generarReporte_str">Generar reporte</string>
+    <string name="fechaInicio_str">Fecha inicio</string>
+    <string name="fechaCorte_str">Fecha corte</string>
+    <string name="enviarCorreo_str">Enviar a mi correo</string>
+
 </resources>

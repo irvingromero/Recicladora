@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".Recicladora.ReporteRecicladora">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryDark">
+
+            <ImageButton
+                    android:id="@+id/btnAtras_ReporteRecicladora"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/back"
+                    android:backgroundTint="@color/colorPrimaryDark"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:text="@string/generarReporte_str"
+                    android:textColor="@color/colorNegro"
+                    android:textSize="20sp"/>
+        </android.support.v7.widget.Toolbar>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_weight="1">
+                <android.support.design.widget.TextInputEditText
+                        android:id="@+id/tietFechaInicio_reporteRecicladora"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/fechaInicio_str"
+                        android:textColor="@color/colorNegro"
+                        android:drawableStart="@drawable/calendario_icono"
+                        android:ems="8"
+                        android:focusable="false" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight="1">
+                <android.support.design.widget.TextInputEditText
+                        android:id="@+id/tietFechaCorte_reporteRecicladora"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/fechaCorte_str"
+                        android:textColor="@color/colorNegro"
+                        android:drawableStart="@drawable/calendario_icono"
+                        android:ems="8"
+                        android:focusable="false"
+                        android:enabled="false"/>
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="2dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/colorNegro"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:text="Ventas"
+                    android:textColor="@color/colorNegro"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="2dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/colorNegro"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvClientesVentas_reporteRecicladora"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+        </android.support.v7.widget.RecyclerView>
+
+        <android.support.design.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/enviarCorreo_str"
+                app:rippleColor="@color/colorNegro"
+                app:cornerRadius="20dp"
+                app:icon="@drawable/email_icono"
+                app:iconTint="@color/colorNegro"/>
+    </LinearLayout>
+</LinearLayout>
