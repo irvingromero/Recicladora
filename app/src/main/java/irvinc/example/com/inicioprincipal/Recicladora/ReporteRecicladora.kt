@@ -18,14 +18,20 @@ import irvinc.example.com.inicioprincipal.R
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Collections
+import java.util.Date
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 class ReporteRecicladora : AppCompatActivity() {
 
     private var usuarioLogeado : String? = null
-    private var datosCliente : ArrayList<String> = ArrayList()
     private var rv : RecyclerView? = null
+
+    private var datosCliente : ArrayList<String> = ArrayList()
+    private val listaFechas : ArrayList<Date> = ArrayList()
+    private var listaClientes : ArrayList<String> = ArrayList()
+    private var listaMateriales : ArrayList<String> = ArrayList()
+    private var listaGanancias : ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +44,7 @@ class ReporteRecicladora : AppCompatActivity() {
         val fechaInicio = findViewById<TextInputEditText>(R.id.tietFechaInicio_reporteRecicladora)
         val fechaCorte = findViewById<TextInputEditText>(R.id.tietFechaCorte_reporteRecicladora)
 
-        fechaInicio.setOnClickListener {
+        fechaInicio?.setOnClickListener {
             val c = Calendar.getInstance()
             val year = c.get(Calendar.YEAR)
             val month = c.get(Calendar.MONTH)
@@ -47,13 +53,13 @@ class ReporteRecicladora : AppCompatActivity() {
             val ventanaFecha = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, mes, dia ->
                 val mesReal = mes+1
                 val fechaCompleta = "$dia/$mesReal/$year"
-                fechaInicio.setText(fechaCompleta)
-                fechaCorte.isEnabled = true
+                fechaInicio?.setText(fechaCompleta)
+                fechaCorte?.isEnabled = true
             }, year, month, day)
             ventanaFecha.show()
         }
 
-        fechaCorte.setOnClickListener {
+        fechaCorte?.setOnClickListener {
             val c = Calendar.getInstance()
             val year = c.get(Calendar.YEAR)
             val month = c.get(Calendar.MONTH)
@@ -63,9 +69,9 @@ class ReporteRecicladora : AppCompatActivity() {
                 val mesReal = mes+1
                 val fechaCompleta = "$dia/$mesReal/$year"
                     //// VALIDA QUE LA FECHA DE CORTE SEA DESPUES DE LA DE INICIO /////
-                val ok = validaFecha(fechaInicio.text.toString(), fechaCompleta)
+                val ok = validaFecha(fechaInicio?.text.toString(), fechaCompleta)
                 if(ok){
-                    fechaCorte.setText(fechaCompleta)
+                    fechaCorte?.setText(fechaCompleta)
                 } else {
                     Toast.makeText(applicationContext, "Debe ser despues de Fecha de inicio", Toast.LENGTH_SHORT).show()
                 }
@@ -73,8 +79,14 @@ class ReporteRecicladora : AppCompatActivity() {
             ventanaFecha.show()
         }
 
-        fechaCorte.addTextChangedListener(object : TextWatcher{
+        fechaCorte?.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
+                // SE LIMPIAN LAS LISTAS POR SI SE CAMBIA FECHA DE CORTE VARIAS VECES NO REPITA DATOS ////
+                listaClientes.clear()
+                datosCliente.clear()
+                listaMateriales.clear()
+                listaFechas.clear()
+
                 datosVentas()
             }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -97,66 +109,106 @@ class ReporteRecicladora : AppCompatActivity() {
         return false
     }
 
-    private fun datosVentas(){
-        rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+    @SuppressLint("SimpleDateFormat")
+    private fun datosVentas() {
+        fecha()
+        listaClientes = clientes(listaFechas)
 
+        val contadorMaterial : ArrayList<String> = ArrayList()
+        val copiaMateriales : ArrayList<String> = ArrayList()
         val base = BaseDeDatos(this, "Ventas", null, 1)
         val conexion = base.readableDatabase
 
-        val consulta = conexion.rawQuery("select nombreCliente from Ventas", null)
-        if(consulta.moveToFirst()){
-            var nombrec : String?
-            var ganancia = ""
-            val listaMateriales : ArrayList<String> = ArrayList()
-            val contadorMaterial : ArrayList<String> = ArrayList()
-            var copia : ArrayList<String> = ArrayList()
+        for((index, dato) in listaClientes.withIndex()){
+            for((index, datoFe) in listaFechas.withIndex()) {
 
-            do{
-                nombrec = consulta.getString(0)
+                val fecha = SimpleDateFormat("d/MM/yyyy").format(datoFe)
+                val datosCliente = conexion.rawQuery("select material from Ventas where nombreCliente = '$dato' and fecha='$fecha'", null)
 
-                val materialCliente = conexion.rawQuery("select material, ganancia from Ventas where nombreCliente='$nombrec'", null)
-                if(materialCliente.moveToFirst()) {
+                if(datosCliente.moveToFirst()){
                     do{
-                        listaMateriales.add(materialCliente.getString(0)+"\n")
-                        copia.add(materialCliente.getString(0)+"\n")
-                    }while (materialCliente.moveToNext())
-//                    ganancia = materialCliente.getString(1)
+                        listaMateriales.add(datosCliente.getString(0)+"\n")
+                        copiaMateriales.add(datosCliente.getString(0))
+                    }while (datosCliente.moveToNext())
                 }
+            }
 
-                listaMateriales.sort()
-                copia.sort()
+            while (copiaMateriales.size > 0) {  /// CALCULA LA CANTIDAD DE VECES QUE HAY DE UN MATERIAL ///
+                val totalMaterial = Collections.frequency(copiaMateriales, copiaMateriales[0])
+                contadorMaterial.add(totalMaterial.toString() + "\n")
+                copiaMateriales.removeAll(Collections.singleton(copiaMateriales[0]))
+            }
 
-                while (copia.size > 0) {  /// CALCULA LA CANTIDAD DE VECES QUE HAY DE UN MATERIAL ///
-                    val totalMaterial = Collections.frequency(copia, copia[0])
-                    contadorMaterial.add(totalMaterial.toString() + "\n")
-                    copia.removeAll(Collections.singleton(copia[0]))
-                }
-
-                    /// ELIMINA MATERIALES REPETIDOS ///
-                val hs = HashSet<String>()
-                hs.addAll(listaMateriales)
-                listaMateriales.clear()
-                listaMateriales.addAll(hs)
-
-                listaMateriales.sort()
-                copia.sort()
-
-                datosCliente.add(consulta.getString(0) +":"+listaMateriales+":"+contadorMaterial+":"+ ganancia)
-                listaMateriales.clear()
-                contadorMaterial.clear()
-            }while (consulta.moveToNext())
+            datosCliente.add(listaClientes[index]+":"+listaMateriales+":"+contadorMaterial)
+            listaMateriales.clear()
+            contadorMaterial.clear()
         }
-        consulta.close()
         conexion.close()
-            /// ELIMINA CLIENTES REPETIDOS ///
-        val hs = HashSet<String>()
-        hs.addAll(datosCliente)
-        datosCliente.clear()
-        datosCliente.addAll(hs)
 
+        rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         val adap = Adapter(datosCliente)
         rv?.adapter = adap
     }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun fecha(){
+        val campoFechaInicio = findViewById<TextInputEditText>(R.id.tietFechaInicio_reporteRecicladora)
+        val campoFechaCorte = findViewById<TextInputEditText>(R.id.tietFechaCorte_reporteRecicladora)
+
+        val fechainicio = SimpleDateFormat("d/MM/yyyy").parse(campoFechaInicio?.text.toString())
+        val fechaCorte = SimpleDateFormat("d/MM/yyyy").parse(campoFechaCorte?.text.toString())
+        val indices : ArrayList<Int> = ArrayList()
+
+        val db = BaseDeDatos(this, "Ventas", null, 1)
+        val flujodedatos = db.readableDatabase
+        val fechas = flujodedatos.rawQuery("select fecha from Ventas", null)
+
+        if(fechas.moveToFirst()){
+            do{
+                listaFechas.add(SimpleDateFormat("d/MM/yyyy").parse(fechas.getString(0)))
+            }while (fechas.moveToNext())
+        }
+        fechas.close()
+        flujodedatos.close()
+
+        for ((indice, item) in listaFechas.withIndex()) {
+            if(item.before(fechainicio) || item.after(fechaCorte)){
+                // SACA LAS POCIONES DE LAS FECHAS QUE NO SE OCUPAN //
+                indices.add(indice)
+            }
+        }
+        val comparador = Collections.reverseOrder<Int>()
+        Collections.sort(indices, comparador)
+        /// ELIMINA LA POSICION CON EL NUMERO MAYOR HACIA 0////
+        indices.forEach {
+            listaFechas.removeAt(it)
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun clientes(listaFechas: ArrayList<Date>) : ArrayList<String> {
+        val base = BaseDeDatos(this, "Ventas", null, 1)
+        val conexion = base.readableDatabase
+
+        for((index, dato) in listaFechas.withIndex()){
+            val fecha = SimpleDateFormat("d/MM/yyyy").format(dato)
+
+            val datosCliente = conexion.rawQuery("select nombreCliente from Ventas where fecha = '$fecha'", null)
+            if(datosCliente.moveToFirst()){
+                listaClientes.add(datosCliente.getString(0))
+            }
+        }
+        conexion.close()
+        /// ELIMINA CLIENTES REPETIDOS ///
+        val hs = HashSet<String>()
+        hs.addAll(listaClientes)
+        listaClientes.clear()
+        listaClientes.addAll(hs)
+
+        listaClientes.sort()//ORDENA ALFABE
+        return listaClientes
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     class Adapter(var listaDatos: ArrayList<String>) : RecyclerView.Adapter<Adapter.ViewHolder>(){
 
