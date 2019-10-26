@@ -106,7 +106,7 @@
                                 android:layout_height="wrap_content"
                                 android:hint="@string/cantidadVendida_str"
                                 android:inputType="numberDecimal"
-                                android:maxLength="10"
+                                android:maxLength="5"
                                 android:digits="0123456789."/>
                     </android.support.design.widget.TextInputLayout>
 

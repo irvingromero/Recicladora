@@ -22,6 +22,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.R
@@ -59,7 +60,10 @@ class VentasRecicladora : AppCompatActivity() {
 
             override fun onStateChanged(p0: View, newState: Int) {
                 when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN ->{ }
+                    BottomSheetBehavior.STATE_HIDDEN ->{
+                        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+                    }
                     BottomSheetBehavior.STATE_EXPANDED -> { }
                 }
             }
@@ -180,13 +184,35 @@ class VentasRecicladora : AppCompatActivity() {
                     }
 
                 } else {
+                    bmaterial = false
                     btnRegistro.isEnabled = false
                 }
             }
         }
 
         campoCantidad.addTextChangedListener(object : TextWatcher{
-            override fun afterTextChanged(p0: Editable?) {}
+            override fun afterTextChanged(p0: Editable?) {
+                if(!material.selectedItem.toString().contains("Seleccionar material") && !unidad.selectedItem.toString().contains("Seleccionar unidad")){
+                    val mate = material.selectedItem.toString()
+                    val uni = unidad.selectedItem.toString()
+
+                    val bd =  BaseDeDatos(applicationContext, "Materiales", null , 1)
+                    val basededatos = bd.readableDatabase
+                    val datoPrecio = basededatos.rawQuery("select precio from Materiales where material='$mate' and unidad='$uni'", null)
+
+                    if(datoPrecio.moveToFirst()){
+                        if(campoCantidad.length() > 0) {
+                            val cantidad = campoCantidad.text.toString().toDouble()
+                            val total = datoPrecio.getDouble(0) * cantidad
+                            campoGanancia.setText(total.toString())
+                        } else {
+                            campoGanancia.setText("")
+                        }
+                    }
+                    basededatos.close()
+                    datoPrecio.close()
+                }
+            }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if(campoCantidad.length() > 0){
@@ -196,6 +222,7 @@ class VentasRecicladora : AppCompatActivity() {
                         btnRegistro.isEnabled = true
                     }
                 } else {
+                    bcantidad = false
                     btnRegistro.isEnabled = false
                 }
             }
@@ -207,10 +234,32 @@ class VentasRecicladora : AppCompatActivity() {
                 if(!unidad.selectedItem.toString().contains("Seleccionar unidad")){
                     bunidad = true
 
+                    if(!material.selectedItem.toString().contains("Seleccionar material") && campoCantidad.length() > 0){
+                        val mate = material.selectedItem.toString()
+                        val uni = unidad.selectedItem.toString()
+
+                        val bd =  BaseDeDatos(applicationContext, "Materiales", null , 1)
+                        val basededatos = bd.readableDatabase
+                        val datoPrecio = basededatos.rawQuery("select precio from Materiales where material='$mate' and unidad='$uni'", null)
+
+                        if(datoPrecio.moveToFirst()){
+                            if(campoCantidad.length() > 0) {
+                                val cantidad = campoCantidad.text.toString().toDouble()
+                                val total = datoPrecio.getDouble(0) * cantidad
+                                campoGanancia.setText(total.toString())
+                            } else {
+                                campoGanancia.setText("")
+                            }
+                        }
+                        basededatos.close()
+                        datoPrecio.close()
+                    }
+
                     if(bnombre && bcantidad && bcantidad && bganancia){
                         btnRegistro.isEnabled = true
                     }
                 } else {
+                    bunidad = false
                     btnRegistro.isEnabled = false
                 }
             }
@@ -227,6 +276,7 @@ class VentasRecicladora : AppCompatActivity() {
                         btnRegistro.isEnabled = true
                     }
                 } else {
+                    bganancia = false
                     btnRegistro.isEnabled = false
                 }
             }

@@ -31,7 +31,7 @@ class ReporteRecicladora : AppCompatActivity() {
     private val listaFechas : ArrayList<Date> = ArrayList()
     private var listaClientes : ArrayList<String> = ArrayList()
     private var listaMateriales : ArrayList<String> = ArrayList()
-    private var listaGanancias : ArrayList<String> = ArrayList()
+    private var listaGanancias : ArrayList<Double> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,12 +123,13 @@ class ReporteRecicladora : AppCompatActivity() {
             for((index, datoFe) in listaFechas.withIndex()) {
 
                 val fecha = SimpleDateFormat("d/MM/yyyy").format(datoFe)
-                val datosCliente = conexion.rawQuery("select material from Ventas where nombreCliente = '$dato' and fecha='$fecha'", null)
+                val datosCliente = conexion.rawQuery("select material, ganancia from Ventas where nombreCliente = '$dato' and fecha='$fecha'", null)
 
                 if(datosCliente.moveToFirst()){
                     do{
                         listaMateriales.add(datosCliente.getString(0)+"\n")
                         copiaMateriales.add(datosCliente.getString(0))
+                        listaGanancias.add(datosCliente.getDouble(1))
                     }while (datosCliente.moveToNext())
                 }
             }
@@ -139,9 +140,10 @@ class ReporteRecicladora : AppCompatActivity() {
                 copiaMateriales.removeAll(Collections.singleton(copiaMateriales[0]))
             }
 
-            datosCliente.add(listaClientes[index]+":"+listaMateriales+":"+contadorMaterial)
+            datosCliente.add(listaClientes[index]+":"+listaMateriales+":"+contadorMaterial+":"+listaGanancias.sum())
             listaMateriales.clear()
             contadorMaterial.clear()
+            listaGanancias.clear()
         }
         conexion.close()
 
@@ -236,6 +238,7 @@ class ReporteRecicladora : AppCompatActivity() {
                 tvCliente.text = cliente(texto)
                 tvMaterial.text = material(texto)
                 tvCantidad.text = cantidadMaterial(texto)
+                tvGanancia.text = ganancia(texto)
             }
 
             private fun cliente(cadena : String) : String {
@@ -247,8 +250,8 @@ class ReporteRecicladora : AppCompatActivity() {
                 return material[1].trim().substring(1, material[1].length -1) // ELIMINA EL "[" "]" DEL MATERIAL //
             }
             private fun cantidadMaterial(cadena : String) : String {
-                val g = cadena.split(":")
-                return g[2].trim().substring(1, g[2].length -1)
+                val can = cadena.split(":")
+                return can[2].trim().substring(1, can[2].length -1)
             }
             private fun ganancia(cadena : String) : String {
                 val g = cadena.split(":")

@@ -124,5 +124,6 @@
     <string name="fechaInicio_str">Fecha inicio</string>
     <string name="fechaCorte_str">Fecha corte</string>
     <string name="enviarCorreo_str">Enviar a mi correo</string>
+    <string name="gananciaTotal_str">Ganancia total:</string>
 
 </resources>

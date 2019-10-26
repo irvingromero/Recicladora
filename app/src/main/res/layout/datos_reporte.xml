@@ -46,7 +46,7 @@
 
             <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                 <TextView
@@ -54,7 +54,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/materialdospuntos_str"
                         android:textColor="@color/colorNegro"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp" />
+
                 <TextView
                         android:id="@+id/tvMaterial_ReportesRecicladora"
                         android:layout_width="wrap_content"
@@ -62,20 +63,22 @@
                         android:layout_marginLeft="1dp"
                         android:textColor="@color/colorNegro"
                         android:textSize="16sp" />
+
                 <TextView
                         android:id="@+id/tvCantidad_ReporteRecicladora"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
                         android:textColor="@color/colorNegro"
-                        android:textSize="16sp"
-                        android:layout_marginLeft="10dp"/>
+                        android:textSize="16sp" />
+
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/gananciadospuntos_str"
+                        android:layout_marginLeft="15dp"
+                        android:text="@string/gananciaTotal_str"
                         android:textColor="@color/colorNegro"
-                        android:textSize="16sp"
-                        android:layout_marginLeft="15dp"/>
+                        android:textSize="16sp" />
 
                 <TextView
                         android:id="@+id/tvGanancia_ReporteRecicladora"
