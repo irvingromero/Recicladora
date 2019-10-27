@@ -123,7 +123,8 @@
     <string name="generarReporte_str">Generar reporte</string>
     <string name="fechaInicio_str">Fecha inicio</string>
     <string name="fechaCorte_str">Fecha corte</string>
-    <string name="enviarCorreo_str">Enviar a mi correo</string>
+    <string name="enviarCorreo_str">Enviar por correo</string>
     <string name="gananciaTotal_str">Ganancia total:</string>
+    <string name="otroCorreo_str">Otro correo</string>
 
 </resources>

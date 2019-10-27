@@ -14,11 +14,34 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".Recicladora.ReporteRecicladora"></activity>
-        <activity android:name=".Recicladora.ComprasRecicladora" />
-        <activity android:name=".Recicladora.VentasRecicladora" />
+
+        <activity android:name=".Recicladora.ReporteRecicladora"
+                android:screenOrientation="portrait"
+                android:resizeableActivity="false"
+                android:supportsPictureInPicture="false"
+                android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <activity android:name=".Recicladora.ComprasRecicladora"
+                android:screenOrientation="portrait"
+                android:resizeableActivity="false"
+                android:supportsPictureInPicture="false"
+                android:windowSoftInputMode="stateHidden"/>
+
+        <activity android:name=".Recicladora.VentasRecicladora"
+                android:screenOrientation="portrait"
+                android:resizeableActivity="false"
+                android:supportsPictureInPicture="false"
+                android:windowSoftInputMode="stateHidden"/>
+
         <activity android:name=".Recicladora.UbicacionRecicladora" />
-        <activity android:name=".Recicladora.DatosRecicladora" />
+
+        <activity android:name=".Recicladora.DatosRecicladora"
+                android:screenOrientation="portrait"
+                android:resizeableActivity="false"
+                android:supportsPictureInPicture="false"
+                android:windowSoftInputMode="stateHidden"/>
+
         <activity android:name=".Recicladora.SesionRecicladora" />
 
         <meta-data
@@ -41,7 +64,6 @@
                 android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

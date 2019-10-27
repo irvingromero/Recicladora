@@ -1,9 +1,11 @@
 package irvinc.example.com.inicioprincipal.Recicladora
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.button.MaterialButton
 import android.support.design.widget.TextInputEditText
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -33,6 +35,8 @@ class ReporteRecicladora : AppCompatActivity() {
     private var listaMateriales : ArrayList<String> = ArrayList()
     private var listaGanancias : ArrayList<Double> = ArrayList()
 
+    private var btnCorreo : MaterialButton? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reporte_recicladora)
@@ -43,6 +47,7 @@ class ReporteRecicladora : AppCompatActivity() {
         rv = findViewById(R.id.rvClientesVentas_reporteRecicladora)
         val fechaInicio = findViewById<TextInputEditText>(R.id.tietFechaInicio_reporteRecicladora)
         val fechaCorte = findViewById<TextInputEditText>(R.id.tietFechaCorte_reporteRecicladora)
+        btnCorreo = findViewById(R.id.mbCorreo_ReporteRecicladora)
 
         fechaInicio?.setOnClickListener {
             val c = Calendar.getInstance()
@@ -92,6 +97,10 @@ class ReporteRecicladora : AppCompatActivity() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         })
+
+        btnCorreo?.setOnClickListener {
+            correo()
+        }
 
         findViewById<ImageButton>(R.id.btnAtras_ReporteRecicladora).setOnClickListener {
             onBackPressed()
@@ -163,12 +172,16 @@ class ReporteRecicladora : AppCompatActivity() {
 
         val db = BaseDeDatos(this, "Ventas", null, 1)
         val flujodedatos = db.readableDatabase
-        val fechas = flujodedatos.rawQuery("select fecha from Ventas", null)
+        val fechas = flujodedatos.rawQuery("select fecha from Ventas where usuarioRecicladora = '$usuarioLogeado'", null)
 
         if(fechas.moveToFirst()){
+            val tvTitulo = findViewById<TextView>(R.id.tvTituloVentas_ReporteRcicladora)
             do{
                 listaFechas.add(SimpleDateFormat("d/MM/yyyy").parse(fechas.getString(0)))
             }while (fechas.moveToNext())
+
+            tvTitulo.text = getString(R.string.registrarVenta_str)
+            btnCorreo?.isEnabled = true
         }
         fechas.close()
         flujodedatos.close()
@@ -209,6 +222,72 @@ class ReporteRecicladora : AppCompatActivity() {
 
         listaClientes.sort()//ORDENA ALFABE
         return listaClientes
+    }
+
+    private fun correo(){
+        val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
+        // CARGA EL LAYOUT PERSONALIZADO//
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.ventcorreo_reportes, null)
+        ventana.setView(dialogView)
+
+        val tvCorreo = dialogView.findViewById<TextView>(R.id.tvCorreoRegistrado_ReporteRecicladora)
+        val tvOtroCorreo = dialogView.findViewById<TextView>(R.id.tvOtrocorreo_ReporteRecicladora)
+
+        val bd = BaseDeDatos(this, "Usuarios", null, 1)
+        val conexion = bd.readableDatabase
+        val consultaCorreo = conexion.rawQuery("select correo from Recicladoras where usuario = '$usuarioLogeado'", null)
+
+        if(consultaCorreo.moveToFirst()){
+            val correo = consultaCorreo.getString(0).contains("@")
+            if(correo){
+                tvCorreo.text = consultaCorreo.getString(0)
+            }
+        }else {
+            tvCorreo.isClickable = false
+        }
+        conexion.close()
+        consultaCorreo.close()
+
+        val dialog: AlertDialog = ventana.create()
+        dialog.show()
+
+        tvCorreo.setOnClickListener {
+            dialog.dismiss()
+
+        }
+
+        tvOtroCorreo.setOnClickListener {
+            dialog.dismiss()
+            otroCorreo()
+        }
+    }
+
+    private fun otroCorreo(){
+        val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
+        // CARGA EL LAYOUT PERSONALIZADO//
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.ventana_recuperar_contra, null)
+        ventana.setView(dialogView)
+
+        val etCorreo = dialogView.findViewById<TextInputEditText>(R.id.etCorreo_IniciarSesion)
+
+        ventana.setPositiveButton(R.string.enviar_str) { _,_ ->
+
+        }
+        ventana.setNegativeButton(R.string.cancelar_str){_,_ -> }
+
+        val dialog: AlertDialog = ventana.create()
+        dialog.show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+
+        etCorreo.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = etCorreo.length() >= 1
+            }
+        })
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
