@@ -172,7 +172,28 @@ class ComprasRecicladora : AppCompatActivity() {
         }
 
         campoCantidad.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {}
+            override fun afterTextChanged(p0: Editable?) {
+                if(!spMaterial.selectedItem.toString().contains("Seleccionar material") && !spUnidad.selectedItem.toString().contains("Seleccionar unidad")){
+                    val mate = spMaterial.selectedItem.toString()
+                    val uni = spUnidad.selectedItem.toString()
+
+                    val bd =  BaseDeDatos(applicationContext, "Materiales", null , 1)
+                    val basededatos = bd.readableDatabase
+                    val datoPrecio = basededatos.rawQuery("select precio from Materiales where material='$mate' and unidad='$uni'", null)
+
+                    if(datoPrecio.moveToFirst()){
+                        if(campoCantidad.length() > 0) {
+                            val cantidad = campoCantidad.text.toString().toDouble()
+                            val total = datoPrecio.getDouble(0) * cantidad
+                            campoGasto.setText(total.toString())
+                        } else {
+                            campoGasto.setText("")
+                        }
+                    }
+                    basededatos.close()
+                    datoPrecio.close()
+                }
+            }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if(campoCantidad.length() > 0){
@@ -192,6 +213,27 @@ class ComprasRecicladora : AppCompatActivity() {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 if(!spUnidad.selectedItem.toString().contains("Seleccionar unidad")){
                     bunidad = true
+
+                    if(!spMaterial.selectedItem.toString().contains("Seleccionar material") && !spUnidad.selectedItem.toString().contains("Seleccionar unidad")){
+                        val mate = spMaterial.selectedItem.toString()
+                        val uni = spUnidad.selectedItem.toString()
+
+                        val bd =  BaseDeDatos(applicationContext, "Materiales", null , 1)
+                        val basededatos = bd.readableDatabase
+                        val datoPrecio = basededatos.rawQuery("select precio from Materiales where material='$mate' and unidad='$uni'", null)
+
+                        if(datoPrecio.moveToFirst()){
+                            if(campoCantidad.length() > 0) {
+                                val cantidad = campoCantidad.text.toString().toDouble()
+                                val total = datoPrecio.getDouble(0) * cantidad
+                                campoGasto.setText(total.toString())
+                            } else {
+                                campoGasto.setText("")
+                            }
+                        }
+                        basededatos.close()
+                        datoPrecio.close()
+                    }
 
                     if(bnombre && bcantidad && bcantidad && bganancia){
                         btnRegistro.isEnabled = true
@@ -632,7 +674,7 @@ class ComprasRecicladora : AppCompatActivity() {
 
             fun mostrarDatosRegistro(texto : String){
                 val tvMostrarGasto : TextView = itemView.findViewById(R.id.tvGasto_ventasRecicladora)
-                tvMostrarGasto.text = "Gasto: "
+                tvMostrarGasto.text = "Pago: "
 
                 val tvCliente : TextView = itemView.findViewById(R.id.tvCliente_ventasRecicladora)
                 val tvMaterial : TextView = itemView.findViewById(R.id.tvMaterial_ventasRecicladora)

@@ -37,6 +37,12 @@ class ReporteRecicladora : AppCompatActivity() {
 
     private var btnCorreo : MaterialButton? = null
 
+    private var listaFechasCompra : ArrayList<Date> = ArrayList()
+    private var listaClientesCompra : ArrayList<String> = ArrayList()
+    private var listaMaterialCompra : ArrayList<String> = ArrayList()
+    private var listaGasto : ArrayList<Double> = ArrayList()
+    private var datosCompra : ArrayList<String> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reporte_recicladora)
@@ -92,7 +98,14 @@ class ReporteRecicladora : AppCompatActivity() {
                 listaMateriales.clear()
                 listaFechas.clear()
 
+                datosCompra.clear()
+                listaFechasCompra.clear()
+                listaClientesCompra.clear()
+                listaMaterialCompra.clear()
+                listaGasto.clear()
+
                 datosVentas()
+                datosCompras()
             }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -149,6 +162,13 @@ class ReporteRecicladora : AppCompatActivity() {
                 copiaMateriales.removeAll(Collections.singleton(copiaMateriales[0]))
             }
 
+            /// ELIMINA MATERIALES REPETIDOS ///
+            val hs = HashSet<String>()
+            hs.addAll(listaMateriales)
+            listaMateriales.clear()
+            listaMateriales.addAll(hs)
+            listaMateriales.sort()//ORDENA ALFABETIC
+
             datosCliente.add(listaClientes[index]+":"+listaMateriales+":"+contadorMaterial+":"+listaGanancias.sum())
             listaMateriales.clear()
             contadorMaterial.clear()
@@ -159,6 +179,58 @@ class ReporteRecicladora : AppCompatActivity() {
         rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         val adap = Adapter(datosCliente)
         rv?.adapter = adap
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun datosCompras(){
+        val rvCompras = findViewById<RecyclerView>(R.id.rvCompras_reporteRecicladora)
+
+        fechaCompras()
+        listaClientesCompra = clientesCompras(listaFechasCompra)
+
+        val contadorMaterial : ArrayList<String> = ArrayList()
+        val copiaMateriales : ArrayList<String> = ArrayList()
+        val base = BaseDeDatos(this, "Compras", null, 1)
+        val conexion = base.readableDatabase
+
+        for((index, dato) in listaClientesCompra.withIndex()){
+            for((index, datoFe) in listaFechasCompra.withIndex()) {
+
+                val fecha = SimpleDateFormat("d/MM/yyyy").format(datoFe)
+                val datosCliente = conexion.rawQuery("select material, gasto from Compras where nombreCliente = '$dato' and fecha='$fecha'", null)
+
+                if(datosCliente.moveToFirst()){
+                    do{
+                        listaMaterialCompra.add(datosCliente.getString(0)+"\n")
+                        copiaMateriales.add(datosCliente.getString(0))
+                        listaGasto.add(datosCliente.getDouble(1))
+                    }while (datosCliente.moveToNext())
+                }
+            }
+
+            while (copiaMateriales.size > 0) {  /// CALCULA LA CANTIDAD DE VECES QUE HAY DE UN MATERIAL ///
+                val totalMaterial = Collections.frequency(copiaMateriales, copiaMateriales[0])
+                contadorMaterial.add(totalMaterial.toString() + "\n")
+                copiaMateriales.removeAll(Collections.singleton(copiaMateriales[0]))
+            }
+
+            /// ELIMINA MATERIALES REPETIDOS ///
+            val hs = HashSet<String>()
+            hs.addAll(listaMaterialCompra)
+            listaMaterialCompra.clear()
+            listaMaterialCompra.addAll(hs)
+            listaMaterialCompra.sort()//ORDENA ALFABETIC
+
+            datosCompra.add(listaClientesCompra[index]+":"+listaMaterialCompra+":"+contadorMaterial+":"+listaGasto.sum())
+            listaMaterialCompra.clear()
+            contadorMaterial.clear()
+            listaGasto.clear()
+        }
+        conexion.close()
+
+        rvCompras?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        val adapCompra = Adapter(datosCompra)
+        rvCompras?.adapter = adapCompra
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -176,11 +248,14 @@ class ReporteRecicladora : AppCompatActivity() {
 
         if(fechas.moveToFirst()){
             val tvTitulo = findViewById<TextView>(R.id.tvTituloVentas_ReporteRcicladora)
+            val tvTituloCompra = findViewById<TextView>(R.id.tvTituloCompras_ReporteRcicladora)
+
             do{
                 listaFechas.add(SimpleDateFormat("d/MM/yyyy").parse(fechas.getString(0)))
             }while (fechas.moveToNext())
 
-            tvTitulo.text = getString(R.string.registrarVenta_str)
+            tvTitulo.text = getString(R.string.registrarVenta_str).toString()
+            tvTituloCompra.text = getString(R.string.registrarCompra_str).toString()
             btnCorreo?.isEnabled = true
         }
         fechas.close()
@@ -224,6 +299,72 @@ class ReporteRecicladora : AppCompatActivity() {
         return listaClientes
     }
 
+    @SuppressLint("SimpleDateFormat")
+    private fun fechaCompras(){
+        val campoFechaInicio = findViewById<TextInputEditText>(R.id.tietFechaInicio_reporteRecicladora)
+        val campoFechaCorte = findViewById<TextInputEditText>(R.id.tietFechaCorte_reporteRecicladora)
+
+        val fechainicio = SimpleDateFormat("d/MM/yyyy").parse(campoFechaInicio?.text.toString())
+        val fechaCorte = SimpleDateFormat("d/MM/yyyy").parse(campoFechaCorte?.text.toString())
+        val indices : ArrayList<Int> = ArrayList()
+
+        val db = BaseDeDatos(this, "Compras", null, 1)
+        val flujodedatos = db.readableDatabase
+        val fechasCompra = flujodedatos.rawQuery("select fecha from Compras where usuarioRecicladora = '$usuarioLogeado'", null)
+
+        if(fechasCompra.moveToFirst()){
+            val tvTitulo = findViewById<TextView>(R.id.tvTituloVentas_ReporteRcicladora)
+            val tvTituloCompra = findViewById<TextView>(R.id.tvTituloCompras_ReporteRcicladora)
+
+            do{
+                listaFechasCompra.add(SimpleDateFormat("d/MM/yyyy").parse(fechasCompra.getString(0)))
+            }while (fechasCompra.moveToNext())
+
+            tvTitulo.text = getString(R.string.registrarVenta_str).toString()
+            tvTituloCompra.text = getString(R.string.registrarCompra_str).toString()
+            btnCorreo?.isEnabled = true
+        }
+        fechasCompra.close()
+        flujodedatos.close()
+
+        for ((indice, item) in listaFechasCompra.withIndex()) {
+            if(item.before(fechainicio) || item.after(fechaCorte)){
+                // SACA LAS POCIONES DE LAS FECHAS QUE NO SE OCUPAN //
+                indices.add(indice)
+            }
+        }
+        val comparador = Collections.reverseOrder<Int>()
+        Collections.sort(indices, comparador)
+        /// ELIMINA LA POSICION CON EL NUMERO MAYOR HACIA 0////
+        indices.forEach {
+            listaFechasCompra.removeAt(it)
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun clientesCompras(listaFechas: ArrayList<Date>) : ArrayList<String> {
+        val base = BaseDeDatos(this, "Compras", null, 1)
+        val conexion = base.readableDatabase
+
+        for((index, dato) in listaFechasCompra.withIndex()){
+            val fecha = SimpleDateFormat("d/MM/yyyy").format(dato)
+
+            val datosCliente = conexion.rawQuery("select nombreCliente from Compras where fecha = '$fecha'", null)
+            if(datosCliente.moveToFirst()){
+                listaClientesCompra.add(datosCliente.getString(0))
+            }
+        }
+        conexion.close()
+        /// ELIMINA CLIENTES REPETIDOS ///
+        val hs = HashSet<String>()
+        hs.addAll(listaClientesCompra)
+        listaClientesCompra.clear()
+        listaClientesCompra.addAll(hs)
+
+        listaClientesCompra.sort()//ORDENA ALFABE
+        return listaClientesCompra
+    }
+
     private fun correo(){
         val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
         // CARGA EL LAYOUT PERSONALIZADO//
@@ -238,13 +379,14 @@ class ReporteRecicladora : AppCompatActivity() {
         val conexion = bd.readableDatabase
         val consultaCorreo = conexion.rawQuery("select correo from Recicladoras where usuario = '$usuarioLogeado'", null)
 
-        if(consultaCorreo.moveToFirst()){
+        if(consultaCorreo.moveToFirst()) {
             val correo = consultaCorreo.getString(0).contains("@")
-            if(correo){
+            if (correo) {
                 tvCorreo.text = consultaCorreo.getString(0)
+            } else {
+                tvCorreo.text = getString(R.string.sinCorreo_str)
+                tvCorreo.isEnabled = false
             }
-        }else {
-            tvCorreo.isClickable = false
         }
         conexion.close()
         consultaCorreo.close()
@@ -254,7 +396,6 @@ class ReporteRecicladora : AppCompatActivity() {
 
         tvCorreo.setOnClickListener {
             dialog.dismiss()
-
         }
 
         tvOtroCorreo.setOnClickListener {
@@ -289,9 +430,8 @@ class ReporteRecicladora : AppCompatActivity() {
             }
         })
     }
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class Adapter(var listaDatos: ArrayList<String>) : RecyclerView.Adapter<Adapter.ViewHolder>(){
+    class Adapter(private var listaDatos: ArrayList<String>) : RecyclerView.Adapter<Adapter.ViewHolder>(){
 
         override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
             val v = LayoutInflater.from(p0.context).inflate(R.layout.datos_reporte, p0, false)
