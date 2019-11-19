@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
+import irvinc.example.com.inicioprincipal.Pdf.Pdf
 import irvinc.example.com.inicioprincipal.R
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -179,6 +180,10 @@ class ReporteRecicladora : AppCompatActivity() {
         rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         val adap = Adapter(datosCliente)
         rv?.adapter = adap
+
+        if(adap.itemCount > 0){
+            btnCorreo?.isEnabled = true
+        }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -231,6 +236,10 @@ class ReporteRecicladora : AppCompatActivity() {
         rvCompras?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         val adapCompra = Adapter(datosCompra)
         rvCompras?.adapter = adapCompra
+
+        if(adapCompra.itemCount > 0){
+            btnCorreo?.isEnabled = true
+        }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -256,7 +265,6 @@ class ReporteRecicladora : AppCompatActivity() {
 
             tvTitulo.text = getString(R.string.registrarVenta_str).toString()
             tvTituloCompra.text = getString(R.string.registrarCompra_str).toString()
-            btnCorreo?.isEnabled = true
         }
         fechas.close()
         flujodedatos.close()
@@ -322,7 +330,6 @@ class ReporteRecicladora : AppCompatActivity() {
 
             tvTitulo.text = getString(R.string.registrarVenta_str).toString()
             tvTituloCompra.text = getString(R.string.registrarCompra_str).toString()
-            btnCorreo?.isEnabled = true
         }
         fechasCompra.close()
         flujodedatos.close()
@@ -396,6 +403,20 @@ class ReporteRecicladora : AppCompatActivity() {
 
         tvCorreo.setOnClickListener {
             dialog.dismiss()
+
+            val campoFechaInicio = findViewById<TextInputEditText>(R.id.tietFechaInicio_reporteRecicladora)
+            val campoFechaCorte = findViewById<TextInputEditText>(R.id.tietFechaCorte_reporteRecicladora)
+            val fechainicio = campoFechaInicio.text.toString()
+            val fechaCorte = campoFechaCorte.text.toString()
+
+            val tituloTabla = arrayOf("Cliente","Material","Cantidad material", "Total")
+
+            val pdf = Pdf(applicationContext)
+            pdf.crearArchivo()
+            pdf.abrirDocumento()
+            pdf.agregarParrafo("Reporte generado desde $fechainicio a $fechaCorte")
+            pdf.crearTabla(tituloTabla, getClientsVentas())
+            pdf.cerrarDocumento()
         }
 
         tvOtroCorreo.setOnClickListener {
@@ -429,6 +450,32 @@ class ReporteRecicladora : AppCompatActivity() {
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = etCorreo.length() >= 1
             }
         })
+    }
+
+    private fun getClientsVentas() : ArrayList<Array<String>> {
+        val row : ArrayList<Array<String>> = ArrayList()
+
+        for((index, dato) in datosCliente.withIndex()){
+            row.add(arrayOf(cliente(datosCliente[index]), material(datosCliente[index]), cantidadMaterial(datosCliente[index]), ganancia(datosCliente[index])))
+        }
+        return row
+    }
+
+    private fun cliente(cadena : String) : String {
+        val nombreCliente = cadena.split(":")
+        return nombreCliente[0].trim()
+    }
+    private fun material(cadena : String) : String {
+        val material = cadena.split(":")
+        return material[1].trim().substring(1, material[1].length -1) // ELIMINA EL "[" "]" DEL MATERIAL //
+    }
+    private fun cantidadMaterial(cadena : String) : String {
+        val can = cadena.split(":")
+        return can[2].trim().substring(1, can[2].length -1)
+    }
+    private fun ganancia(cadena : String) : String {
+        val g = cadena.split(":")
+        return g[3].trim()
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     class Adapter(private var listaDatos: ArrayList<String>) : RecyclerView.Adapter<Adapter.ViewHolder>(){
