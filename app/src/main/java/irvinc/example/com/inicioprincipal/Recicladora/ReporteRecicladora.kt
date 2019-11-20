@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
+import irvinc.example.com.inicioprincipal.Mail.EnviarCorreo
 import irvinc.example.com.inicioprincipal.Pdf.Pdf
 import irvinc.example.com.inicioprincipal.R
 import java.text.SimpleDateFormat
@@ -404,19 +405,10 @@ class ReporteRecicladora : AppCompatActivity() {
         tvCorreo.setOnClickListener {
             dialog.dismiss()
 
-            val campoFechaInicio = findViewById<TextInputEditText>(R.id.tietFechaInicio_reporteRecicladora)
-            val campoFechaCorte = findViewById<TextInputEditText>(R.id.tietFechaCorte_reporteRecicladora)
-            val fechainicio = campoFechaInicio.text.toString()
-            val fechaCorte = campoFechaCorte.text.toString()
+            cargarDatosReporte()
 
-            val tituloTabla = arrayOf("Cliente","Material","Cantidad material", "Total")
-
-            val pdf = Pdf(applicationContext)
-            pdf.crearArchivo()
-            pdf.abrirDocumento()
-            pdf.agregarParrafo("Reporte generado desde $fechainicio a $fechaCorte")
-            pdf.crearTabla(tituloTabla, getClientsVentas())
-            pdf.cerrarDocumento()
+            val sender = EnviarCorreo()
+            sender.enviar(tvCorreo.text.toString())
         }
 
         tvOtroCorreo.setOnClickListener {
@@ -435,7 +427,10 @@ class ReporteRecicladora : AppCompatActivity() {
         val etCorreo = dialogView.findViewById<TextInputEditText>(R.id.etCorreo_IniciarSesion)
 
         ventana.setPositiveButton(R.string.enviar_str) { _,_ ->
+            cargarDatosReporte()
 
+            val sender = EnviarCorreo()
+            sender.enviar(etCorreo.text.toString())
         }
         ventana.setNegativeButton(R.string.cancelar_str){_,_ -> }
 
@@ -447,9 +442,31 @@ class ReporteRecicladora : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = etCorreo.length() >= 1
+                if(etCorreo!!.length() > 2){
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = etCorreo?.text.toString().contains("@")
+                } else {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                }
             }
         })
+    }
+
+    private fun cargarDatosReporte(){
+        val campoFechaInicio = findViewById<TextInputEditText>(R.id.tietFechaInicio_reporteRecicladora)
+        val campoFechaCorte = findViewById<TextInputEditText>(R.id.tietFechaCorte_reporteRecicladora)
+        val fechainicio = campoFechaInicio.text.toString()
+        val fechaCorte = campoFechaCorte.text.toString()
+
+        val tituloTabla = arrayOf("Cliente", "Material", "Cantidad material", "Total")
+        val pdf = Pdf(applicationContext)
+        pdf.crearArchivo()
+        pdf.abrirDocumento()
+        pdf.agregarParrafo("Reporte generado desde $fechainicio a $fechaCorte")
+        pdf.agregarParrafo("Datos de ventas:")
+        pdf.crearTabla(tituloTabla, getClientsVentas())
+        pdf.agregarParrafo("Datos de compras:")
+        pdf.crearTabla(tituloTabla, getClientsCompras())
+        pdf.cerrarDocumento()
     }
 
     private fun getClientsVentas() : ArrayList<Array<String>> {
@@ -457,6 +474,15 @@ class ReporteRecicladora : AppCompatActivity() {
 
         for((index, dato) in datosCliente.withIndex()){
             row.add(arrayOf(cliente(datosCliente[index]), material(datosCliente[index]), cantidadMaterial(datosCliente[index]), ganancia(datosCliente[index])))
+        }
+        return row
+    }
+
+    private fun getClientsCompras() : ArrayList<Array<String>> {
+        val row : ArrayList<Array<String>> = ArrayList()
+
+        for((index, dato) in datosCompra.withIndex()){
+            row.add(arrayOf(cliente(datosCompra[index]), material(datosCompra[index]), cantidadMaterial(datosCompra[index]), ganancia(datosCompra[index])))
         }
         return row
     }

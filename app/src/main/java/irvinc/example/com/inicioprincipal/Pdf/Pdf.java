@@ -55,12 +55,12 @@ public class Pdf {
     public void cerrarDocumento(){
         documento.close();
     }
-
-    public void agregarTitulo(String fecha){
+/*
+    public void agregarTitulo(String texto){
         try {
             parrafo = new Paragraph();
 
-            parrafoHijo(new Paragraph("Generado: "+fecha));
+            parrafoHijo(new Paragraph(texto));
             parrafo.setSpacingAfter(30);
         } catch (Exception e){
             Log.e("agregarTitulo", e.toString());
@@ -71,7 +71,7 @@ public class Pdf {
         parrafohijo.setAlignment(Element.ALIGN_CENTER);
         parrafo.add(parrafohijo);
     }
-
+*/
     public void agregarParrafo(String texto){
         try{
             parrafo = new Paragraph(texto);
