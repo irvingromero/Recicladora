@@ -1,12 +1,17 @@
 package irvinc.example.com.inicioprincipal.Recicladora
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.pm.PackageManager
+import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.button.MaterialButton
 import android.support.design.widget.TextInputEditText
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
@@ -114,11 +119,37 @@ class ReporteRecicladora : AppCompatActivity() {
         })
 
         btnCorreo?.setOnClickListener {
-            correo()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val permisoActivado = estadoPermisoUbicacion()
+
+                if (!permisoActivado) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        //// MIUESTRA EL DIALOG PARA EL PERMISO ////
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 10)
+                    }
+                } else { // PERMISO YA DADO
+                    correo()
+                }
+            } else {// VERSION MENOR A 6.0
+                correo()
+            }
         }
 
         findViewById<ImageButton>(R.id.btnAtras_ReporteRecicladora).setOnClickListener {
             onBackPressed()
+        }
+    }
+
+    private fun estadoPermisoUbicacion() : Boolean {
+        val resultado = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        return resultado == PackageManager.PERMISSION_GRANTED
+    }
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == 10) {
+            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            }
         }
     }
 
@@ -443,7 +474,7 @@ class ReporteRecicladora : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(etCorreo!!.length() > 2){
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = etCorreo?.text.toString().contains("@")
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = etCorreo.text.toString().contains("@")
                 } else {
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
                 }
@@ -458,9 +489,26 @@ class ReporteRecicladora : AppCompatActivity() {
         val fechaCorte = campoFechaCorte.text.toString()
 
         val tituloTabla = arrayOf("Cliente", "Material", "Cantidad material", "Total")
+
         val pdf = Pdf(applicationContext)
         pdf.crearArchivo()
         pdf.abrirDocumento()
+
+        val bd = BaseDeDatos(this, "Usuarios", null, 1)
+        val conexion = bd.readableDatabase
+        val consultaDatos = conexion.rawQuery("select nombre, correo, telefono, calle, colonia, numeroInt from Recicladoras where usuario = '$usuarioLogeado'", null)
+
+        if(consultaDatos.moveToFirst()) {
+            pdf.agregarParrafo("Nombre recicladora: ${consultaDatos.getString(0)}")
+            pdf.agregarParrafo("Correo: ${consultaDatos.getString(1)}")
+            pdf.agregarParrafo("Telefono: ${consultaDatos.getString(2)}")
+            pdf.agregarParrafo("Calle: ${consultaDatos.getString(3)}")
+            pdf.agregarParrafo("Colonia: ${consultaDatos.getString(4)}")
+            pdf.agregarParrafo("Numero Interior: ${consultaDatos.getString(5)}")
+        }
+        consultaDatos.close()
+        conexion.close()
+
         pdf.agregarParrafo("Reporte generado desde $fechainicio a $fechaCorte")
         pdf.agregarParrafo("Datos de ventas:")
         pdf.crearTabla(tituloTabla, getClientsVentas())

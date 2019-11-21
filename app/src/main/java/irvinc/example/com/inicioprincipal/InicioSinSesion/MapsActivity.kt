@@ -104,16 +104,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             val rb = findViewById<RatingBar>(R.id.rbPuntuar_datosRecicladora)
             rb.rating = 0.0f
         }
-        /*****************************************************************************
-         *  PARA FINES DE INGENIERIA DE SW EMPIZA CON EL LOGIN
-         ****************************************************************************/
-        val handler = Handler(Looper.getMainLooper())
-        handler.post {
-            val intent = Intent(this, IniciarSesion::class.java)
-            startActivity(intent)
-
-            cerrarDrawer()
-        }
     }
 
     private fun sesionGuardada(){
