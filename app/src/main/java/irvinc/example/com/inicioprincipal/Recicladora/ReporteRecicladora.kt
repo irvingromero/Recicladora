@@ -433,6 +433,7 @@ class ReporteRecicladora : AppCompatActivity() {
         val dialog: AlertDialog = ventana.create()
         dialog.show()
 
+            //// DA CLICK AL CORREO REGISTRADO ////
         tvCorreo.setOnClickListener {
             dialog.dismiss()
 

@@ -129,4 +129,6 @@
     <string name="pagado_str">Total pagado:</string>
     <string name="sinCorreo_str">Sin correo registrado</string>
 
+    <string name="listaMateriales_str">Lista de materiales</string>
+
 </resources>

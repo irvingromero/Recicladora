@@ -17,33 +17,34 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
 
-        <activity android:name=".Recicladora.ReporteRecicladora"
-                android:screenOrientation="portrait"
+        <activity android:name=".Recicladora.ListaMateriales"></activity>
+
+        <activity
+                android:name=".Recicladora.ReporteRecicladora"
                 android:resizeableActivity="false"
+                android:screenOrientation="portrait"
                 android:supportsPictureInPicture="false"
                 android:windowSoftInputMode="stateHidden">
         </activity>
-
-        <activity android:name=".Recicladora.ComprasRecicladora"
-                android:screenOrientation="portrait"
+        <activity
+                android:name=".Recicladora.ComprasRecicladora"
                 android:resizeableActivity="false"
-                android:supportsPictureInPicture="false"
-                android:windowSoftInputMode="stateHidden"/>
-
-        <activity android:name=".Recicladora.VentasRecicladora"
                 android:screenOrientation="portrait"
-                android:resizeableActivity="false"
                 android:supportsPictureInPicture="false"
-                android:windowSoftInputMode="stateHidden"/>
-
+                android:windowSoftInputMode="stateHidden" />
+        <activity
+                android:name=".Recicladora.VentasRecicladora"
+                android:resizeableActivity="false"
+                android:screenOrientation="portrait"
+                android:supportsPictureInPicture="false"
+                android:windowSoftInputMode="stateHidden" />
         <activity android:name=".Recicladora.UbicacionRecicladora" />
-
-        <activity android:name=".Recicladora.DatosRecicladora"
-                android:screenOrientation="portrait"
+        <activity
+                android:name=".Recicladora.DatosRecicladora"
                 android:resizeableActivity="false"
+                android:screenOrientation="portrait"
                 android:supportsPictureInPicture="false"
-                android:windowSoftInputMode="stateHidden"/>
-
+                android:windowSoftInputMode="stateHidden" />
         <activity android:name=".Recicladora.SesionRecicladora" />
 
         <meta-data
@@ -70,5 +71,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
