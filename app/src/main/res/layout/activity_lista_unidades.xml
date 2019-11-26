@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Recicladora.ListaUnidades"
+        android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark">
+
+        <ImageButton
+                android:id="@+id/btnAtras_ListaUnidades"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/back"
+                android:backgroundTint="@color/colorPrimaryDark"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="@string/listaUnidades_str"
+                android:textColor="@color/colorNegro"
+                android:textSize="20sp"/>
+    </android.support.v7.widget.Toolbar>
+
+    <Button
+            android:id="@+id/btAgregarUnidadLista_ListaUnidades"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/AgregarUnidad_str"
+            android:onClick="agregarUnidadLista"/>
+
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvListUnidades_ListaUnidades"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp">
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

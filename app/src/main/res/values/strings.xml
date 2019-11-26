@@ -130,5 +130,6 @@
     <string name="sinCorreo_str">Sin correo registrado</string>
 
     <string name="listaMateriales_str">Lista de materiales</string>
+    <string name="listaUnidades_str">Lista de unidades</string>
 
 </resources>

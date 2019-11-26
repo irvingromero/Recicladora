@@ -16,16 +16,14 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-
-        <activity android:name=".Recicladora.ListaMateriales"></activity>
-
+        <activity android:name=".Recicladora.ListaUnidades"></activity>
+        <activity android:name=".Recicladora.ListaMateriales" />
         <activity
                 android:name=".Recicladora.ReporteRecicladora"
                 android:resizeableActivity="false"
                 android:screenOrientation="portrait"
                 android:supportsPictureInPicture="false"
-                android:windowSoftInputMode="stateHidden">
-        </activity>
+                android:windowSoftInputMode="stateHidden"></activity>
         <activity
                 android:name=".Recicladora.ComprasRecicladora"
                 android:resizeableActivity="false"
@@ -67,8 +65,10 @@
                 android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

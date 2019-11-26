@@ -359,60 +359,9 @@ class SesionRecicladora : AppCompatActivity() {
     }
 
     fun AgregarUnidadLista(view: View){
+        val unidades = Intent(this, ListaUnidades::class.java)
+        startActivity(unidades)
         cerrarDrawer()
-
-        val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
-        // CARGA EL LAYOUT PERSONALIZADO DEL DIALOG//
-        val inflater = this.layoutInflater
-        val dialogView = inflater.inflate(R.layout.veagregar_material_unidad, null)
-        ventana.setView(dialogView)
-
-        ventana.setTitle("Unidad nueva")
-        val nuevo = dialogView.findViewById<TextInputEditText>(R.id.tietNuevo_materialUnidad)
-        nuevo.hint = getString(R.string.unidad_str)
-
-        ventana.setPositiveButton(R.string.agregar_str){ _, _ ->
-            cerrarTeclado()
-
-            val unidadNuevo = nuevo.text.toString()
-
-            val objetobasededatos = BaseDeDatos(this, "material", null, 1)
-            val flujodedatos = objetobasededatos.writableDatabase
-            val consulta = flujodedatos.rawQuery("select unidad from ListaUnidades where unidad = '$unidadNuevo'", null)
-            if(!consulta.moveToFirst()){
-                val addUnidad = ContentValues()
-                addUnidad.put("unidad", unidadNuevo)
-                flujodedatos.insert("ListaUnidades", null, addUnidad)
-
-                val toast = Toast(applicationContext)
-                //// CARGA EL LAYOUT A UNA VISTA ////
-                val view = layoutInflater.inflate(R.layout.usuario_registrado, null)
-                toast.view = view
-                toast.duration = Toast.LENGTH_LONG
-                toast.setGravity(Gravity.BOTTOM,0, 30)
-                view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text = getString(R.string.materialAgregado_str)
-                toast.show()
-            } else {
-                Snackbar.make(view, "Unidad ya existente", Snackbar.LENGTH_LONG).show()
-            }
-            flujodedatos.close()
-            consulta.close()
-        }
-        ventana.setNeutralButton(R.string.cancelar_str){ _, _ ->
-            cerrarTeclado()
-        }
-
-        val dialog: AlertDialog = ventana.create()
-        dialog.show()
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-
-        nuevo.addTextChangedListener(object : TextWatcher{
-            override fun afterTextChanged(p0: Editable?) {}
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = nuevo.length() > 1
-            }
-        })
     }
         ////    FIN MENU ////
     override fun onBackPressed() {
