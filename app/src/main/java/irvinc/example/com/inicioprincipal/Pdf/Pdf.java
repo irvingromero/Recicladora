@@ -1,17 +1,18 @@
 package irvinc.example.com.inicioprincipal.Pdf;
 
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.File;
@@ -20,20 +21,14 @@ import java.util.ArrayList;
 
 public class Pdf {
 
-    private Context context;
     private File pdfFile;
     private Document documento;
     private PdfWriter pdfWriter;
     private Paragraph parrafo;
-
-    public Pdf(Context context){
-        this.context = context;
-    }
+    private Font encabezado = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD);
 
     public void crearArchivo(){
         File folder = new File(Environment.getExternalStorageDirectory().toString(), "PDF");
-
-        //// PEDIR PERMISO DE ALMACENAMIENTO!!! ////////////
 
         if(!folder.exists())
             folder.mkdir();
@@ -46,6 +41,9 @@ public class Pdf {
         try{
             documento = new Document(PageSize.A4);
             pdfWriter = PdfWriter.getInstance(documento, new FileOutputStream(pdfFile));
+
+            pdfWriter.setPageEvent(new HeaderFooter());
+
             documento.open();
         } catch (Exception e){
             Log.e("abrirDocumento", e.toString());
@@ -75,11 +73,23 @@ public class Pdf {
     public void agregarParrafo(String texto){
         try{
             parrafo = new Paragraph(texto);
-            parrafo.setSpacingAfter(5);
-            parrafo.setSpacingBefore(5);
+            parrafo.setSpacingAfter(1);
+            parrafo.setSpacingBefore(1);
             documento.add(parrafo);
         }catch (Exception e){
             Log.e("agregarParrafo", e.toString());
+        }
+    }
+
+    public void agregarParrafoCentrado(String texto){
+        try{
+            parrafo = new Paragraph(texto);
+            parrafo.setSpacingAfter(2);
+            parrafo.setSpacingBefore(2);
+            parrafo.setAlignment(Element.ALIGN_CENTER);
+            documento.add(parrafo);
+        }catch (Exception e){
+            Log.e("agregarParrafoCentrado", e.toString());
         }
     }
 
@@ -104,7 +114,7 @@ public class Pdf {
                 for(indexc = 0; indexc < 4; indexc ++){
                     pdfPCell = new PdfPCell(new Phrase(row[indexc]));
                     pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    pdfPCell.setFixedHeight(40);
+                    pdfPCell.setFixedHeight(20);
                     pdfPTable.addCell(pdfPCell);
                 }
             }
@@ -113,6 +123,33 @@ public class Pdf {
 
         }catch (Exception e){
             Log.e("crearTabla", e.toString());
+        }
+    }
+
+    class HeaderFooter extends PdfPageEventHelper {
+
+        @Override
+        public void onEndPage(PdfWriter writer, Document document) {
+            PdfPTable tbHeader = new PdfPTable(1);
+            tbHeader.setTotalWidth(documento.getPageSize().getWidth() - documento.leftMargin() - documento.rightMargin());
+            tbHeader.getDefaultCell().setBorder(0);
+
+            PdfPCell cell = new PdfPCell(new Paragraph("INSTITUTO TECNOLOGICO DE MEXICALI", encabezado));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBorder(0);
+            tbHeader.addCell(cell);
+            tbHeader.writeSelectedRows(0, -1, documento.leftMargin(), pdfWriter.getPageSize().getTop(documento.topMargin()) +40, pdfWriter.getDirectContent());
+
+
+            PdfPTable tbFooter = new PdfPTable(1);
+            tbFooter.setTotalWidth(documento.getPageSize().getWidth() - documento.leftMargin() - documento.rightMargin());
+            tbFooter.getDefaultCell().setBorder(0);
+            //// MUESTRA EL NUMERO DE LA PAGINA ////
+            cell = new PdfPCell(new Paragraph("" + pdfWriter.getCurrentPageNumber()));
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell.setBorder(0);
+            tbFooter.addCell(cell);
+            tbFooter.writeSelectedRows(0, -1, documento.leftMargin(), pdfWriter.getPageSize().getBottom(documento.bottomMargin()) -5, pdfWriter.getDirectContent());
         }
     }
 }

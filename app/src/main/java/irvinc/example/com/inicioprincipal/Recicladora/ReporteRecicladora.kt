@@ -489,9 +489,9 @@ class ReporteRecicladora : AppCompatActivity() {
         val fechainicio = campoFechaInicio.text.toString()
         val fechaCorte = campoFechaCorte.text.toString()
 
-        val tituloTabla = arrayOf("Cliente", "Material", "Cantidad material", "Total")
+        val tituloTabla = arrayOf("Cliente", "Material", "Cantidad", "Fecha","Total")
 
-        val pdf = Pdf(applicationContext)
+        val pdf = Pdf()
         pdf.crearArchivo()
         pdf.abrirDocumento()
 
@@ -499,18 +499,16 @@ class ReporteRecicladora : AppCompatActivity() {
         val conexion = bd.readableDatabase
         val consultaDatos = conexion.rawQuery("select nombre, correo, telefono, calle, colonia, numeroInt from Recicladoras where usuario = '$usuarioLogeado'", null)
 
+            //// AGREGA LOS DATOS DE LA RECICLADORA AL DOCUMENTO ////
         if(consultaDatos.moveToFirst()) {
-            pdf.agregarParrafo("Nombre recicladora: ${consultaDatos.getString(0)}")
-            pdf.agregarParrafo("Correo: ${consultaDatos.getString(1)}")
-            pdf.agregarParrafo("Telefono: ${consultaDatos.getString(2)}")
-            pdf.agregarParrafo("Calle: ${consultaDatos.getString(3)}")
-            pdf.agregarParrafo("Colonia: ${consultaDatos.getString(4)}")
-            pdf.agregarParrafo("Numero Interior: ${consultaDatos.getString(5)}")
+            pdf.agregarParrafo("Recicladora: ${consultaDatos.getString(0)}              Telefono: ${consultaDatos.getString(2)}")
+            pdf.agregarParrafo("Correo: ${consultaDatos.getString(1)}               Calle: ${consultaDatos.getString(3)}")
+            pdf.agregarParrafo("Colonia: ${consultaDatos.getString(4)}              Numero Interior: ${consultaDatos.getString(5)}")
         }
         consultaDatos.close()
         conexion.close()
 
-        pdf.agregarParrafo("Reporte generado desde $fechainicio a $fechaCorte")
+        pdf.agregarParrafoCentrado("Reporte de Ventas y Compras del periodo: $fechainicio al $fechaCorte")
         pdf.agregarParrafo("Datos de ventas:")
         pdf.crearTabla(tituloTabla, getClientsVentas())
         pdf.agregarParrafo("Datos de compras:")
