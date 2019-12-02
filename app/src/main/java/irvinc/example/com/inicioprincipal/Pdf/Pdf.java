@@ -111,10 +111,10 @@ public class Pdf {
             for(int indexR = 0; indexR < clientes.size(); indexR ++){
                 String [] row = clientes.get(indexR);
 
-                for(indexc = 0; indexc < 4; indexc ++){
+                for(indexc = 0; indexc < 6; indexc ++){
                     pdfPCell = new PdfPCell(new Phrase(row[indexc]));
                     pdfPCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    pdfPCell.setFixedHeight(20);
+                    pdfPCell.setFixedHeight(18);
                     pdfPTable.addCell(pdfPCell);
                 }
             }
@@ -138,7 +138,7 @@ public class Pdf {
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setBorder(0);
             tbHeader.addCell(cell);
-            tbHeader.writeSelectedRows(0, -1, documento.leftMargin(), pdfWriter.getPageSize().getTop(documento.topMargin()) +40, pdfWriter.getDirectContent());
+            tbHeader.writeSelectedRows(0, -1, documento.leftMargin(), pdfWriter.getPageSize().getTop(documento.topMargin()) +30, pdfWriter.getDirectContent());
 
 
             PdfPTable tbFooter = new PdfPTable(1);
@@ -149,7 +149,7 @@ public class Pdf {
             cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             cell.setBorder(0);
             tbFooter.addCell(cell);
-            tbFooter.writeSelectedRows(0, -1, documento.leftMargin(), pdfWriter.getPageSize().getBottom(documento.bottomMargin()) -5, pdfWriter.getDirectContent());
+            tbFooter.writeSelectedRows(0, -1, documento.leftMargin(), pdfWriter.getPageSize().getBottom(documento.bottomMargin()) +11, pdfWriter.getDirectContent());
         }
     }
 }

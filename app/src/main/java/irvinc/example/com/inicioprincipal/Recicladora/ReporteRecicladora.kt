@@ -19,7 +19,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.TextView
+import android.widget.LinearLayout
+import android.widget.ImageButton
+import android.widget.Toast
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.Mail.EnviarCorreo
 import irvinc.example.com.inicioprincipal.Pdf.Pdf
@@ -71,7 +74,7 @@ class ReporteRecicladora : AppCompatActivity() {
             val ventanaFecha = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, mes, dia ->
                 val mesReal = mes+1
                 val fechaCompleta = "$dia/$mesReal/$year"
-                fechaInicio?.setText(fechaCompleta)
+                fechaInicio.setText(fechaCompleta)
                 fechaCorte?.isEnabled = true
             }, year, month, day)
             ventanaFecha.show()
@@ -89,7 +92,7 @@ class ReporteRecicladora : AppCompatActivity() {
                     //// VALIDA QUE LA FECHA DE CORTE SEA DESPUES DE LA DE INICIO /////
                 val ok = validaFecha(fechaInicio?.text.toString(), fechaCompleta)
                 if(ok){
-                    fechaCorte?.setText(fechaCompleta)
+                    fechaCorte.setText(fechaCompleta)
                 } else {
                     Toast.makeText(applicationContext, "Debe ser despues de Fecha de inicio", Toast.LENGTH_SHORT).show()
                 }
@@ -126,6 +129,9 @@ class ReporteRecicladora : AppCompatActivity() {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         //// MIUESTRA EL DIALOG PARA EL PERMISO ////
                         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 10)
+                    } else {
+                        //// CUANDO LA APP RECIEN SE INSTALA? ////
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 10)
                     }
                 } else { // PERMISO YA DADO
                     correo()
@@ -144,11 +150,13 @@ class ReporteRecicladora : AppCompatActivity() {
         val resultado = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         return resultado == PackageManager.PERMISSION_GRANTED
     }
+
     @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == 10) {
             if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                //// CUANDO SALE EL DIALOG DE PERMISO Y SE ACEPTA ENTRA AQUI /////
+                correo()
             }
         }
     }
@@ -441,6 +449,8 @@ class ReporteRecicladora : AppCompatActivity() {
 
             val sender = EnviarCorreo()
             sender.enviar(tvCorreo.text.toString())
+
+            Toast.makeText(applicationContext, "Correo enviado!", Toast.LENGTH_LONG).show()
         }
 
         tvOtroCorreo.setOnClickListener {
@@ -489,7 +499,7 @@ class ReporteRecicladora : AppCompatActivity() {
         val fechainicio = campoFechaInicio.text.toString()
         val fechaCorte = campoFechaCorte.text.toString()
 
-        val tituloTabla = arrayOf("Cliente", "Material", "Cantidad", "Fecha","Total")
+        val tituloTabla = arrayOf("Cliente", "Material", "Cantidad", "Unidad", "Total", "Fecha")
 
         val pdf = Pdf()
         pdf.crearArchivo()
@@ -516,39 +526,61 @@ class ReporteRecicladora : AppCompatActivity() {
         pdf.cerrarDocumento()
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun getClientsVentas() : ArrayList<Array<String>> {
         val row : ArrayList<Array<String>> = ArrayList()
 
-        for((index, dato) in datosCliente.withIndex()){
-            row.add(arrayOf(cliente(datosCliente[index]), material(datosCliente[index]), cantidadMaterial(datosCliente[index]), ganancia(datosCliente[index])))
+        val bd =  BaseDeDatos(this, "Ventas", null , 1)
+        val basededatos = bd.readableDatabase
+
+        var clientestr = ""
+        var fechastr = ""
+
+        for((indice, dato) in datosCliente.withIndex()){
+            for((index, datoFecha) in listaFechas.withIndex()) {
+
+                clientestr = cliente(datosCliente[indice])
+                fechastr = SimpleDateFormat("d/MM/yyyy").format(listaFechas[index])
+
+                val consultaDatos = basededatos.rawQuery("select material, cantidad, unidad, ganancia, fecha from Ventas where nombreCliente=? and fecha=?", arrayOf(clientestr, fechastr))
+                if (consultaDatos.moveToFirst()) {
+                    row.add(arrayOf(clientestr, consultaDatos.getString(0), consultaDatos.getDouble(1).toString(), consultaDatos.getString(2), consultaDatos.getDouble(3).toString(),consultaDatos.getString(4)))
+                }
+            }
         }
+        basededatos.close()
         return row
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun getClientsCompras() : ArrayList<Array<String>> {
         val row : ArrayList<Array<String>> = ArrayList()
 
-        for((index, dato) in datosCompra.withIndex()){
-            row.add(arrayOf(cliente(datosCompra[index]), material(datosCompra[index]), cantidadMaterial(datosCompra[index]), ganancia(datosCompra[index])))
+        val bd =  BaseDeDatos(this, "Compras", null , 1)
+        val basededatos = bd.readableDatabase
+
+        var clientestr = ""
+        var fechastr = ""
+
+        for((indice, dato) in datosCompra.withIndex()){
+            for((index, datoFecha) in listaFechasCompra.withIndex()) {
+
+                clientestr = cliente(datosCompra[indice])
+                fechastr = SimpleDateFormat("d/MM/yyyy").format(listaFechasCompra[index])
+
+                val consultaDatos = basededatos.rawQuery("select material, cantidad, unidad, gasto, fecha from Compras where nombreCliente=? and fecha=?", arrayOf(clientestr, fechastr))
+                if (consultaDatos.moveToFirst()) {
+                    row.add(arrayOf(clientestr, consultaDatos.getString(0), consultaDatos.getDouble(1).toString(), consultaDatos.getString(2), consultaDatos.getDouble(3).toString(),consultaDatos.getString(4)))
+                }
+            }
         }
+        basededatos.close()
         return row
     }
 
     private fun cliente(cadena : String) : String {
         val nombreCliente = cadena.split(":")
         return nombreCliente[0].trim()
-    }
-    private fun material(cadena : String) : String {
-        val material = cadena.split(":")
-        return material[1].trim().substring(1, material[1].length -1) // ELIMINA EL "[" "]" DEL MATERIAL //
-    }
-    private fun cantidadMaterial(cadena : String) : String {
-        val can = cadena.split(":")
-        return can[2].trim().substring(1, can[2].length -1)
-    }
-    private fun ganancia(cadena : String) : String {
-        val g = cadena.split(":")
-        return g[3].trim()
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     class Adapter(private var listaDatos: ArrayList<String>) : RecyclerView.Adapter<Adapter.ViewHolder>(){
