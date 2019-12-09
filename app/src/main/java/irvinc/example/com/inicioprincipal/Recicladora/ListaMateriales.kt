@@ -4,11 +4,11 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.TextInputEditText
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
@@ -16,7 +16,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.TextView
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
@@ -41,7 +40,7 @@ class ListaMateriales : AppCompatActivity() {
 
     private fun mostrarLista(){
         rv = findViewById(R.id.rvListaMateriales_ListaMateriales)
-        rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        rv?.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         listaMaterial = ArrayList()
 
         val bd =  BaseDeDatos(this, "material", null , 1)

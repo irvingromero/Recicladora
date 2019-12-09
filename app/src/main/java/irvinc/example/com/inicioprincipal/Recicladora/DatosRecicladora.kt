@@ -1,10 +1,10 @@
 package irvinc.example.com.inicioprincipal.Recicladora
 
 import android.content.ContentValues
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.button.MaterialButton
-import android.support.design.widget.TextInputEditText
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity

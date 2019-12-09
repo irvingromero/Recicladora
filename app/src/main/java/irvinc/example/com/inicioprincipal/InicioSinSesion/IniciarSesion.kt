@@ -1,14 +1,19 @@
 package irvinc.example.com.inicioprincipal.InicioSinSesion
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.button.MaterialButton
-import android.support.design.widget.TextInputEditText
-import android.support.v7.app.AlertDialog
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import androidx.appcompat.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
@@ -18,6 +23,9 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.firebase.auth.FirebaseAuth
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.R
 import irvinc.example.com.inicioprincipal.Recicladora.SesionRecicladora
@@ -26,11 +34,15 @@ import irvinc.example.com.inicioprincipal.UsuarioLogeado.SesionUsuario
 class IniciarSesion : AppCompatActivity() {
 
     private val bd =  BaseDeDatos(this, "Usuarios", null , 1)
+    private var cargando : ProgressDialog? = null
+    private lateinit var auth : FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_iniciar_sesion)
+
         supportActionBar?.hide()
+        auth = FirebaseAuth.getInstance()
 
         val etUsuario_iniciarSesion = findViewById<TextInputEditText>(R.id.etUsuario_inicioSesion)
         val etContra_inicioSesion = findViewById<TextInputEditText>(R.id.etContra_inicioSesion)
@@ -38,6 +50,7 @@ class IniciarSesion : AppCompatActivity() {
 
         var usuarioOk_inicio = false
         var contraOk_inicio = false
+
         etUsuario_iniciarSesion.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -76,66 +89,136 @@ class IniciarSesion : AppCompatActivity() {
         btnIniciarSesion.setOnClickListener {
             iniciarSesion(etUsuario_iniciarSesion.text.toString(), etContra_inicioSesion.text.toString())
         }
-        val botonBack = findViewById<ImageButton>(R.id.btnBack_inicioSesion)
-        botonBack.setOnClickListener {
-            onBackPressed()
-                    //// ESCONDE EL TECLADO /////
-            cerrarTeclado()
+
+        val irMapa = findViewById<ImageButton>(R.id.btnBack_inicioSesion)
+        irMapa.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val permisoActivado = estadoPermisoUbicacion()
+
+                if (!permisoActivado) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        //// MIUESTRA EL DIALOG PARA EL PERMISO ////
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 10)
+                    } else {
+                        //// CUANDO LA APP RECIEN SE INSTALA ////
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 10)
+                    }
+                } else { // PERMISO YA DADO
+                    startActivity(Intent(this, MapsActivity::class.java))
+                }
+            } else {// VERSION MENOR A 6.0
+                startActivity(Intent(this, MapsActivity::class.java))
+            }
+        }
+    }
+
+    private fun estadoPermisoUbicacion() : Boolean {
+        val resultado = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        return resultado == PackageManager.PERMISSION_GRANTED
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == 10) {
+            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //// CUANDO SALE EL DIALOG DE PERMISO Y SE ACEPTA ENTRA AQUI /////
+                startActivity(Intent(this, MapsActivity::class.java))
+            }
+        }
+
+            //// CUANDO UN USUARIO QUIERE INICIAR SESION ////
+        if (requestCode == 20) {
+            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                val etUsuario_iniciarSesion = findViewById<TextInputEditText>(R.id.etUsuario_inicioSesion)
+                //// CUANDO SALE EL DIALOG DE PERMISO Y SE ACEPTA ENTRA AQUI /////
+                startActivity(Intent(this, SesionUsuario::class.java).putExtra("usuario", etUsuario_iniciarSesion.text.toString()))
+                finish()
+            } else {
+                cargando?.dismiss()
+            }
         }
     }
 
     private fun iniciarSesion(usuario : String, contra : String){
         val mantenerSesion = findViewById<CheckBox>(R.id.cbMantenerSesion_InicioSesion)
 
-        val basededatos = bd.readableDatabase
-        var usuarioExiste = false
-        var recicladora = false
-        var incorrecto = true
+        cargando = ProgressDialog(this)
+        cargando?.setMessage("Iniciando sesion...")
+        cargando?.setCancelable(false)
+        cargando?.show()
 
-        val consultaRecicladora = basededatos.rawQuery("select usuario from Recicladoras where usuario = '$usuario' and contra = '$contra'",null)
-        recicladora = consultaRecicladora.moveToFirst()
-        consultaRecicladora.close()
+        auth.signInWithEmailAndPassword(usuario, contra).addOnCompleteListener(this) { task ->
+            if(task.isSuccessful){
+                val basededatos = bd.readableDatabase
+                var usuarioExiste = false
+                var recicladora = false
+                var incorrecto = true
 
-        val consultaUsuario = basededatos.rawQuery("select usuario from Usuarios where usuario ='$usuario' and contra = '$contra'",null)
-         usuarioExiste = consultaUsuario.moveToFirst()
-        consultaUsuario.close()
-        bd.close()
-        basededatos.close()
+                val consultaRecicladora = basededatos.rawQuery("select usuario from Recicladoras where usuario = '$usuario' and contra = '$contra'",null)
+                recicladora = consultaRecicladora.moveToFirst()
+                consultaRecicladora.close()
 
-        if(usuarioExiste){
-            cerrarTeclado() //// ESCONDE EL TECLADO /////
+                val consultaUsuario = basededatos.rawQuery("select correo from Usuarios where correo ='$usuario' and contra = '$contra'",null)
+                usuarioExiste = consultaUsuario.moveToFirst()
+                consultaUsuario.close()
+                bd.close()
+                basededatos.close()
 
-            val intent = Intent(this, SesionUsuario::class.java)
-            intent.putExtra("usuario", usuario)
-            finishAffinity()    //// CIERRA LAS DEMAS ACTIVITYS EN SEGUNDO PLANO////
-            startActivity(intent)
+                if(usuarioExiste){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        val permisoActivado = estadoPermisoUbicacion()
 
-            incorrecto = false
-        }
+                        if (!permisoActivado) {
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                                //// MIUESTRA EL DIALOG PARA EL PERMISO ////
+                                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 20)
+                            } else {
+                                //// CUANDO LA APP RECIEN SE INSTALA ////
+                                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 20)
+                            }
+                        } else { // PERMISO YA DADO
+                            val intent = Intent(this, SesionUsuario::class.java)
+                            intent.putExtra("usuario", usuario)
+                            finishAffinity()    //// CIERRA LAS DEMAS ACTIVITYS EN SEGUNDO PLANO////
+                            startActivity(intent)
+                        }
+                    } else {// VERSION MENOR A 6.0
+                        val intent = Intent(this, SesionUsuario::class.java)
+                        intent.putExtra("usuario", usuario)
+                        finishAffinity()    //// CIERRA LAS DEMAS ACTIVITYS EN SEGUNDO PLANO////
+                        startActivity(intent)
+                    }
+                    incorrecto = false
+                }
 
-        if(recicladora){
-            cerrarTeclado()
+                if(recicladora){
+                    cerrarTeclado()
 
-            val intent = Intent(this, SesionRecicladora::class.java)
-            intent.putExtra("usuario", usuario)
-            finishAffinity()    //// CIERRA LAS DEMAS ACTIVITYS EN SEGUNDO PLANO////
-            startActivity(intent)
+                    val intent = Intent(this, SesionRecicladora::class.java)
+                    intent.putExtra("usuario", usuario)
+                    finishAffinity()    //// CIERRA LAS DEMAS ACTIVITYS EN SEGUNDO PLANO////
+                    startActivity(intent)
 
-            incorrecto = false
-        }
+                    incorrecto = false
+                }
 
-        if(usuarioExiste || recicladora){
-            if (mantenerSesion.isChecked) {
-                val preferences = this.getSharedPreferences("user", Context.MODE_PRIVATE)
-                /// GUARDAR SOLO USUARIO ///
-                val editor = preferences.edit()
-                editor.putString("usuario", usuario)
-                editor.apply()
+                if(usuarioExiste || recicladora){
+                    if (mantenerSesion.isChecked) {
+                        val preferences = this.getSharedPreferences("user", Context.MODE_PRIVATE)
+                        /// GUARDAR SOLO USUARIO ///
+                        val editor = preferences.edit()
+                        editor.putString("usuario", usuario)
+                        editor.apply()
+                    }
+                }
+
+                if(incorrecto){
+                    Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_LONG).show()
+                }
+            } else {
+                cargando!!.dismiss()
+                Toast.makeText(this, "Error al iniciar sesion", Toast.LENGTH_LONG).show()
             }
-        }
-
-        if(incorrecto){
-            Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -191,10 +274,9 @@ class IniciarSesion : AppCompatActivity() {
     fun ventanaRegistroUsuario(view : View){
         val botonRegistro = findViewById<Button>(R.id.btnRegistro_inicioSesion)
 
-        var usuarioOk = false
-        var contraOk = usuarioOk
+        var contraOk = false
         var confirmContra = false
-        var usuarioValido = false
+        var correo = false
 
         val ventana = AlertDialog.Builder(this, R.style.CustomDialogTheme)
         ventana.setCancelable(false) // EVITA QUE SE CIERRE EL DIALOG CON UN CLICK AFUERA DE EL //
@@ -206,18 +288,42 @@ class IniciarSesion : AppCompatActivity() {
         val etCorreo = dialogView.findViewById<TextInputEditText>(R.id.etCorreo_registroUsuario)
         val etContra = dialogView.findViewById<TextInputEditText>(R.id.etContra_registroUsuario)
         val etConfirmContra = dialogView.findViewById<TextInputEditText>(R.id.etConfirmarContra_registroUsuario)
-        val etUsuario = dialogView.findViewById<TextInputEditText>(R.id.etUsuario_registroUsuario)
+
             //// TRANSFORMA EL FORMATO TEXT A TEXTPASSWORD ////
         etContra.transformationMethod =  PasswordTransformationMethod()
         etConfirmContra.transformationMethod =  PasswordTransformationMethod()
-
         etConfirmContra.isEnabled = false
 
         ventana.setPositiveButton(R.string.registrar_str){ _, _ ->
-            registrarUsuario(etUsuario.text.toString(), etCorreo.text.toString(), etContra.text.toString())
+            val cargando = ProgressDialog(this)
+            cargando.setMessage("Registrando...")
+            cargando.setCancelable(false)
+            cargando.show()
+
+                //// PARA ALMACENAR CONTRASENA SON MINIMO 6 CARACTERES!! PARA EL CORREO SON 11 //////
+            auth.createUserWithEmailAndPassword(etCorreo.text.toString() , etContra.text.toString()).addOnCompleteListener(this) { task ->
+                if(task.isSuccessful){
+                    cargando.dismiss()
+                    registrarUsuarioBdInterna(etCorreo.text.toString(), etContra.text.toString())
+
+                    val toast = Toast(applicationContext)
+                    //// CARGA EL LAYOUT A UNA VISTA ////
+                    val view = layoutInflater.inflate(R.layout.usuario_registrado, null)
+                    toast.view = view
+                    toast.duration = Toast.LENGTH_LONG
+                    toast.setGravity(Gravity.TOP,0, 0)
+                    view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text = getString(R.string.registrado_str)
+                    toast.show()
+                } else {
+                    cargando.dismiss()
+                    Toast.makeText(applicationContext, "Hubo un error, intente de nuevo", Toast.LENGTH_LONG).show()
+                    cerrarTeclado()
+                }
+            }
             botonRegistro.isEnabled = true
             cerrarTeclado()
         }
+
         ventana.setNeutralButton(R.string.cancelar_str){ _, _ ->
             botonRegistro.isEnabled = true
             cerrarTeclado()
@@ -239,32 +345,28 @@ class IniciarSesion : AppCompatActivity() {
         botonRegistro.isEnabled = false
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
 
-        etUsuario.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(etUsuario.length() < 3)
-                {
-                    etUsuario.error = getString(R.string.mensajeUsuario_str)
-                    requestFocus(etUsuario)
-                    usuarioOk = false
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-                } else {
-                    usuarioOk = true
-                    usuarioValido = validaUsuario(etUsuario.text.toString())
+        etCorreo.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if(etCorreo.length() > 11){
+                    if(etCorreo.text.toString().contains("@")){
+                        correo = true
 
-                    if(!usuarioValido){
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-                        etUsuario.error = getString(R.string.yaexiste_str)
-                        requestFocus(etContra)
-                    } else {
-                        usuarioValido = true
-                    }
-
-                    if(contraOk && confirmContra && usuarioValido)
-                    {
+                        if(correo && contraOk && confirmContra){
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                        }
+                    }else{
+                        etCorreo.error = getString(R.string.arroba_str)
+                        requestFocus(etCorreo!!)
+                        correo = false
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
                     }
+                } else {
+                    etCorreo.error = getString(R.string.mensajeUsuario2_str)
+                    requestFocus(etCorreo)
+                    correo = false
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
                 }
             }
         })
@@ -273,7 +375,7 @@ class IniciarSesion : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(etContra.length() < 3)
+                if(etContra.length() < 6)
                 {
                     etContra.error = getString(R.string.mensajeUsuario_str)
                     requestFocus(etContra)
@@ -283,7 +385,8 @@ class IniciarSesion : AppCompatActivity() {
                 } else {
                     etConfirmContra.isEnabled = true
                     contraOk = true
-                    if(usuarioOk && confirmContra && usuarioValido){
+
+                    if(correo && confirmContra){
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
                     }
                 }
@@ -296,7 +399,8 @@ class IniciarSesion : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(etConfirmContra.text.toString().equals(etContra.text.toString())){
                     confirmContra = true
-                    if(usuarioOk && contraOk && usuarioValido){
+
+                    if(correo && contraOk){
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
                     }
                 } else {
@@ -309,26 +413,14 @@ class IniciarSesion : AppCompatActivity() {
         })
     }
 
-    private fun registrarUsuario(usuario : String, correo : String, contra : String){
-        cerrarTeclado()
-
+    private fun registrarUsuarioBdInterna(correo : String, contra : String){
         val datosUsuario = ContentValues()
-        datosUsuario.put("usuario", usuario)
         datosUsuario.put("correo", correo)
         datosUsuario.put("contra", contra)
 
         val basededatos = bd.writableDatabase
         basededatos.insert("Usuarios", null, datosUsuario)
         basededatos.close()
-
-        val toast = Toast(applicationContext)
-        //// CARGA EL LAYOUT A UNA VISTA ////
-        val view = layoutInflater.inflate(R.layout.usuario_registrado, null)
-        toast.view = view
-        toast.duration = Toast.LENGTH_LONG
-        toast.setGravity(Gravity.TOP,0, 0)
-        view.findViewById<TextView>(R.id.tvToast_usuarioregistrado).text = getString(R.string.registrado_str)
-        toast.show()
     }
 
     fun ventanaRegistroRecicladora(view : View){

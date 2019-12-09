@@ -6,21 +6,20 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.pm.PackageManager
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.button.MaterialButton
-import android.support.design.widget.TextInputEditText
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.LinearLayout
 import android.widget.ImageButton
 import android.widget.Toast
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
@@ -217,7 +216,7 @@ class ReporteRecicladora : AppCompatActivity() {
         }
         conexion.close()
 
-        rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        rv?.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         val adap = Adapter(datosCliente)
         rv?.adapter = adap
 
@@ -273,7 +272,8 @@ class ReporteRecicladora : AppCompatActivity() {
         }
         conexion.close()
 
-        rvCompras?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        rvCompras?.layoutManager =
+            LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         val adapCompra = Adapter(datosCompra)
         rvCompras?.adapter = adapCompra
 

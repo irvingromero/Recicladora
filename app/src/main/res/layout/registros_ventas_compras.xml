@@ -6,7 +6,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <android.support.design.card.MaterialCardView
+    <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorGris"
@@ -163,5 +163,5 @@
                         android:layout_weight="1"/>
             </LinearLayout>
         </LinearLayout>
-    </android.support.design.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

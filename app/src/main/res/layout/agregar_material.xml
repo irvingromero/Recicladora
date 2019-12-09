@@ -47,19 +47,19 @@
                     android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "/>
         </android.support.design.widget.TextInputLayout>
 -->
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tietPrecio_agregarMaterialXML"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/precio_str"
                     android:maxLength="8"
                     android:inputType="numberDecimal" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Spinner
                 android:id="@+id/spUnidades_agregar_mateiral"

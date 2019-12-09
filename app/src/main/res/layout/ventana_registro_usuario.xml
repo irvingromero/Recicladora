@@ -11,25 +11,10 @@
             android:orientation="vertical"
             android:layout_marginTop="10dp">
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/etUsuario_registroUsuario"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:hint="@string/nombreUsuario_str"
-                android:inputType="text"
-                android:imeOptions="actionNext"
-                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCorreo_registroUsuario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -37,14 +22,14 @@
                     android:layout_marginRight="15dp"
                     android:hint="@string/correo_str"
                     android:inputType="textEmailAddress" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:passwordToggleEnabled = "true"
                 app:passwordToggleDrawable="@drawable/ojo_icono">
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etContra_registroUsuario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -54,14 +39,14 @@
                     android:inputType="text"
                     android:imeOptions="actionNext"
                     android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:passwordToggleEnabled = "true"
                 app:passwordToggleDrawable="@drawable/ojo_icono">
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etConfirmarContra_registroUsuario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -72,6 +57,6 @@
                     android:inputType="text"
                     android:imeOptions="actionNext"
                     android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 </ScrollView>

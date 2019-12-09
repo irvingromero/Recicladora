@@ -6,7 +6,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <android.support.design.card.MaterialCardView
+    <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorGris"
@@ -44,7 +44,7 @@
                 android:orientation="vertical"
                 android:gravity="center">
 
-                <android.support.design.button.MaterialButton
+                <com.google.android.material.button.MaterialButton
                         android:id="@+id/mbModificar_datosmaterial"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
@@ -59,7 +59,7 @@
                         app:cornerRadius="70dp"
                         app:rippleColor="@color/colorNegro"/>
 
-                <android.support.design.button.MaterialButton
+                <com.google.android.material.button.MaterialButton
                         android:id="@+id/mbEliminar_datosmaterial"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
@@ -75,7 +75,7 @@
                         app:rippleColor="@color/colorNegro"/>
             </LinearLayout>
         </LinearLayout>
-    </android.support.design.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
             android:layout_width="match_parent"

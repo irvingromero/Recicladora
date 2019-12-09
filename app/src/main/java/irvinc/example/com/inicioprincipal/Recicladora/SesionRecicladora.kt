@@ -3,23 +3,24 @@ package irvinc.example.com.inicioprincipal.Recicladora
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.support.design.button.MaterialButton
-import android.support.design.widget.Snackbar
-import android.support.design.widget.TextInputEditText
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.view.GravityCompat
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
 import irvinc.example.com.inicioprincipal.InicioSinSesion.MapsActivity
 import irvinc.example.com.inicioprincipal.R
@@ -52,13 +53,13 @@ class SesionRecicladora : AppCompatActivity() {
 
         detectarSlide()
         findViewById<ImageButton>(R.id.btnMenu_sesionRecicladora).setOnClickListener {
-            drawerLayout?.openDrawer(Gravity.START)
+            drawerLayout?.openDrawer(GravityCompat.START)
             drawerOpen = true
         }
     }
 
     private fun cargarMateriales(){
-        rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        rv?.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         listaMateriales = ArrayList()
 
         val bd =  BaseDeDatos(this, "Materiales", null , 1)
@@ -374,7 +375,7 @@ class SesionRecicladora : AppCompatActivity() {
     }
 
     private fun cerrarDrawer(){
-        drawerLayout?.closeDrawer(Gravity.START)
+        drawerLayout?.closeDrawer(GravityCompat.START)
         drawerOpen = false
     }
 

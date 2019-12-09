@@ -8,7 +8,7 @@ class BaseDeDatos(context: Context, name: String?, factory: SQLiteDatabase.Curso
     SQLiteOpenHelper(context, name, factory, version) {
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("create table Usuarios(usuario text, correo text, contra text)")
+        db.execSQL("create table Usuarios(correo text, contra text)")
 
         db.execSQL("create table Calificacion(usuarioRecicladora text, calificacion float, usuarioCliente text)")
 

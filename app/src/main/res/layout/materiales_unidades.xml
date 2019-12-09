@@ -5,7 +5,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <android.support.design.card.MaterialCardView
+    <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -17,7 +17,7 @@
                 android:textSize="17sp"
                 android:layout_margin="5dp"/>
 
-    </android.support.design.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
             android:layout_width="match_parent"

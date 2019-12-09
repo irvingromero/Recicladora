@@ -2,30 +2,44 @@ package irvinc.example.com.inicioprincipal.UsuarioLogeado
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.*
+import android.content.Intent
+import android.content.ContentValues
+import android.content.Context
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.button.MaterialButton
-import android.support.design.chip.Chip
-import android.support.design.chip.ChipGroup
-import android.support.design.widget.*
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
-import android.view.*
-import android.widget.*
+import android.view.View
+import android.view.WindowManager
+import android.view.KeyEvent
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.widget.TextView
+import android.widget.LinearLayout
+import android.widget.ImageButton
+import android.widget.RatingBar
+import android.widget.Toast
+import android.widget.ListView
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import androidx.core.view.GravityCompat
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -34,7 +48,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
+import irvinc.example.com.inicioprincipal.InicioSinSesion.IniciarSesion
 import irvinc.example.com.inicioprincipal.InicioSinSesion.MapsActivity
 import irvinc.example.com.inicioprincipal.R
 import kotlinx.android.synthetic.main.datos_recicladora.*
@@ -77,7 +96,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
 
         detectarSlide()
         findViewById<ImageButton>(R.id.btnMenu_sesionUsuario).setOnClickListener {
-            drawerLayout?.openDrawer(Gravity.START)
+            drawerLayout?.openDrawer(GravityCompat.START)
             drawerOpen = true
         }
 
@@ -120,7 +139,6 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         mMap.uiSettings.isCompassEnabled = false
         mMap.setOnMarkerClickListener(this)
 
-        permiso()
         cargarRecicladoras()
 
         mMap.setOnMapClickListener {
@@ -219,7 +237,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
     }
 
     private fun cargarMaterialesRecicladora(nombreRecicladora : String){
-        rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        rv?.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         listaMateriales = ArrayList()
 
         val objetobasededatos = BaseDeDatos(applicationContext, "Usuarios", null, 1)
@@ -434,8 +452,9 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
             mMap.setMinZoomPreference(11.0f)
         } catch (e: Exception) { }
     }
-        /// MENU ///
+        /////////////////////////////// MENU /////////////////////////////////
     fun modificarDatos_sesionUsuario(view : View){
+        var correoOk = false
         var contraOk = false
         var confirmContra = false
 
@@ -447,7 +466,6 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         ventana.setView(dialogView)
         ventana.setTitle("Ingresa los nuevos datos")
 
-        val etUsuario = dialogView.findViewById<TextInputEditText>(R.id.etUsuario_registroUsuario)
         val etCorreo = dialogView.findViewById<TextInputEditText>(R.id.etCorreo_registroUsuario)
         val etContra = dialogView.findViewById<TextInputEditText>(R.id.etContra_registroUsuario)
         val etConfirmContra = dialogView.findViewById<TextInputEditText>(R.id.etConfirmarContra_registroUsuario)
@@ -455,14 +473,23 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
             //// TRANSFORMA EL FORMATO TEXT A TEXTPASSWORD ////
         etContra.transformationMethod =  PasswordTransformationMethod()
         etConfirmContra.transformationMethod =  PasswordTransformationMethod()
-
-        etUsuario.setText(usuarioLogeado)
-        etUsuario.isEnabled = false
         etConfirmContra.isEnabled = false
+
+        val bdClase =  BaseDeDatos(this, "Usuarios", null , 1)
+        val bdConexion = bdClase.readableDatabase
+
+        val datosUsuario = bdConexion.rawQuery("select contra from Usuarios where correo = '$usuarioLogeado'",null)
+        if(datosUsuario.moveToFirst()){
+           etContra.setText(datosUsuario.getString(0))
+           etConfirmContra.setText(datosUsuario.getString(0))
+        }
+        datosUsuario.close()
+        etCorreo.setText(usuarioLogeado)
 
         ventana.setPositiveButton(R.string.modificar_str){_, _ ->
             modificarDatos(view, etCorreo.text.toString(), etContra.text.toString())
         }
+
         ventana.setNeutralButton(R.string.cancelar_str){_,_ -> }
 
         val dialog: AlertDialog = ventana.create()
@@ -480,6 +507,34 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         dialog.show()
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
 
+        etCorreo.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if(etCorreo.length() > 11){
+                    if(etCorreo.text.toString().contains("@")){
+                        correoOk = true
+
+                        val c = etContra.text.toString().toInt() == 8
+
+                        if(correoOk && contraOk && confirmContra){
+                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                        }
+                    }else{
+                        etCorreo.error = getString(R.string.arroba_str)
+                        requestFocus(etCorreo!!)
+                        correoOk = false
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                    }
+                } else {
+                    etCorreo.error = getString(R.string.mensajeUsuario2_str)
+                    requestFocus(etCorreo)
+                    correoOk = false
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                }
+            }
+        })
+
         etContra.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -494,7 +549,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
                 } else {
                     etConfirmContra.isEnabled = true
                     contraOk = true
-                    if(confirmContra){
+                    if(correoOk && confirmContra){
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
                     }
                 }
@@ -507,7 +562,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(etConfirmContra.text.toString().equals(etContra.text.toString())){
                     confirmContra = true
-                    if(contraOk){
+                    if(correoOk && contraOk){
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
                     }
                 } else {
@@ -588,7 +643,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
         val preferences = getSharedPreferences("user", Context.MODE_PRIVATE)
         preferences.edit().clear().apply()
 
-        val intent = Intent(this, MapsActivity::class.java)
+        val intent = Intent(this, IniciarSesion::class.java)
         startActivity(intent)
         finish()
     }
@@ -705,7 +760,7 @@ class SesionUsuario : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarke
     }
 
     private fun cerrarDrawer(){
-        drawerLayout?.closeDrawer(Gravity.START)
+        drawerLayout?.closeDrawer(GravityCompat.START)
         drawerOpen = false
     }
 

@@ -6,10 +6,10 @@ Al eliminar un material queda desfasado el conntador del array en sesion recicla
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.ActionBarDrawerToggle
 import android.view.Gravity
 import android.view.View
 
@@ -21,25 +21,26 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.support.v4.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
-import android.support.design.button.MaterialButton
-import android.support.design.chip.Chip
-import android.support.design.chip.ChipGroup
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.TextInputEditText
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.view.GravityCompat
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import irvinc.example.com.inicioprincipal.BD.BaseDeDatos
@@ -80,7 +81,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         detectarSlide()
         findViewById<ImageButton>(R.id.btnMenu_maps).setOnClickListener {
-            drawerLayout?.openDrawer(Gravity.START)
+            drawerLayout?.openDrawer(GravityCompat.START)
             drawerOpen = true
         }
 
@@ -252,7 +253,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun cargarMaterialesRecicladora(nombreRecicladora : String){
-        rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        rv?.layoutManager = LinearLayoutManager(
+            this,
+            RecyclerView.VERTICAL,
+            false
+        )
         listaMateriales = ArrayList()
 
         val objetobasededatos = BaseDeDatos(applicationContext, "Usuarios", null, 1)
@@ -383,13 +388,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
         ///////// OPCIONES DEL MENU //////////////////
     fun iniciarSesion(view : View){
-        val handler = Handler(Looper.getMainLooper())
-        handler.post {
-            val intent = Intent(this, IniciarSesion::class.java)
-            startActivity(intent)
-
             cerrarDrawer()
-        }
+            onBackPressed()
     }
 
     fun buscarMaterial(v : View){
@@ -536,7 +536,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun cerrarDrawer(){
-        drawerLayout?.closeDrawer(Gravity.START)
+        drawerLayout?.closeDrawer(GravityCompat.START)
         drawerOpen = false
     }
 

@@ -8,17 +8,17 @@ import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.support.design.button.MaterialButton
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.TextInputEditText
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.textfield.TextInputEditText
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ItemTouchHelper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
@@ -84,7 +84,7 @@ class VentasRecicladora : AppCompatActivity() {
 
     private fun mostrarVentas(){
         rv = findViewById(R.id.rvRegistrosVentas_ventasRecicladora)
-        rv?.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        rv?.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         listaVentas = ArrayList()
 
         val bd =  BaseDeDatos(this, "Ventas", null , 1)
@@ -373,7 +373,7 @@ class VentasRecicladora : AppCompatActivity() {
             }
 
             override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
-                dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+                                     dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
 
                 val deleteIcon = ContextCompat.getDrawable(applicationContext, R.drawable.basura_icono)
                 val itemView = viewHolder.itemView

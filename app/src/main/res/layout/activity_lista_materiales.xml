@@ -7,7 +7,7 @@
         tools:context=".Recicladora.ListaMateriales"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimaryDark">
@@ -26,7 +26,7 @@
                     android:text="@string/listaMateriales_str"
                     android:textColor="@color/colorNegro"
                     android:textSize="20sp"/>
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
     <Button
             android:id="@+id/btAgregarMaterialLista_ListaMateriales"
@@ -36,10 +36,10 @@
             android:text="@string/agregarMaterialLista_str"
             android:onClick="agregarMaterial"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvListaMateriales_ListaMateriales"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp">
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>

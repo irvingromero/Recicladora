@@ -6,22 +6,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:backgroundTint="@color/colorPrimary">
 
-            <android.support.design.widget.CollapsingToolbarLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
                     app:contentScrim="@android:color/white">
 
-                <android.support.v7.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent">
 
@@ -53,7 +53,7 @@
                                     android:layout_gravity="center"/>
                         </LinearLayout>
 
-                        <android.support.design.button.MaterialButton
+                        <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btnAgregarCompra_ComprasRecicladora"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -65,11 +65,11 @@
                                 app:icon="@drawable/agregar_icono"
                                 app:iconTint="@color/colorNegro"/>
                     </LinearLayout>
-                </android.support.v7.widget.Toolbar>
-            </android.support.design.widget.CollapsingToolbarLayout>
-        </android.support.design.widget.AppBarLayout>
+                </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
@@ -111,20 +111,20 @@
                             android:layout_gravity="center"/>
                 </LinearLayout>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvRegistroCompras_comprasRecicladora"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="3dp"
                         android:layout_marginRight="3dp">
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
-    </android.support.design.widget.CoordinatorLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         <include layout="@layout/registro_compra_bs"/>
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </RelativeLayout>

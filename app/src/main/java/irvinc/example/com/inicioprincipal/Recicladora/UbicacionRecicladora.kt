@@ -8,11 +8,11 @@ import android.content.pm.PackageManager
 import android.location.Criteria
 import android.location.LocationManager
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import android.view.Gravity
 import android.widget.ImageButton
 import android.widget.TextView

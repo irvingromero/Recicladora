@@ -29,7 +29,8 @@
     <string name="confirmaContra_str">Confirma contraseña</string>
     <string name="cancelar_str">Cancelar</string>
     <string name="registrar_str">Registrar</string>
-    <string name="mensajeUsuario_str">3 caracteres de A-z y 0-9</string>
+    <string name="mensajeUsuario_str">6 caracteres de A-z y 0-9</string>
+    <string name="mensajeUsuario2_str">11 caracteres de A-z y 0-9</string>
     <string name="mensajeContras_str">Las contraseñas no coinciden</string>
     <string name="yaexiste_str">Usuario ya existe</string>
     <string name="registrado_str">Usuario registrado</string>
