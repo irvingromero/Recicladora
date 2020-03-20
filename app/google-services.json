@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "153852670479",
-    "firebase_url": "https://reciclador-204113.firebaseio.com",
-    "project_id": "reciclador-204113",
-    "storage_bucket": "reciclador-204113.appspot.com"
+    "project_number": "204727327704",
+    "firebase_url": "https://recicladora-38499.firebaseio.com",
+    "project_id": "recicladora-38499",
+    "storage_bucket": "recicladora-38499.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:153852670479:android:fd0017d76278a5ec72297a",
+        "mobilesdk_app_id": "1:204727327704:android:026a79ef50527a4ad130ad",
         "android_client_info": {
           "package_name": "irvinc.example.com.inicioprincipal"
         }
       },
       "oauth_client": [
         {
-          "client_id": "153852670479-naanjck41a857juf5scmcmmjoqvtv0jf.apps.googleusercontent.com",
+          "client_id": "204727327704-clcv94am3s2b2b2hnv5igp4d5j2gplv9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "irvinc.example.com.inicioprincipal",
@@ -23,20 +23,20 @@
           }
         },
         {
-          "client_id": "153852670479-mev6rl0s7pmisogk8m2fgkuvogqi2jj4.apps.googleusercontent.com",
+          "client_id": "204727327704-2ak0qk2pci50i4pj5kl1fb3obrgkgta0.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC_Vd8q-TO9dBZDc9KlyMk2tDQyjSWJe2E"
+          "current_key": "AIzaSyA24EYM3pmla5X9iO_bBnZr_PVFpH3aiIE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "153852670479-mev6rl0s7pmisogk8m2fgkuvogqi2jj4.apps.googleusercontent.com",
+              "client_id": "204727327704-2ak0qk2pci50i4pj5kl1fb3obrgkgta0.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

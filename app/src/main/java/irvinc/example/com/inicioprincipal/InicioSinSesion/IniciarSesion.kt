@@ -22,7 +22,11 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.CheckBox
+import android.widget.Toast
+import android.widget.Button
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
@@ -220,6 +224,19 @@ class IniciarSesion : AppCompatActivity() {
                 Toast.makeText(this, "Error al iniciar sesion", Toast.LENGTH_LONG).show()
             }
         }
+        /*/////////////////////////////////////////////
+            USUARIO DE RECICLADORA NO ESTA EN FIREBASE
+            INICIO DE SESION PROVISIONAL  PARA RECICLADORA
+        */////////////////////////////////////////////
+        val basededatos = bd.readableDatabase
+        val consultaRecicladora = basededatos.rawQuery("select usuario from Recicladoras where usuario = '$usuario' and contra = '$contra'",null)
+        if(consultaRecicladora.moveToFirst()){
+            val intent = Intent(this, SesionRecicladora::class.java)
+            intent.putExtra("usuario", usuario)
+            finishAffinity()    //// CIERRA LAS DEMAS ACTIVITYS EN SEGUNDO PLANO////
+            startActivity(intent)
+        }
+        consultaRecicladora.close()
     }
 
     fun ventanaRecuperarContra(vista : View){
@@ -304,7 +321,7 @@ class IniciarSesion : AppCompatActivity() {
             auth.createUserWithEmailAndPassword(etCorreo.text.toString() , etContra.text.toString()).addOnCompleteListener(this) { task ->
                 if(task.isSuccessful){
                     cargando.dismiss()
-                    registrarUsuarioBdInterna(etCorreo.text.toString(), etContra.text.toString())
+//                    registrarUsuarioBdInterna(etCorreo.text.toString(), etContra.text.toString())
 
                     val toast = Toast(applicationContext)
                     //// CARGA EL LAYOUT A UNA VISTA ////
@@ -412,7 +429,7 @@ class IniciarSesion : AppCompatActivity() {
             }
         })
     }
-
+/*
     private fun registrarUsuarioBdInterna(correo : String, contra : String){
         val datosUsuario = ContentValues()
         datosUsuario.put("correo", correo)
@@ -422,7 +439,7 @@ class IniciarSesion : AppCompatActivity() {
         basededatos.insert("Usuarios", null, datosUsuario)
         basededatos.close()
     }
-
+*/
     fun ventanaRegistroRecicladora(view : View){
         val botonRegistroRecicladora = findViewById<Button>(R.id.btnRegistroRecicladora_inicioSesion)
 
@@ -601,6 +618,7 @@ class IniciarSesion : AppCompatActivity() {
         toast.show()
     }
 
+/*
     private fun validaUsuario(nombre : String) : Boolean {
         val basededatos = bd.readableDatabase
 
@@ -613,7 +631,7 @@ class IniciarSesion : AppCompatActivity() {
         bd.close()
         return true
     }
-
+*/
     private fun validaRecicladora(nombre : String) : Boolean {
         val basededatos = bd.readableDatabase
 

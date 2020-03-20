@@ -16,6 +16,7 @@
                 android:layout_marginRight="10dp"
                 android:inputType="text"
                 android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@%_ "
-                android:maxLength="30"/>
+                android:maxLength="30"
+                android:background="@android:color/white"/>
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>
